@@ -28,9 +28,9 @@ try {
     $stmt = $conn->prepare("SELECT username FROM users;");
     $stmt->execute();
     $users = $stmt->fetchAll();
-    $users = array_map(fn ($x) => $x[0], $users);
+    $count = $stmt->rowCount();
 
-    if (array_search("admin", $users) === false) {
+    if ($count <= 0) {
         $values = array("admin", sha1("Qazasd@123"), "a.altatan@gmail.com", "Abdullah Altatan", 1, 0, 1);
         // Creating Super Admin
         $admin_stmt = $conn->prepare("INSERT INTO users(

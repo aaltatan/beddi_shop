@@ -4,6 +4,7 @@
   h1 {
     text-align: center;
     font-size: var(--fs-lg);
+    line-wrap: wrap;
   }
   .msgs {
     display: none;
@@ -13,8 +14,12 @@
     &.opened {
       display: block;
     }
+    li {
+      color: var(--clr-fxd-text-base);
+      color: white;
+    }
   }
-  width: calc(100% - 3rem);
+  width: 100%;
   margin-inline: auto;
   padding: 1em 0;
   .inputs {

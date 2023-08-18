@@ -12,6 +12,8 @@
     gap: 1em;
     width: 300px;
     @include br(sm) {
+      padding-top: 2em;
+      justify-content: flex-start;
       width: 100%;
     }
     min-height: 100vh;

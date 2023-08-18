@@ -99,17 +99,21 @@
       background-color: var(--clr-bg-light);
       border-bottom: 1px solid var(--clr-bg-base);
     }
-    header nav {
+    nav {
       display: flex;
       align-items: center;
+      font-size: var(--fs-base);
       gap: 1em;
       input {
         margin-left: auto;
-        @include br(lg) {
-          margin-left: 0;
+        @include br(xs) {
+          display: none;
         }
         @include br(sm) {
           width: calc(100% - 2rem);
+        }
+        @include br(lg) {
+          margin-left: 0;
         }
       }
       .burger {
@@ -122,8 +126,8 @@
           margin-left: 0;
         }
         position: relative;
-        width: 30px;
-        height: 30px;
+        min-width: 30px;
+        min-height: 30px;
         cursor: pointer;
         padding: 0.25em;
         border-radius: 0.25em;
@@ -208,6 +212,7 @@
         position: relative;
         cursor: pointer;
         h2 {
+          padding-inline: 0.25em;
           &:hover,
           &:focus {
             color: var(--clr-acnt-base);

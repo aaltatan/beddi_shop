@@ -1,3 +1,5 @@
+@use "breakpoints" as *;
+
 #main-search {
   background-color: var(--clr-bg-base);
   border-radius: 100vmax;
@@ -34,13 +36,16 @@
 }
 
 .btn {
+  display: block;
+  width: fit-content;
   padding: 0.5em 0.75em;
-  color: var(--clr-txt-fxd-base);
+  color: var(--clr-fxd-txt-base);
   font-size: var(--fs-base);
   font-weight: 500;
   cursor: pointer;
   border: none;
   outline: none;
+  text-decoration: none;
   &:focus {
     outline: 2px solid var(--clr-acnt-light);
   }
@@ -51,16 +56,52 @@
     &:focus {
       background-color: var(--clr-acnt-dark);
     }
-    &.dimmed {
-      background-color: var(--clr-danger-dark);
-      pointer-events: none;
-    }
   }
   &-secondary {
     background-color: var(--clr-bg-base);
     &:hover,
     &:focus {
       background-color: var(--clr-bg-dark);
+    }
+  }
+  &-danger {
+    background-color: var(--clr-danger-base);
+    &:hover,
+    &:focus {
+      background-color: var(--clr-danger-dark);
+    }
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-inline: auto;
+  @include br(md) {
+    width: 300px;
+    min-width: 100%;
+  }
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--clr-bg-light);
+    tbody tr:nth-last-of-type(odd) {
+      background-color: var(--clr-bg-dark);
+    }
+    .btn {
+      font-size: var(--fs-sm) !important;
+    }
+    td,
+    th {
+      padding: 0.5em;
+      // text-align: center;
+      font-size: var(--fs-sm) !important;
+      white-space: nowrap;
+      &.btn-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25em;
+      }
     }
   }
 }

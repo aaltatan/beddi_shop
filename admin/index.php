@@ -23,9 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 group_id = 1");
     $query->execute(array($username, $hashed_pass));
     $count = $query->rowCount();
-    $user_id = $query->fetchAll()[0][0];
 
     if ($count > 0) {
+        $user_id = $query->fetchAll()[0][0];
         $_SESSION["username"] = $username;
         $_SESSION["userid"] = $user_id;
         header("Location: dashboard.php");

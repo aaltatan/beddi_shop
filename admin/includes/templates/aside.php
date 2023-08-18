@@ -25,7 +25,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" role="button" aria-current="false">
+                <a href="members.php" role="button" aria-current="false">
                     <span>🧑‍🤝‍🧑</span>
                     <?php echo lang("MEMBERS") ?>
                 </a>
@@ -55,7 +55,7 @@
                 </span>
                 <div class="user">
                     <div class="icon">
-                        <h2 id="user-name"><?php echo ucfirst($_SESSION["username"]) ?></h2>
+                        <h2 id="user-name"><?php echo ucfirst(explode(".", $_SESSION["username"])[0]) ?></h2>
                     </div>
                     <ul class="list">
                         <li><a href="members.php?do=Edit&userid=<?php echo $_SESSION["userid"] ?>">✏️ <?php echo lang("EDITPROFILE") ?></a></li>
@@ -65,3 +65,4 @@
                 </div>
             </nav>
         </header>
+        <main class="flow">
