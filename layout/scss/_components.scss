@@ -1,0 +1,66 @@
+#main-search {
+  background-color: var(--clr-bg-base);
+  border-radius: 100vmax;
+  padding: 0.5em 1em;
+  border: none;
+  outline: none;
+  color: var(--clr-txt-base);
+  &::placeholder {
+    color: var(--clr-acnt-light);
+  }
+  &:hover,
+  &:focus {
+    outline: 2px solid var(--clr-acnt-light);
+    color: var(--clr-acnt-light);
+    &::placeholder {
+      opacity: 0;
+    }
+  }
+}
+
+.login-input {
+  padding: 0.5em 0.75em;
+  outline: none;
+  border: none;
+  background-color: var(--clr-bg-base);
+  font-size: var(--fs-md);
+  &:focus,
+  &:hover {
+    outline: 1px solid var(--clr-acnt-base);
+  }
+  &::placeholder {
+    font-size: var(--fs-base);
+  }
+}
+
+.btn {
+  padding: 0.5em 0.75em;
+  color: var(--clr-txt-fxd-base);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  &:focus {
+    outline: 2px solid var(--clr-acnt-light);
+  }
+  &-primary {
+    background-color: var(--clr-acnt-base);
+    color: white;
+    &:hover,
+    &:focus {
+      background-color: var(--clr-acnt-dark);
+    }
+    &.dimmed {
+      background-color: var(--clr-danger-dark);
+      pointer-events: none;
+    }
+  }
+  &-secondary {
+    background-color: var(--clr-bg-base);
+    &:hover,
+    &:focus {
+      background-color: var(--clr-bg-dark);
+    }
+  }
+}

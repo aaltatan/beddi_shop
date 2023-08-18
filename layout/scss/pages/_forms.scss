@@ -1,0 +1,69 @@
+@use "../breakpoints" as *;
+
+.form {
+  h1 {
+    text-align: center;
+    font-size: var(--fs-lg);
+  }
+  .msgs {
+    display: none;
+    padding: 1em 1em 1em 2em;
+    background-color: var(--clr-danger-light);
+    border-radius: 0.5em;
+    &.opened {
+      display: block;
+    }
+  }
+  width: calc(100% - 3rem);
+  margin-inline: auto;
+  padding: 1em 0;
+  .inputs {
+    --cols: 2;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    row-gap: 1.5em;
+    column-gap: 1em;
+    padding: 1em 0;
+    @include br(md) {
+      --cols: 1;
+    }
+    .form-input {
+      position: relative;
+      input {
+        width: 100%;
+        height: 100%;
+        padding: 0.5em 1em;
+        background-color: var(--clr-bg-light);
+        border: none;
+        outline: none;
+        transition: 100ms;
+        &::placeholder {
+          opacity: 0;
+        }
+        &:hover {
+          background-color: var(--clr-bg-base) !important;
+          outline: 1px solid var(--clr-acnt-base);
+          border: none !important;
+        }
+        &:focus,
+        &:not(:placeholder-shown) {
+          background-color: var(--clr-bg-dark);
+          border-bottom: 1px solid var(--clr-acnt-base);
+          height: calc(100% - 1px);
+          + label {
+            top: -60%;
+            transform: translateY(0);
+            font-size: var(--fs-sm);
+          }
+        }
+      }
+      label {
+        position: absolute;
+        left: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: 200ms;
+      }
+    }
+  }
+}

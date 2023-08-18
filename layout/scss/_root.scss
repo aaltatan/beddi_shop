@@ -1,0 +1,79 @@
+$txt: #e4eaf1;
+$fxd-txt: #e4eaf1;
+$bg: #1b2638;
+$acnt: #1374ef;
+$danger: red;
+$success: lime;
+
+$lighten: 10;
+$darken: 10;
+
+$colors: (
+  txt: (
+    base: $txt,
+    light: lighten($txt, $lighten),
+    dark: darken($txt, $darken),
+  ),
+  fxd-txt: (
+    base: $fxd-txt,
+    light: lighten($fxd-txt, $lighten),
+    dark: darken($fxd-txt, $darken),
+  ),
+  bg: (
+    base: $bg,
+    light: lighten($bg, $lighten),
+    dark: darken($bg, $darken),
+  ),
+  acnt: (
+    base: $acnt,
+    light: lighten($acnt, $lighten),
+    dark: darken($acnt, $darken),
+  ),
+  danger: (
+    base: $danger,
+    light: lighten($danger, $lighten),
+    dark: darken($danger, $darken),
+  ),
+  success: (
+    base: $success,
+    light: lighten($success, $lighten),
+    dark: darken($success, $darken),
+  ),
+);
+
+:root {
+  @each $color, $shades in $colors {
+    @each $shade, $val in $shades {
+      --clr-#{$color}-#{$shade}: #{$val};
+    }
+  }
+  --fs-fxd: 1rem;
+  --fs-sm: clamp(0.83rem, 0.05vw + 0.82rem, 1.2rem);
+  --fs-base: clamp(1rem, 0.07vw + 0.98rem, 1.5rem);
+  --fs-md: clamp(1.2rem, 0.09vw + 1.17rem, 1.88rem);
+  --fs-lg: clamp(1.44rem, 0.13vw + 1.4rem, 2.34rem);
+  --fs-xl: clamp(1.73rem, 0.17vw + 1.67rem, 2.93rem);
+  --fs-xxl: clamp(2.07rem, 0.22vw + 2rem, 3.66rem);
+  --fs-xxxl: clamp(2.49rem, 0.29vw + 2.39rem, 4.58rem);
+}
+
+$colors: (
+  txt: (
+    base: $bg,
+    light: lighten($bg, $lighten),
+    dark: darken($bg, $darken),
+  ),
+  bg: (
+    base: $txt,
+    light: lighten($txt, $lighten),
+    dark: darken($txt, $darken),
+  ),
+);
+
+.light {
+  @each $color, $shades in $colors {
+    @each $shade, $val in $shades {
+      --clr-#{$color}-#{$shade}: #{$val};
+    }
+  }
+}

@@ -1,0 +1,46 @@
+@use "../breakpoints" as *;
+
+.login-bg {
+  background: url("../images/login-landscape-1.jpg");
+  min-height: 100vh;
+  width: 100%;
+  .login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    width: 300px;
+    @include br(sm) {
+      width: 100%;
+    }
+    min-height: 100vh;
+    margin-left: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    h1 {
+      font-size: var(--fs-lg);
+    }
+    input {
+      width: calc(100% - 3rem);
+    }
+    span {
+      position: relative;
+      width: calc(100% - 3rem);
+      display: block;
+      padding: 0.5em 1em;
+      background-color: var(--clr-danger-dark);
+      animation: shake 5 100ms;
+    }
+    @keyframes shake {
+      0% {
+        transform: translateX(3px);
+      }
+      50% {
+        transform: translateX(-3px);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
+  }
+}

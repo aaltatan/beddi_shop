@@ -1,0 +1,261 @@
+@use "breakpoints" as *;
+@use "mixins" as *;
+
+.main-wrapper {
+  display: grid;
+  grid-template-columns: calc(250px - 2em) 1fr;
+  @include br(lg) {
+    grid-template-columns: 1fr;
+  }
+
+  .main-aside {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 6;
+    padding: 1em;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: var(--clr-bg-light);
+    user-select: none;
+    transition: 200ms;
+    border-right: 1px solid var(--clr-bg-base);
+    ::-webkit-scrollbar {
+      background-color: transparent;
+      max-width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--clr-acnt-base);
+      border-radius: 100vmax;
+    }
+    @include br(lg) {
+      position: fixed;
+      left: -100%;
+      &.opened {
+        left: 0;
+      }
+      top: 0;
+      min-width: 200px;
+      max-width: 300px;
+      height: 100%;
+      border-radius: 0;
+    }
+
+    .brand {
+      a {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        margin-block: 1em;
+        text-decoration: none;
+        text-align: center;
+        img {
+          max-width: 30px;
+        }
+        h2 {
+          font-size: var(--fs-md);
+        }
+      }
+    }
+    ul {
+      list-style: none;
+      li {
+        a {
+          display: flex;
+          align-items: center;
+          gap: 0.5em;
+          padding: 0.75em 0.5em;
+          font-size: var(--fs-fxd);
+          text-decoration: none;
+          border-radius: 0.5em;
+          &[aria-current="true"] {
+            font-weight: bold;
+            background-color: var(--clr-bg-dark);
+          }
+          &:focus,
+          &:hover {
+            background-color: var(--clr-bg-base);
+            color: var(--clr-txt-light);
+            outline: none;
+          }
+          span {
+            font-size: 1.75rem;
+          }
+        }
+      }
+    }
+  }
+
+  .main {
+    header {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 5;
+      padding: 0.5em 1em;
+      @include br(sm) {
+        padding: 0.375em 0.5em;
+      }
+      background-color: var(--clr-bg-light);
+      border-bottom: 1px solid var(--clr-bg-base);
+    }
+    header nav {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+      input {
+        margin-left: auto;
+        @include br(lg) {
+          margin-left: 0;
+        }
+        @include br(sm) {
+          width: calc(100% - 2rem);
+        }
+      }
+      .burger {
+        display: none;
+        @include br(lg) {
+          display: block;
+          margin-left: auto;
+        }
+        @include br(sm) {
+          margin-left: 0;
+        }
+        position: relative;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        padding: 0.25em;
+        border-radius: 0.25em;
+        &:hover,
+        &:focus {
+          &::before,
+          &::after {
+            background-color: var(--clr-txt-base);
+          }
+        }
+        &.opened {
+          &::before {
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+          }
+          &::after {
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+          }
+        }
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 80%;
+          height: 3px;
+          border-radius: 100vmax;
+          background-color: var(--clr-acnt-base);
+          transition: 200ms;
+        }
+        &::before {
+          top: calc(33.333333% - 2px);
+        }
+        &::after {
+          top: 66.666666%;
+        }
+      }
+      .mode {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        input {
+          appearance: none;
+        }
+
+        label {
+          display: block;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 50px;
+          height: 30px;
+          border-radius: 100vmax;
+          background-color: var(--clr-bg-dark);
+          border: 1px solid var(--clr-bg-light);
+          cursor: pointer;
+          &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 80%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            transition: 200ms;
+          }
+          &[data-theme-dark="false"]::after {
+            left: 5%;
+            background-color: var(--clr-bg-dark);
+            box-shadow: 5px -5px 0 0 white inset;
+          }
+          &[data-theme-dark="true"]::after {
+            left: 48%;
+            background-color: hsl(39, 100%, 50%);
+          }
+        }
+      }
+      .user {
+        position: relative;
+        cursor: pointer;
+        h2 {
+          &:hover,
+          &:focus {
+            color: var(--clr-acnt-base);
+          }
+        }
+        .list {
+          position: absolute;
+          right: 0;
+          top: 225%;
+          z-index: 5;
+          isolation: isolate;
+          background-color: var(--clr-bg-light);
+          list-style: none;
+          width: 200px;
+          transition: 100ms;
+          transform: scale(0);
+          transform-origin: top right;
+          &.opened {
+            transform: scale(1);
+          }
+          a {
+            display: block;
+            text-decoration: none;
+            padding: 0.5em 0.5em;
+            color: var(--clr-txt-base);
+            &:hover {
+              background-color: var(--clr-acnt-base);
+              color: var(--clr-fxd-txt-light);
+            }
+          }
+        }
+      }
+    }
+    main {
+      padding: 0.75em 1em;
+    }
+    footer {
+      margin-top: 1em;
+      padding: 0.5em 1em;
+      text-align: center;
+      font-size: var(--fs-sm);
+      border-top: 1px solid var(--clr-bg-light);
+      span a {
+        text-decoration: none;
+        font-weight: bold;
+        font-size: var(--fs-sm);
+        color: var(--clr-acnt-base);
+      }
+    }
+  }
+}
