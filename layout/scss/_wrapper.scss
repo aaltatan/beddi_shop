@@ -1,0 +1,30 @@
+@use "breakpoints" as *;
+
+section {
+  h2 {
+    font-size: var(--fs-md);
+    letter-spacing: -1px;
+    &::after {
+      content: ":";
+    }
+  }
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    gap: 0.5em;
+  }
+}
+
+.statistics {
+  --cols: 4;
+  @include br(md) {
+    --cols: 2;
+  }
+}
+
+.last-updates {
+  --cols: 2;
+  @include br(md) {
+    --cols: 1;
+  }
+}

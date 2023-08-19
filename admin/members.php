@@ -14,7 +14,7 @@ if (isset($_SESSION["username"])) {
 
         case "Manage":
 
-            $stmt = $conn->prepare("SELECT user_id,username,full_name,email FROM users WHERE group_id != 1");
+            $stmt = $conn->prepare("SELECT user_id,username,full_name,email,dt FROM users WHERE group_id != 1 ORDER BY username");
             $stmt->execute();
             $rows = $stmt->fetchAll();
             $count = $stmt->rowCount();
@@ -43,8 +43,11 @@ if (isset($_SESSION["username"])) {
                                 echo "<td>" . $row["username"] . "</td>";
                                 echo "<td>" . $row["full_name"] . "</td>";
                                 echo "<td>" . $row["email"] . "</td>";
-                                echo "<td>" . "12-5-2023" . "</td>";
-                                echo "<td class='btn-group'><a class='btn btn-primary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a><a class='btn btn-danger' href='#'>Delete</a></td>";
+                                echo "<td>" . $row["dt"] . "</td>";
+                                echo "<td class='btn-group'>
+                                            <a class='btn btn-primary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
+                                            <a class='btn btn-danger confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
+                                        </td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -55,15 +58,34 @@ if (isset($_SESSION["username"])) {
                 <a class="btn btn-primary" href='?do=Add'>Add New Member</a>
             </div>
 
+            <script>
+                let btns = document.querySelectorAll(".confirm");
+                btns.forEach(confirmBtn => {
+                    confirmBtn.addEventListener("click", (e) => {
+                        const input = confirm(`Do you want actually to DELETE ${confirmBtn.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML} from Database?`);
+                        !input && e.preventDefault();
+                    });
+                })
+            </script>
+
         <?php
             break;
 
         case "Delete":
             // Delete Page Content
-            if ($_SERVER["REQUEST_METHOD"] === "POST") {
-                echo "Hello From Delete page";
+            $userid = isset($_GET["userid"]) && is_numeric($_GET["userid"]) ? $_GET["userid"] : 0;
+            $stmt = $conn->prepare("SELECT user_id FROM users WHERE user_id = ?");
+            $stmt->execute(array($userid));
+            $count = $stmt->rowCount();
+
+            if ($count > 0) {
+                $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
+                $stmt->execute(array($userid));
+                $msg =  "One user has been Deleted";
+                redirect($msg, "members.php");
             } else {
-                echo "You can't browse this page directly";
+                $msg = "there's no user like this";
+                redirect($msg, "members.php", 2, "danger");
             }
 
             break;
@@ -93,14 +115,14 @@ if (isset($_SESSION["username"])) {
                 }
                 echo "</ul>";
                 if (count($errors) === 0) {
-                    $stmt = $conn->prepare("INSERT INTO users(username, password, email, full_name) VALUES (?,?,?,?)");
+                    $stmt = $conn->prepare("INSERT INTO users(username, password, email, full_name, dt) VALUES (?,?,?,?,NOW())");
                     $stmt->execute(array($username, sha1($password), $email, $fullname));
-                    echo $stmt->rowCount() . " User has been Added";
-                    header("Location: members.php");
-                    exit();
+                    $msg =  $stmt->rowCount() . " User has been Added";
+                    redirect($msg, "members.php", 3, $type = "success");
                 }
             } else {
-                echo "You can't browse this page directly";
+                $msg = "You can't browse this page directly";
+                redirect($msg, "members.php", 2, "danger");
             }
             break;
 
@@ -229,7 +251,8 @@ if (isset($_SESSION["username"])) {
 
 <?php
             } /* end of if statement */ else {
-                echo "there is no user like this";
+                $msg = "there is no user like this";
+                redirect($msg, "members.php", 2, "danger");
             }
 
             break;
@@ -255,11 +278,13 @@ if (isset($_SESSION["username"])) {
                     echo $stmt->rowCount() . " User has been Updated";
                 }
             } else {
-                echo "You can't browse this page directly";
+                $msg = "You can't browse this page directly";
+                redirect($msg, "members.php", 2, "danger");
             }
             break;
         default:
-            echo "there is no page like $do";
+            $msg = "there is no page like $do";
+            redirect($msg, "members.php", 2, "danger");
     }
 
     include $tpl . "footer.php";

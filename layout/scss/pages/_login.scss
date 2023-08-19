@@ -25,6 +25,20 @@
     input {
       width: calc(100% - 3rem);
     }
+    .login-input {
+      padding: 0.5em 0.75em;
+      outline: none;
+      border: none;
+      background-color: var(--clr-bg-base);
+      font-size: var(--fs-md);
+      &:focus,
+      &:hover {
+        outline: 1px solid var(--clr-acnt-base);
+      }
+      &::placeholder {
+        font-size: var(--fs-base);
+      }
+    }
     span {
       position: relative;
       width: calc(100% - 3rem);
