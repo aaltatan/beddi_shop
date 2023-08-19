@@ -23,13 +23,19 @@
   margin-inline: auto;
   padding: 1em 0;
   .inputs {
-    --cols: 2;
+    --cols: 4;
     display: grid;
     grid-template-columns: repeat(var(--cols), 1fr);
     row-gap: 1.5em;
     column-gap: 1em;
     padding: 1em 0;
-    @include br(md) {
+    @include br(xxl) {
+      --cols: 4;
+    }
+    @include br(xl) {
+      --cols: 2;
+    }
+    @include br(sm) {
       --cols: 1;
     }
     .form-input {
@@ -42,6 +48,12 @@
         border: none;
         outline: none;
         transition: 100ms;
+        // @include br(xl) {
+        //   font-size: var(--fs-sm) !important;
+        // }
+        // @include br(lg) {
+        //   font-size: var(--fs-base) !important;
+        // }
         &::placeholder {
           opacity: 0;
         }

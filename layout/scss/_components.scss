@@ -1,6 +1,6 @@
 @use "breakpoints" as *;
 
-#main-search {
+input[name="main-search"] {
   background-color: var(--clr-bg-base);
   border-radius: 100vmax;
   padding: 0.5em 1em;
@@ -46,15 +46,14 @@
   border: none;
   outline: none;
   text-decoration: none;
-  &:focus {
-    outline: 2px solid var(--clr-acnt-light);
-  }
   &-primary {
     background-color: var(--clr-acnt-base);
-    color: white;
     &:hover,
     &:focus {
       background-color: var(--clr-acnt-dark);
+    }
+    &:focus {
+      outline: 2px solid var(--clr-acnt-light);
     }
   }
   &-secondary {
@@ -63,6 +62,9 @@
     &:focus {
       background-color: var(--clr-bg-dark);
     }
+    &:focus {
+      outline: 2px solid var(--clr-bg-light);
+    }
   }
   &-danger {
     background-color: var(--clr-danger-base);
@@ -70,12 +72,16 @@
     &:focus {
       background-color: var(--clr-danger-dark);
     }
+    &:focus {
+      outline: 2px solid var(--clr-danger-light);
+    }
   }
 }
 
 .table-container {
   overflow-x: auto;
   margin-inline: auto;
+  border: 1px solid var(--clr-bg-light);
   @include br(md) {
     width: 300px;
     min-width: 100%;
@@ -83,9 +89,15 @@
   .table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid var(--clr-bg-light);
-    tbody tr:nth-last-of-type(odd) {
+    tbody tr:hover td {
+      background-color: var(--clr-acnt-dark);
+      color: var(--clr-fxd-txt-base);
+    }
+    tbody tr:nth-last-of-type(even) {
       background-color: var(--clr-bg-dark);
+    }
+    tbody tr:nth-last-of-type(odd) {
+      background-color: var(--clr-bg-light);
     }
     .btn {
       font-size: var(--fs-sm) !important;
@@ -93,7 +105,7 @@
     td,
     th {
       padding: 0.5em;
-      // text-align: center;
+      text-align: center;
       font-size: var(--fs-sm) !important;
       white-space: nowrap;
       &.btn-group {

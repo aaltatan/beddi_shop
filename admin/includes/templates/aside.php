@@ -1,10 +1,6 @@
 <div class="main-wrapper">
     <aside class="main-aside flow">
-        <div class="brand">
-            <a href="dashboard.php">
-                <h2>🛒<?php echo lang("TITLE") ?></h2>
-            </a>
-        </div>
+        <input type="search" name="main-search" placeholder="Alt + s to Search" data-status="showed" />
         <ul class="flow">
             <li>
                 <a href="dashboard.php" role="button" aria-current="false">
@@ -47,7 +43,12 @@
     <div class="main">
         <header>
             <nav>
-                <input type="search" name="" id="main-search" placeholder="Alt + s to Search" />
+                <div class="brand">
+                    <a href="dashboard.php">
+                        <h2>🛒<?php echo lang("TITLE") ?></h2>
+                    </a>
+                </div>
+                <input type="search" name="main-search" placeholder="Alt + s to Search" data-status="hidden" />
                 <span class="burger" id="burger"></span>
                 <span class="mode">
                     <input type="checkbox" name="" id="mode-btn" />

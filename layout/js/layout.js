@@ -1,11 +1,34 @@
 const modeBtn = document.querySelector("#mode-btn + label");
 const burgerBtn = document.querySelector("#burger");
 const mainAside = document.querySelector(".main-aside");
-const mainSearchInput = document.getElementById("main-search");
+const mainSearchInput = document.getElementsByName("main-search");
 const userList = document.querySelector("header nav .user");
 
 userList.querySelector(".icon h2").addEventListener("click", () => {
   userList.querySelector(".list").classList.toggle("opened");
+});
+
+document.addEventListener("keydown", (e) => {
+  mainSearchInput.forEach((input) => {
+    if (getComputedStyle(input)["display"] === "block") {
+      if (e.key.toLowerCase() === "s" && e.altKey) {
+        if (mainAside.classList.contains("opened")) {
+          input.focus();
+        } else {
+          openAside();
+          input.focus();
+        }
+      }
+      if (e.key.toLowerCase() === "س" && e.altKey) {
+        burgerBtn.click();
+        input.focus();
+      }
+      if (e.code === "Escape") {
+        input.blur();
+        closeAside();
+      }
+    }
+  });
 });
 
 document.addEventListener("click", (e) => {
@@ -56,19 +79,11 @@ burgerBtn.addEventListener("click", () => {
   openAside();
 });
 
-document.addEventListener("keydown", (e) => {
-  if (e.key.toLowerCase() === "s" && e.altKey) {
-    mainSearchInput.focus();
-  }
-  if (e.key.toLowerCase() === "س" && e.altKey) {
-    mainSearchInput.focus();
-  }
-  if (e.code === "Escape") {
-    mainSearchInput.blur();
-  }
-});
-
 function openAside() {
   burgerBtn.classList.toggle("opened");
   mainAside.classList.toggle("opened");
+}
+function closeAside() {
+  burgerBtn.classList.remove("opened");
+  mainAside.classList.remove("opened");
 }

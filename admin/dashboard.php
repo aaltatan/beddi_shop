@@ -4,8 +4,14 @@ $page_title = "Dashboard";
 if (isset($_SESSION["username"])) {
     include "init.php";
     include $tpl . "aside.php";
+?>
 
-    // The Content
+    <div class="container">
+        <h1>Dashboard</h1>
+    </div>
+
+
+<?php
 
     include $tpl . "footer.php";
 } else {

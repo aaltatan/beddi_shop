@@ -12,43 +12,60 @@ if (isset($_SESSION["username"])) {
 
     switch ($do) {
 
-        case "Manage": ?>
+        case "Manage":
 
+            $stmt = $conn->prepare("SELECT user_id,username,full_name,email FROM users WHERE group_id != 1");
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
+            $count = $stmt->rowCount();
 
-            <div class="table-container flow">
-                <table class="table" id="members-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>User Name</th>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Register Date</th>
-                            <th>Control</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $stmt = $conn->prepare("SELECT user_id,username,full_name,email FROM users");
-                        $stmt->execute();
-                        $data = $stmt->fetchAll();
-                        foreach ($data as $row) {
-                            echo "<tr>";
-                            echo "<td>" . $row["user_id"] . "</td>";
-                            echo "<td>" . $row["username"] . "</td>";
-                            echo "<td>" . $row["full_name"] . "</td>";
-                            echo "<td>" . $row["email"] . "</td>";
-                            echo "<td>" . "12-5-2023" . "</td>";
-                            echo "<td class='btn-group'><a class='btn btn-primary' href='#'>Edit</a><a class='btn btn-danger' href='#'>Delete</a></td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
+?>
+
+            <div class="container flow">
+                <h1>Members</h1>
+                <div class="table-container flow">
+                    <table class="table" id="members-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User Name</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Register Date</th>
+                                <th>Control</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($rows as $row) {
+                                echo "<tr>";
+                                echo "<td>" . $row["user_id"] . "</td>";
+                                echo "<td>" . $row["username"] . "</td>";
+                                echo "<td>" . $row["full_name"] . "</td>";
+                                echo "<td>" . $row["email"] . "</td>";
+                                echo "<td>" . "12-5-2023" . "</td>";
+                                echo "<td class='btn-group'><a class='btn btn-primary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a><a class='btn btn-danger' href='#'>Delete</a></td>";
+                                echo "</tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size: var(--fs-sm);"><?php echo $count . " users was found." ?></p>
+                <a class="btn btn-primary" href='?do=Add'>Add New Member</a>
             </div>
-            <a class="btn btn-primary" href='?do=Add'>Add New Member</a>
 
         <?php
+            break;
+
+        case "Delete":
+            // Delete Page Content
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+                echo "Hello From Delete page";
+            } else {
+                echo "You can't browse this page directly";
+            }
+
             break;
 
         case "Insert":
@@ -92,30 +109,32 @@ if (isset($_SESSION["username"])) {
             $main_heading = "Add new Member";
         ?>
 
-            <form action="?do=Insert" method="POST" class="form flow" id="add-members-form">
+            <div class="container">
                 <h1>Add New Member</h1>
-                <ul class="msgs" id="add-members-form-messages">
-                </ul>
-                <div class="inputs">
-                    <div class="form-input">
-                        <input type="text" name="username" id="add-members-username" placeholder="username" autocomplete="off">
-                        <label for="add-members-username">Username</label>
-                    </div>
-                    <div class="form-input">
-                        <input type="text" name="fullname" id="add-members-fullname" placeholder="Full Name" autocomplete="off" ">
+                <form action="?do=Insert" method="POST" class="form flow" id="add-members-form">
+                    <ul class="msgs" id="add-members-form-messages">
+                    </ul>
+                    <div class="inputs">
+                        <div class="form-input">
+                            <input type="text" name="username" id="add-members-username" placeholder="username" autocomplete="off">
+                            <label for="add-members-username">Username</label>
+                        </div>
+                        <div class="form-input">
+                            <input type="text" name="fullname" id="add-members-fullname" placeholder="Full Name" autocomplete="off" ">
                         <label for=" add-members-fullname">Full Name</label>
+                        </div>
+                        <div class="form-input">
+                            <input type="text" name="email" id="add-members-email" placeholder="Email" autocomplete="off">
+                            <label for="add-members-email">Email</label>
+                        </div>
+                        <div class="form-input">
+                            <input type="password" name="password" id="add-members-password" placeholder="password" autocomplete="new-password">
+                            <label for="add-members-password">Password</label>
+                        </div>
                     </div>
-                    <div class="form-input">
-                        <input type="text" name="email" id="add-members-email" placeholder="Email" autocomplete="off">
-                        <label for="add-members-email">Email</label>
-                    </div>
-                    <div class="form-input">
-                        <input type="password" name="password" id="add-members-password" placeholder="password" autocomplete="new-password">
-                        <label for="add-members-password">Password</label>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" id="add-members-submit">Add Member</button>
-            </form>
+                    <button type="submit" class="btn btn-primary" id="add-members-submit">Add Member</button>
+                </form>
+            </div>
 
             <script>
                 const passInput = document.getElementById("add-members-password");
@@ -156,40 +175,44 @@ if (isset($_SESSION["username"])) {
                 $full_name = $data["full_name"];
             ?>
 
-                <form action="?do=Update" method="POST" class="form flow" id="edit-members-form">
+                <div class="container">
                     <h1>Edit <?php echo isset($full_name) ? $full_name : "Member" ?> Information</h1>
-                    <ul class="msgs" id="members-form-messages">
-                    </ul>
-                    <div class="inputs">
-                        <input type="hidden" name="userid" value="<?php echo $userid ?>">
-                        <div class="form-input">
-                            <input type="text" name="username" id="edit-members-username" placeholder="username" autocomplete="off" value=<?php echo isset($username) ? $username : "" ?>>
-                            <label for="edit-members-username">Username</label>
+                    <form action="?do=Update" method="POST" class="form flow" id="edit-members-form">
+                        <ul class="msgs" id="members-form-messages">
+                        </ul>
+                        <div class="inputs">
+                            <input type="hidden" name="userid" value="<?php echo $userid ?>">
+                            <div class="form-input">
+                                <input type="text" name="username" id="edit-members-username" placeholder="username" autocomplete="off" value=<?php echo isset($username) ? $username : "" ?>>
+                                <label for="edit-members-username">Username</label>
+                            </div>
+                            <div class="form-input">
+                                <input type="text" name="fullname" id="edit-members-fullname" placeholder="Full Name" autocomplete="off" value="<?php echo isset($full_name) ? trim($full_name) : "" ?>">
+                                <label for="edit-members-fullname">Full Name</label>
+                            </div>
+                            <div class="form-input">
+                                <input type="text" name="email" id="edit-members-email" placeholder="Email" autocomplete="off" value=<?php echo isset($email) ? $email : "" ?>>
+                                <label for="edit-members-email">Email</label>
+                            </div>
+                            <div class="form-input">
+                                <input type="password" name="password" id="edit-members-password" placeholder="password" autocomplete="new-password">
+                                <label for="edit-members-password">Password</label>
+                            </div>
                         </div>
-                        <div class="form-input">
-                            <input type="text" name="fullname" id="edit-members-fullname" placeholder="Full Name" autocomplete="off" value="<?php echo isset($full_name) ? trim($full_name) : "" ?>">
-                            <label for="edit-members-fullname">Full Name</label>
-                        </div>
-                        <div class="form-input">
-                            <input type="text" name="email" id="edit-members-email" placeholder="Email" autocomplete="off" value=<?php echo isset($email) ? $email : "" ?>>
-                            <label for="edit-members-email">Email</label>
-                        </div>
-                        <div class="form-input">
-                            <input type="password" name="password" id="edit-members-password" placeholder="password" autocomplete="new-password">
-                            <label for="edit-members-password">Password</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="edit-members-submit">Update</button>
-                </form>
+                        <button type="submit" class="btn btn-primary" id="edit-members-submit">Update</button>
+                    </form>
+                </div>
 
                 <script>
                     const passInputAdd = document.getElementById("add-members-password");
-                    passInput.addEventListener("mouseenter", () => {
-                        passInput.setAttribute("type", "text");
-                    })
-                    passInput.addEventListener("mouseout", () => {
-                        passInput.setAttribute("type", "password");
-                    })
+                    if (passInputAdd) {
+                        passInputAdd.addEventListener("mouseenter", () => {
+                            passInputAdd.setAttribute("type", "text");
+                        })
+                        passInputAdd.addEventListener("mouseout", () => {
+                            passInputAdd.setAttribute("type", "password");
+                        })
+                    }
                 </script>
 
                 <script type="module">
@@ -201,7 +224,7 @@ if (isset($_SESSION["username"])) {
                         "members-form-messages",
                         "edit-members-submit"
                     );
-                    form.submitForm();
+                    editForm.submitForm();
                 </script>
 
 <?php
@@ -211,6 +234,7 @@ if (isset($_SESSION["username"])) {
 
             break;
         case "Update":
+
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 echo "<h1 style='font-size:var(--fs-xl);text-align:center;margin-bottom:1em'>Update Page</h1>";
                 extract($_POST);
@@ -229,8 +253,6 @@ if (isset($_SESSION["username"])) {
                     $stmt = $conn->prepare("UPDATE users SET username = ?, full_name = ?, email = ? , password = ? WHERE user_id = ?");
                     $stmt->execute(array($username, $fullname, $email, sha1($password), $userid));
                     echo $stmt->rowCount() . " User has been Updated";
-                    header("Location: logout.php");
-                    exit();
                 }
             } else {
                 echo "You can't browse this page directly";
