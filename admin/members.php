@@ -71,7 +71,7 @@ if (isset($_SESSION["username"])) {
                 btns.forEach(confirmBtn => {
                     confirmBtn.addEventListener("click", (e) => {
                         const method = e.target.innerHTML;
-                        const input = confirm(`Do you want actually to ${method.toUpperCase()} ${confirmBtn.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML}?`);
+                        const input = confirm(`Do you want actually to ${method.toUpperCase()} ${confirmBtn.parentElement.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML}?`);
                         !input && e.preventDefault();
                     });
                 })
@@ -116,12 +116,14 @@ if (isset($_SESSION["username"])) {
                                 echo "<td>" . $row["email"] . "</td>";
                                 echo "<td>" . $status . "</td>";
                                 echo "<td>" . $row["dt"] . "</td>";
-                                echo "<td class='btn-group'>
-                                            <a class='btn btn-success confirm' href='?do=Activate&userid=" . $row["user_id"] . "'>Activate</a>
-                                            <a class='btn btn-danger confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>
-                                            <a class='btn btn-primary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
-                                            <a class='btn btn-danger confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
-                                        </td>";
+                                echo "<td class='dots'>
+                                        <div class='list'>
+                                            <a class='btn btn-secondary confirm' href='?do=Activate&userid=" . $row["user_id"] . "'>Activate</a>
+                                            <a class='btn btn-secondary confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>
+                                            <a class='btn btn-secondary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
+                                            <a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
+                                        </div>
+                                     </td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -157,10 +159,10 @@ if (isset($_SESSION["username"])) {
                 $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
                 $stmt->execute(array($userid));
                 $msg =  "One user has been Deleted";
-                redirect($msg, "members.php", 2, "success");
+                redirect($msg, "back", 2, "success");
             } else {
                 $msg = "there's no user like this";
-                redirect($msg, "members.php", 2, "danger");
+                redirect($msg, "back", 2, "danger");
             }
 
             break;
@@ -177,10 +179,10 @@ if (isset($_SESSION["username"])) {
                 $stmt = $conn->prepare("UPDATE users SET reg_status = 1 WHERE user_id = ?");
                 $stmt->execute(array($userid));
                 $msg =  "One user has been Activated";
-                redirect($msg, "members.php", 1, "success");
+                redirect($msg, "back", 1, "success");
             } else {
                 $msg = "there's no user like this";
-                redirect($msg, "members.php", 3, "danger");
+                redirect($msg, "back", 3, "danger");
             }
 
             break;
@@ -197,10 +199,10 @@ if (isset($_SESSION["username"])) {
                 $stmt = $conn->prepare("UPDATE users SET reg_status = 0 WHERE user_id = ?");
                 $stmt->execute(array($userid));
                 $msg =  "One user has been Deactivated";
-                redirect($msg, "members.php", 1, "success");
+                redirect($msg, "back", 1, "success");
             } else {
                 $msg = "there's no user like this";
-                redirect($msg, "members.php", 3, "danger");
+                redirect($msg, "back", 3, "danger");
             }
 
             break;
@@ -251,7 +253,7 @@ if (isset($_SESSION["username"])) {
                 <form action="?do=Insert" method="POST" class="form flow" id="add-members-form">
                     <ul class="msgs" id="add-members-form-messages">
                     </ul>
-                    <div class="inputs">
+                    <div class="inputs fields">
                         <div class="form-input">
                             <input type="text" name="username" id="add-members-username" placeholder="username" autocomplete="off">
                             <label for="add-members-username">Username</label>
@@ -317,7 +319,7 @@ if (isset($_SESSION["username"])) {
                     <form action="?do=Update" method="POST" class="form flow" id="edit-members-form">
                         <ul class="msgs" id="members-form-messages">
                         </ul>
-                        <div class="inputs">
+                        <div class="inputs fields">
                             <input type="hidden" name="userid" value="<?php echo $userid ?>">
                             <div class="form-input">
                                 <input type="text" name="username" id="edit-members-username" placeholder="username" autocomplete="off" value=<?php echo isset($username) ? $username : "" ?>>

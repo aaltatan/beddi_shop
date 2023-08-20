@@ -249,6 +249,7 @@
           transition: 100ms;
           transform: scale(0);
           transform-origin: top right;
+          border: 1px solid var(--clr-bg-dark);
           &.opened {
             transform: scale(1);
           }

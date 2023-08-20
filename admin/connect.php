@@ -26,7 +26,18 @@ try {
         dt DATETIME
     );
     -- Creating a view to get count of all pending users
-    CREATE VIEW IF NOT EXISTS pending_users AS SELECT user_id FROM users WHERE reg_status = 0;");
+    CREATE VIEW IF NOT EXISTS pending_users AS SELECT user_id FROM users WHERE reg_status = 0;
+    -- Creating Categories Table
+    CREATE TABLE IF NOT EXISTS categories(
+        id INT(11) PRIMARY KEY AUTO_INCREMENT,
+        cat_name VARCHAR(50) UNIQUE NOT NULL,
+        cat_desc TEXT,
+        ordering INT(11) NOT NULL,
+        visibility BOOLEAN,
+        allow_comment BOOLEAN,
+        allow_ads BOOLEAN
+    )
+    ");
 
     $stmt = $conn->prepare("SELECT username FROM users;");
     $stmt->execute();

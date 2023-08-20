@@ -4,6 +4,10 @@ $page_title = "Dashboard";
 if (isset($_SESSION["username"])) {
     include "init.php";
     include $tpl . "aside.php";
+
+    $stmt = $conn->prepare("SELECT full_name,email,dt FROM users WHERE group_id = 0 AND reg_status = 1 ORDER BY dt DESC LIMIT 5");
+    $stmt->execute();
+    $rows = $stmt->fetchAll();
 ?>
 
     <div class="container flow">
@@ -39,47 +43,23 @@ if (isset($_SESSION["username"])) {
                 <div class="last-members">
                     <p class="heading">Last Registered Members</p>
                     <ul class="body">
-                        <li>
-                            <a href="#">
-                                <img src="../layout/images/login-landscape-1.jpg" alt="dasd">
-                                <div class="title">
-                                    <p>Abdullah</p>
-                                    <p>a.altatan@gmail.com</p>
+                        <?php
+
+                        foreach ($rows as $row) {
+                            echo "<li>";
+                            echo "
+                            <a href='#'>
+                                <img src='../layout/images/login-landscape-1.jpg' alt='dasd'>
+                                <div class='title'>
+                                    <p>" . $row["full_name"] . "</p>
+                                    <p>" . $row["email"] . "</p>
                                 </div>
-                                <span>3,000,000</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="../layout/images/login-landscape-1.jpg" alt="dasd">
-                                <div class="title">
-                                    <p>Abdullah</p>
-                                    <p>a.altatan@gmail.com</p>
-                                </div>
-                                <span>3,000,000</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="../layout/images/login-landscape-1.jpg" alt="dasd">
-                                <div class="title">
-                                    <p>Abdullah</p>
-                                    <p>a.altatan@gmail.com</p>
-                                </div>
-                                <span>3,000,000</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="../layout/images/login-landscape-1.jpg" alt="dasd">
-                                <div class="title">
-                                    <p>Abdullah</p>
-                                    <p>a.altatan@gmail.com</p>
-                                </div>
-                                <span>3,000,000</span>
-                            </a>
-                        </li>
-                    </ul>
+                                <span>" . explode(" ", $row["dt"])[0] . "</span>
+                                </a>
+                            ";
+                            echo "</li>";
+                        }
+                        ?>
                 </div>
 
                 <div class="last-items">

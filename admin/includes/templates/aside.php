@@ -9,7 +9,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" role="button" aria-current="false">
+                <a href="categories.php" role="button" aria-current="false">
                     <span>🛍️</span>
                     <?php echo lang("CATAGORIES") ?>
                 </a>

@@ -212,11 +212,12 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
 }
 .table-container .table .btn {
   font-size: var(--fs-sm) !important;
-  padding: 0.5em;
+  padding: 0.25em 0.5em;
+  text-align: left;
 }
 .table-container .table td,
 .table-container .table th {
-  padding: 0.75em;
+  padding: 1rem 0.5em;
   text-align: center;
   font-size: var(--fs-sm) !important;
   white-space: nowrap;
@@ -348,7 +349,7 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   isolation: isolate;
 }
 .dots:hover, .dots:focus {
-  background-color: var(--clr-bg-dark);
+  background-color: var(--clr-acnt-dark);
 }
 .dots:hover .list, .dots:focus .list {
   transform: scale(1);
@@ -359,16 +360,17 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 6px;
+  width: 5px;
   aspect-ratio: 1/1;
   border-radius: 50%;
   background-color: var(--clr-txt-base);
-  box-shadow: 0 8px 0 0 var(--clr-txt-base), 0 -8px 0 0 var(--clr-txt-base);
+  box-shadow: 0 6px 0 0 var(--clr-txt-base), 0 -6px 0 0 var(--clr-txt-base);
 }
 .dots .list {
   position: absolute;
-  top: 50%;
+  bottom: 0;
   right: 75%;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -376,8 +378,9 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   border-radius: 8px;
   overflow: hidden;
   transform: scale(0);
-  transform-origin: top right;
+  transform-origin: right center;
   transition: 150ms;
+  border: 1px solid var(--clr-bg-light);
 }
 .dots .list > * {
   width: 100%;
@@ -640,6 +643,7 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   transition: 100ms;
   transform: scale(0);
   transform-origin: top right;
+  border: 1px solid var(--clr-bg-dark);
 }
 .main-wrapper .main nav .user .list.opened {
   transform: scale(1);
@@ -769,7 +773,7 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   color: var(--clr-fxd-text-base);
   color: white;
 }
-.form .inputs {
+.form .inputs.fields {
   --cols: 4;
   display: grid;
   grid-template-columns: repeat(var(--cols), 1fr);
@@ -779,24 +783,24 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   padding: 1em 0;
 }
 @media (max-width: 1400px) {
-  .form .inputs {
+  .form .inputs.fields {
     --cols: 4;
   }
 }
 @media (max-width: 1200px) {
-  .form .inputs {
+  .form .inputs.fields {
     --cols: 2;
   }
 }
 @media (max-width: 540px) {
-  .form .inputs {
+  .form .inputs.fields {
     --cols: 1;
   }
 }
-.form .inputs .form-input {
+.form .inputs.fields .form-input {
   position: relative;
 }
-.form .inputs .form-input input {
+.form .inputs.fields .form-input input {
   width: 100%;
   height: 100%;
   padding: 0.5em 1em;
@@ -805,41 +809,89 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   outline: none;
   transition: 100ms;
 }
-.form .inputs .form-input input::-moz-placeholder {
+.form .inputs.fields .form-input input::-moz-placeholder {
   opacity: 0;
 }
-.form .inputs .form-input input::placeholder {
+.form .inputs.fields .form-input input::placeholder {
   opacity: 0;
 }
-.form .inputs .form-input input:hover {
+.form .inputs.fields .form-input input:hover {
   background-color: var(--clr-bg-base) !important;
   outline: 1px solid var(--clr-acnt-base);
   border: none !important;
 }
-.form .inputs .form-input input:not(:-moz-placeholder-shown) {
+.form .inputs.fields .form-input input:not(:-moz-placeholder-shown) {
   background-color: var(--clr-bg-dark);
   border-bottom: 1px solid var(--clr-acnt-base);
   height: calc(100% - 1px);
 }
-.form .inputs .form-input input:focus, .form .inputs .form-input input:not(:placeholder-shown) {
+.form .inputs.fields .form-input input:focus, .form .inputs.fields .form-input input:not(:placeholder-shown) {
   background-color: var(--clr-bg-dark);
   border-bottom: 1px solid var(--clr-acnt-base);
   height: calc(100% - 1px);
 }
-.form .inputs .form-input input:not(:-moz-placeholder-shown) + label {
+.form .inputs.fields .form-input input:not(:-moz-placeholder-shown) + label {
   top: -60%;
   transform: translateY(0);
   font-size: var(--fs-sm);
 }
-.form .inputs .form-input input:focus + label, .form .inputs .form-input input:not(:placeholder-shown) + label {
+.form .inputs.fields .form-input input:focus + label, .form .inputs.fields .form-input input:not(:placeholder-shown) + label {
   top: -60%;
   transform: translateY(0);
   font-size: var(--fs-sm);
 }
-.form .inputs .form-input label {
+.form .inputs.fields .form-input label {
   position: absolute;
   left: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
   transition: 200ms;
+}
+.form .inputs.checks {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.75em;
+}
+.form .inputs.checks .form-input-check input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+.form .inputs.checks .form-input-check input:checked + label {
+  color: var(--clr-acnt-base);
+  text-decoration: line-through;
+}
+.form .inputs.checks .form-input-check input:checked + label::before {
+  width: 4px;
+  transform: translate(8px, -65%) rotate(45deg);
+  border-color: var(--clr-acnt-base);
+  border-left-color: rgba(0, 0, 0, 0);
+  border-top-color: rgba(0, 0, 0, 0);
+}
+.form .inputs.checks .form-input-check label {
+  position: relative;
+  padding-left: 36px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 150ms;
+}
+.form .inputs.checks .form-input-check label:hover, .form .inputs.checks .form-input-check label:focus {
+  text-decoration: none !important;
+  letter-spacing: 2px;
+}
+.form .inputs.checks .form-input-check label:focus {
+  outline: 1px solid var(--clr-acnt-base);
+  outline-width: 2px;
+}
+.form .inputs.checks .form-input-check label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--clr-txt-base);
+  transition: 150ms;
 }/*# sourceMappingURL=main.css.map */
