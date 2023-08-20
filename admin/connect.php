@@ -33,9 +33,9 @@ try {
         cat_name VARCHAR(50) UNIQUE NOT NULL,
         cat_desc TEXT,
         ordering INT(11) NOT NULL,
-        visibility BOOLEAN,
-        allow_comment BOOLEAN,
-        allow_ads BOOLEAN
+        visibility BOOLEAN DEFAULT 0,
+        allow_comment BOOLEAN DEFAULT 0,
+        allow_ads BOOLEAN DEFAULT 0
     )
     ");
 
