@@ -15,11 +15,11 @@ if (isset($_SESSION["username"])) {
             <div class="wrapper">
                 <a href="members.php" class="count-card">
                     <span>Total Members</span>
-                    <p>200</p>
+                    <p><?php echo getCount("users") ?></p>
                 </a>
-                <a href="members.php" class="count-card">
+                <a href="members.php?do=Pending" class="count-card">
                     <span>Pending Members</span>
-                    <p>25</p>
+                    <p><?php echo getCount("pending_users") ?></p>
                 </a>
                 <a href="members.php" class="count-card">
                     <span>Total Items</span>

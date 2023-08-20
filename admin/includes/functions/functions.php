@@ -13,3 +13,11 @@ function redirect($msg, $page, $sec = 3, $type = "danger")
     header("refresh:$sec;url=$page");
     exit();
 }
+
+function getCount($tbl)
+{
+    global $conn;
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM " . $tbl);
+    $stmt->execute();
+    return number_format($stmt->fetch()[0]);
+}

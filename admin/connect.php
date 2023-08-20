@@ -22,8 +22,11 @@ try {
         full_name varchar(255) NOT NULL,
         group_id int(11) DEFAULT 0,
         trusted_status int(11) DEFAULT 0,
-        reg_status int(11) DEFAULT 0
-    );");
+        reg_status int(11) DEFAULT 0,
+        dt DATETIME
+    );
+    -- Creating a view to get count of all pending users
+    CREATE VIEW IF NOT EXISTS pending_users AS SELECT user_id FROM users WHERE reg_status = 0;");
 
     $stmt = $conn->prepare("SELECT username FROM users;");
     $stmt->execute();

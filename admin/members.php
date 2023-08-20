@@ -14,7 +14,7 @@ if (isset($_SESSION["username"])) {
 
         case "Manage":
 
-            $stmt = $conn->prepare("SELECT user_id,username,full_name,email,dt FROM users WHERE group_id != 1 ORDER BY username");
+            $stmt = $conn->prepare("SELECT user_id,username,full_name,email,reg_status,dt FROM users WHERE group_id != 1 ORDER BY username");
             $stmt->execute();
             $rows = $stmt->fetchAll();
             $count = $stmt->rowCount();
@@ -24,13 +24,14 @@ if (isset($_SESSION["username"])) {
             <div class="container flow">
                 <h1>Members</h1>
                 <div class="table-container flow">
-                    <table class="table" id="members-table">
+                    <table class="table" id="members-table" cellpadding="0px" cellspacing="0px">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>User Name</th>
                                 <th>Full Name</th>
                                 <th>Email</th>
+                                <th>Status</th>
                                 <th>Register Date</th>
                                 <th>Control</th>
                             </tr>
@@ -38,15 +39,22 @@ if (isset($_SESSION["username"])) {
                         <tbody>
                             <?php
                             foreach ($rows as $row) {
-                                echo "<tr>";
+                                $status = $row["reg_status"] ? "Activated" : "Not Activated";
+                                $dimmed_class = $row["reg_status"] ? "" : "dimmed";
+                                echo "<tr class='" . $dimmed_class . "'>";
                                 echo "<td>" . $row["user_id"] . "</td>";
                                 echo "<td>" . $row["username"] . "</td>";
                                 echo "<td>" . $row["full_name"] . "</td>";
                                 echo "<td>" . $row["email"] . "</td>";
+                                echo "<td>" . $status . "</td>";
                                 echo "<td>" . $row["dt"] . "</td>";
-                                echo "<td class='btn-group'>
-                                            <a class='btn btn-primary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
-                                            <a class='btn btn-danger confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
+                                echo "<td class='dots'>
+                                            <div class='list'>
+                                                <a class='btn btn-secondary confirm' href='?do=Activate&userid=" . $row["user_id"] . "'>Activate</a>
+                                                <a class='btn btn-secondary confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>
+                                                <a class='btn btn-secondary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
+                                                <a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
+                                            </div>
                                         </td>";
                                 echo "</tr>";
                             }
@@ -62,7 +70,74 @@ if (isset($_SESSION["username"])) {
                 let btns = document.querySelectorAll(".confirm");
                 btns.forEach(confirmBtn => {
                     confirmBtn.addEventListener("click", (e) => {
-                        const input = confirm(`Do you want actually to DELETE ${confirmBtn.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML} from Database?`);
+                        const method = e.target.innerHTML;
+                        const input = confirm(`Do you want actually to ${method.toUpperCase()} ${confirmBtn.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML}?`);
+                        !input && e.preventDefault();
+                    });
+                })
+            </script>
+
+        <?php
+            break;
+
+        case "Pending":
+
+            $stmt = $conn->prepare("SELECT user_id,username,full_name,email,reg_status,dt FROM users WHERE group_id != 1 AND reg_status = 0 ORDER BY username");
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
+            $count = $stmt->rowCount();
+
+        ?>
+
+            <div class="container flow">
+                <h1>Members</h1>
+                <div class="table-container flow">
+                    <table class="table" id="members-table" cellpadding="0px" cellspacing="0px">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User Name</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Register Date</th>
+                                <th>Control</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($rows as $row) {
+                                $status = $row["reg_status"] ? "Activated" : "Not Activated";
+                                $dimmed_class = $row["reg_status"] ? "" : "dimmed";
+                                echo "<tr class='" . $dimmed_class . "'>";
+                                echo "<td>" . $row["user_id"] . "</td>";
+                                echo "<td>" . $row["username"] . "</td>";
+                                echo "<td>" . $row["full_name"] . "</td>";
+                                echo "<td>" . $row["email"] . "</td>";
+                                echo "<td>" . $status . "</td>";
+                                echo "<td>" . $row["dt"] . "</td>";
+                                echo "<td class='btn-group'>
+                                            <a class='btn btn-success confirm' href='?do=Activate&userid=" . $row["user_id"] . "'>Activate</a>
+                                            <a class='btn btn-danger confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>
+                                            <a class='btn btn-primary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
+                                            <a class='btn btn-danger confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
+                                        </td>";
+                                echo "</tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size: var(--fs-sm);"><?php echo $count . " users was found." ?></p>
+                <a class="btn btn-primary" href='?do=Add'>Add New Member</a>
+            </div>
+
+            <script>
+                let btns2 = document.querySelectorAll(".confirm");
+                btns2.forEach(confirmBtn => {
+                    confirmBtn.addEventListener("click", (e) => {
+                        const method = e.target.innerHTML;
+                        const input = confirm(`Do you want actually to ${method.toUpperCase()} ${confirmBtn.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML}?`);
                         !input && e.preventDefault();
                     });
                 })
@@ -82,10 +157,50 @@ if (isset($_SESSION["username"])) {
                 $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
                 $stmt->execute(array($userid));
                 $msg =  "One user has been Deleted";
-                redirect($msg, "members.php");
+                redirect($msg, "members.php", 2, "success");
             } else {
                 $msg = "there's no user like this";
                 redirect($msg, "members.php", 2, "danger");
+            }
+
+            break;
+
+        case "Activate":
+            // Activate Page Content
+
+            $userid = isset($_GET["userid"]) && is_numeric($_GET["userid"]) ? $_GET["userid"] : 0;
+            $stmt = $conn->prepare("SELECT user_id FROM users WHERE user_id = ?");
+            $stmt->execute(array($userid));
+            $count = $stmt->rowCount();
+
+            if ($count > 0) {
+                $stmt = $conn->prepare("UPDATE users SET reg_status = 1 WHERE user_id = ?");
+                $stmt->execute(array($userid));
+                $msg =  "One user has been Activated";
+                redirect($msg, "members.php", 1, "success");
+            } else {
+                $msg = "there's no user like this";
+                redirect($msg, "members.php", 3, "danger");
+            }
+
+            break;
+
+        case "Deactivate":
+            // Deactivate Page Content
+
+            $userid = isset($_GET["userid"]) && is_numeric($_GET["userid"]) ? $_GET["userid"] : 0;
+            $stmt = $conn->prepare("SELECT user_id FROM users WHERE user_id = ?");
+            $stmt->execute(array($userid));
+            $count = $stmt->rowCount();
+
+            if ($count > 0) {
+                $stmt = $conn->prepare("UPDATE users SET reg_status = 0 WHERE user_id = ?");
+                $stmt->execute(array($userid));
+                $msg =  "One user has been Deactivated";
+                redirect($msg, "members.php", 1, "success");
+            } else {
+                $msg = "there's no user like this";
+                redirect($msg, "members.php", 3, "danger");
             }
 
             break;
