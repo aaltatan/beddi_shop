@@ -17,20 +17,33 @@ export class Validate {
     this.msgsTag.appendChild(li);
   }
 
-  validateInput(inputName, pass = null) {
+  validateInput(inputName) {
     const input = document.getElementsByName(inputName)[0];
     let re, msg;
     switch (inputName) {
       case "username":
         re = /^[a-z]+[a-z0-9\.]{4,20}$/;
         msg =
-          "username must be start with small letter, it must be at least 3 characters, it can include digits and period symbol only";
+          "username must be start with small letter, it must be at least 4 characters and less than or equal 20 characters, it can include digits and period symbol only";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
       case "fullname":
         re = /^[A-Za-z]+\s[A-Za-z]+\s?.*$/;
-        msg = "the fullname must be two capitalized words ";
+        msg = "the fullname must be two capitalized words";
+        !re.test(input.value) && this.createMsg(msg);
+        input.focus();
+        break;
+      case "name":
+      case "description":
+        re = /^[A-Za-z][A-Za-z0-9\s]{3,19}$/;
+        msg = "name or description must be between 4 and 20 characters";
+        !re.test(input.value) && this.createMsg(msg);
+        input.focus();
+        break;
+      case "order":
+        re = /^\d+$/;
+        msg = "order must be positive number and grater than zero";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
@@ -57,7 +70,7 @@ export class Validate {
       this.onOpen();
       let criteria = true;
       this.form
-        .querySelectorAll("input:not([type='hidden'])")
+        .querySelectorAll("input:not([type='hidden'],[type='checkbox'])")
         .forEach((input) => {
           let inputName = input.name;
           criteria &&= this.validateInput(inputName);

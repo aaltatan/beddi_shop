@@ -33,7 +33,6 @@ if (isset($_SESSION["username"])) {
                                 <th>Email</th>
                                 <th>Status</th>
                                 <th>Register Date</th>
-                                <th>Control</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,14 +47,14 @@ if (isset($_SESSION["username"])) {
                                 echo "<td>" . $row["email"] . "</td>";
                                 echo "<td>" . $status . "</td>";
                                 echo "<td>" . $row["dt"] . "</td>";
-                                echo "<td class='dots'>
-                                            <div class='list'>
-                                                <a class='btn btn-secondary confirm' href='?do=Activate&userid=" . $row["user_id"] . "'>Activate</a>
-                                                <a class='btn btn-secondary confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>
-                                                <a class='btn btn-secondary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
-                                                <a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
-                                            </div>
-                                        </td>";
+                                echo    "<td class='dots'>";
+                                echo        "<div class='list'>";
+                                echo           $row["reg_status"] ? "" :  "<a class='btn btn-secondary confirm' href='?do=Activate&userid="   . $row["user_id"] . "'>Activate</a>";
+                                echo          !$row["reg_status"] ? "" :  "<a class='btn btn-secondary confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>";
+                                echo           "<a class='btn btn-secondary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>";
+                                echo           "<a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>";
+                                echo        "</div>";
+                                echo    "</td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -116,14 +115,14 @@ if (isset($_SESSION["username"])) {
                                 echo "<td>" . $row["email"] . "</td>";
                                 echo "<td>" . $status . "</td>";
                                 echo "<td>" . $row["dt"] . "</td>";
-                                echo "<td class='dots'>
-                                        <div class='list'>
-                                            <a class='btn btn-secondary confirm' href='?do=Activate&userid=" . $row["user_id"] . "'>Activate</a>
-                                            <a class='btn btn-secondary confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>
-                                            <a class='btn btn-secondary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>
-                                            <a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>
-                                        </div>
-                                     </td>";
+                                echo    "<td class='dots'>";
+                                echo        "<div class='list'>";
+                                echo           $row["reg_status"] ? "" :  "<a class='btn btn-secondary confirm' href='?do=Activate&userid="   . $row["user_id"] . "'>Activate</a>";
+                                echo          !$row["reg_status"] ? "" :  "<a class='btn btn-secondary confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>";
+                                echo           "<a class='btn btn-secondary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>";
+                                echo           "<a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>";
+                                echo        "</div>";
+                                echo    "</td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -308,6 +307,7 @@ if (isset($_SESSION["username"])) {
             $query->execute(array($userid));
             $data = $query->fetch();
             $count = $query->rowCount();
+
             if ($count > 0) {
                 $username = $data["username"];
                 $email = $data["email"];

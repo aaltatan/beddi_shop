@@ -5,7 +5,7 @@ if (isset($_SESSION["username"])) {
     include "init.php";
     include $tpl . "aside.php";
 
-    $stmt = $conn->prepare("SELECT full_name,email,dt FROM users WHERE group_id = 0 AND reg_status = 1 ORDER BY dt DESC LIMIT 5");
+    $stmt = $conn->prepare("SELECT user_id,full_name,email,dt FROM users WHERE group_id = 0 AND reg_status = 1 ORDER BY dt DESC LIMIT 5");
     $stmt->execute();
     $rows = $stmt->fetchAll();
 ?>
@@ -48,7 +48,7 @@ if (isset($_SESSION["username"])) {
                         foreach ($rows as $row) {
                             echo "<li>";
                             echo "
-                            <a href='#'>
+                            <a href='members.php?do=Edit&userid=" . $row["user_id"] . "'>
                                 <img src='../layout/images/login-landscape-1.jpg' alt='dasd'>
                                 <div class='title'>
                                     <p>" . $row["full_name"] . "</p>
