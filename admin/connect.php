@@ -36,7 +36,23 @@ try {
         visibility BOOLEAN DEFAULT 0,
         allow_comment BOOLEAN DEFAULT 0,
         allow_ads BOOLEAN DEFAULT 0
-    )
+    );
+    -- Creating the Items Table
+    CREATE TABLE IF NOT EXISTS items(
+        item_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+        item_name VARCHAR(255) UNIQUE,
+        item_desc TEXT,
+        item_price INT(11) NOT NULL,
+        add_date DATETIME NOT NULL,
+        country_made VARCHAR(255) NOT NULL,
+        item_status VARCHAR(255),
+        rating INT(11),
+        cat_id INT(11) NOT NULL,
+        user_id INT(11) NOT NULL,
+        images VARCHAR(255),
+        CONSTRAINT fk_cat_id FOREIGN KEY (cat_id) REFERENCES categories(id),
+        CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
+    );
     ");
 
     $stmt = $conn->prepare("SELECT username FROM users;");

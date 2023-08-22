@@ -22,9 +22,13 @@ if (isset($_SESSION["username"])) {
             break;
         case "Edit";
             break;
+        case "Delete";
+            break;
         case "Update";
             break;
         case "Activate";
+            break;
+        case "Deactivate";
             break;
     }
 

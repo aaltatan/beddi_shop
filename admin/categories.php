@@ -16,7 +16,7 @@ if (isset($_SESSION["username"])) {
     switch ($do) {
         case "Manage";
 
-            $stmt = $conn->prepare("SELECT * FROM categories");
+            $stmt = $conn->prepare("SELECT * FROM categories ORDER BY ordering ASC");
             $stmt->execute();
             $rows = $stmt->fetchAll();
             $count = $stmt->rowCount();
@@ -46,9 +46,9 @@ if (isset($_SESSION["username"])) {
                                 echo "<td>" . $row["cat_name"] . "</td>";
                                 echo "<td>" . $row["cat_desc"] . "</td>";
                                 echo "<td>" . $row["ordering"] . "</td>";
-                                echo "<td>" . ($row["visibility"] ? "On" : "Off") . "</td>";
-                                echo "<td>" . ($row["allow_comment"] ? "On" : "Off") . "</td>";
-                                echo "<td>" . ($row["allow_ads"] ? "On" : "Off") . "</td>";
+                                echo "<td>" . ($row["visibility"] ? "Enabled" : "Disabled") . "</td>";
+                                echo "<td>" . ($row["allow_comment"] ? "Enabled" : "Disabled") . "</td>";
+                                echo "<td>" . ($row["allow_ads"] ? "Enabled" : "Disabled") . "</td>";
                                 echo "<td class='dots'>
                                         <div class='list'>
                                             <a class='btn btn-secondary' href='?do=Edit&id=" . $row["id"] . "'>Edit</a>

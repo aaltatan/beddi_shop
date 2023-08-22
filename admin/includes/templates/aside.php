@@ -15,7 +15,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" role="button" aria-current="false">
+                <a href="items.php" role="button" aria-current="false">
                     <span>🔦</span>
                     <?php echo lang("ITEMS") ?>
                 </a>

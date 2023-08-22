@@ -758,7 +758,6 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
 .form h1 {
   text-align: center;
   font-size: var(--fs-lg);
-  line-wrap: wrap;
 }
 .form .msgs {
   display: none;
@@ -846,6 +845,131 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   top: 50%;
   transform: translateY(-50%);
   transition: 200ms;
+}
+.form .inputs.fields .form-input-select {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
+.form .inputs.fields .form-input-select select {
+  width: 100%;
+  height: 100%;
+  padding: 0.5em 1em;
+  background-color: var(--clr-bg-light);
+  border: none;
+  outline: none;
+  transition: 100ms;
+  order: 2;
+  flex: 1;
+}
+.form .inputs.fields .form-input-select select:hover {
+  background-color: var(--clr-bg-base) !important;
+  outline: 1px solid var(--clr-acnt-base);
+  border: none !important;
+}
+.form .inputs.fields .form-input-select select:not(:-moz-placeholder-shown) {
+  background-color: var(--clr-bg-dark);
+  border-bottom: 1px solid var(--clr-acnt-base);
+  height: calc(100% - 1px);
+}
+.form .inputs.fields .form-input-select select:focus, .form .inputs.fields .form-input-select select:not(:placeholder-shown) {
+  background-color: var(--clr-bg-dark);
+  border-bottom: 1px solid var(--clr-acnt-base);
+  height: calc(100% - 1px);
+}
+.form .inputs.fields .form-input-select select:not(:-moz-placeholder-shown) + label {
+  top: -60%;
+  transform: translateY(0);
+  font-size: var(--fs-sm);
+}
+.form .inputs.fields .form-input-select select:focus + label, .form .inputs.fields .form-input-select select:not(:placeholder-shown) + label {
+  top: -60%;
+  transform: translateY(0);
+  font-size: var(--fs-sm);
+}
+.form .inputs.fields .form-input-select label {
+  font-size: var(--fs-base) !important;
+  border: 1px solid var(--clr-bg-light);
+  background-color: var(--clr-bg-light);
+  padding: 0.5em 1em;
+  order: 1;
+}
+.form .inputs.fields .form-input-select label::after {
+  content: ":";
+}
+.form .inputs.fields .form-input-file {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
+.form .inputs.fields .form-input-file input {
+  width: 100%;
+  height: 100%;
+  padding: 0.375em 1em;
+  background-color: var(--clr-bg-light);
+  border: none;
+  outline: none;
+  transition: 100ms;
+  order: 2;
+  flex: 1;
+}
+.form .inputs.fields .form-input-file input::-webkit-file-upload-button {
+  margin-right: 1em;
+  width: fit-content;
+  padding: 0.25em 0.75em;
+  color: var(--clr-fxd-txt-base);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  background-color: var(--clr-acnt-base);
+}
+.form .inputs.fields .form-input-file input::-webkit-file-upload-button:hover, .form .inputs.fields .form-input-file input::-webkit-file-upload-button:focus {
+  background-color: var(--clr-acnt-dark);
+}
+.form .inputs.fields .form-input-file input::-webkit-file-upload-button:focus {
+  outline: 2px solid var(--clr-acnt-light);
+}
+.form .inputs.fields .form-input-file input:hover {
+  background-color: var(--clr-bg-base) !important;
+}
+.form .inputs.fields .form-input-file input:focus {
+  outline: 1px solid var(--clr-acnt-base);
+}
+.form .inputs.fields .form-input-file input:not(:-moz-placeholder-shown) {
+  background-color: var(--clr-bg-dark);
+  border-bottom: 1px solid var(--clr-acnt-base);
+  height: calc(100% - 1px);
+}
+.form .inputs.fields .form-input-file input:focus, .form .inputs.fields .form-input-file input:not(:placeholder-shown) {
+  background-color: var(--clr-bg-dark);
+  border-bottom: 1px solid var(--clr-acnt-base);
+  height: calc(100% - 1px);
+}
+.form .inputs.fields .form-input-file input:not(:-moz-placeholder-shown) + label {
+  top: -60%;
+  transform: translateY(0);
+  font-size: var(--fs-sm);
+}
+.form .inputs.fields .form-input-file input:focus + label, .form .inputs.fields .form-input-file input:not(:placeholder-shown) + label {
+  top: -60%;
+  transform: translateY(0);
+  font-size: var(--fs-sm);
+}
+.form .inputs.fields .form-input-file label {
+  font-size: var(--fs-base) !important;
+  background-color: var(--clr-bg-light);
+  padding: 0.5em 1em;
+  order: 1;
+}
+.form .inputs.fields .form-input-file label::after {
+  content: ":";
 }
 .form .inputs.checks {
   display: flex;
