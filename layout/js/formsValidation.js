@@ -29,6 +29,7 @@ export class Validate {
         input.focus();
         break;
       case "fullname":
+      case "country":
         re = /^[A-Za-z]+\s[A-Za-z]+\s?.*$/;
         msg = "the fullname must be two capitalized words";
         !re.test(input.value) && this.createMsg(msg);
@@ -42,6 +43,8 @@ export class Validate {
         input.focus();
         break;
       case "order":
+      case "price":
+      case "rating":
         re = /^\d+$/;
         msg = "order must be positive number and grater than zero";
         !re.test(input.value) && this.createMsg(msg);

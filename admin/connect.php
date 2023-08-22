@@ -49,9 +49,14 @@ try {
         rating INT(11),
         cat_id INT(11) NOT NULL,
         user_id INT(11) NOT NULL,
-        images VARCHAR(255),
         CONSTRAINT fk_cat_id FOREIGN KEY (cat_id) REFERENCES categories(id),
         CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
+    );
+    -- Creating image Tables
+    CREATE TABLE IF NOT EXISTS items_images(
+        item_id INT(11) NOT NULL,
+        img TEXT,
+        CONSTRAINT fk_item_image FOREIGN KEY (item_id) REFERENCES items(item_id)
     );
     ");
 
