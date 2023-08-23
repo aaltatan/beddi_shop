@@ -15,7 +15,8 @@ if (isset($_SESSION["username"])) {
 
     switch ($do) {
         case "Manage";
-            echo "Welcome to items Page";
+            echo "Welcome to items Page <br>";
+            echo "<a class='btn btn-primary' href='?do=Add'>Add New Item</a>";
             break;
         case "Add";
 
@@ -80,15 +81,15 @@ if (isset($_SESSION["username"])) {
                             <label for="add-items-user">Username</label>
                         </div>
                         <div class="form-input-file">
-                            <input type="file" name="images[]" id="add-items-images" multiple="multiple" accept="image/*" tabindex="9">
+                            <input type="file" name="images[]" id="add-items-images" multiple="multiple" tabindex="9">
                             <label for="add-items-images">Images</label>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary" id="add-items-submit" tabindex="10">Add Item</button>
                 </form>
             </div>
-
-            <!-- <script type="module">
+            <!-- 
+            <script type="module">
                 import {
                     Validate
                 } from "../layout/js/formsValidation.js";
@@ -114,20 +115,38 @@ if (isset($_SESSION["username"])) {
                 $stmt->execute(array($name));
                 $count = $stmt->rowCount();
 
-                $count && $errorArr[] = "the name is already exists";
-                strlen($name) < 4 && $errorArr[] = "name must be more than 4 characters";
-                strlen($name) > 20 && $errorArr[] = "name must be less than 20 characters";
-                strlen($status) < 4 && $errorArr[] = "status must be more than 4 characters";
-                strlen($status) > 20 && $errorArr[] = "status must be less than 20 characters";
-                strlen($description) < 4 && $errorArr[] = "name must be more than 4 characters";
-                strlen($description) > 50 && $errorArr[] = "name must be less than 50 characters";
-                !is_numeric($price) && $errorArr[] = "price must be numeric";
-                strlen($country) < 4 && $errorArr[] = "country must be more than 4 characters";
-                strlen($country) > 20 && $errorArr[] = "country must be less than 20 characters";
-                !is_numeric($rating) && $errorArr[] = "price must be numeric";
+                $allowedExtensions = array("jpeg", "png", "jpg");
+
+                !is_dir("../data") && mkdir("../data");
+                !is_dir("../data/uploads") && mkdir("../data/uploads");
+
+                if ($_FILES['images']['name'][0]) {
+                    $fileCount = count($_FILES['images']['name']);
+                    for ($i = 0; $i < $fileCount; $i++) {
+                        $fileName = $_FILES['images']['name'][$i];
+                        $fileTmpName = $_FILES['images']['tmp_name'][$i];
+                        $fileSize = $_FILES['images']['size'][$i];
+                        $fileType = $_FILES['images']['type'][$i];
+                        $ext = explode(".", $fileName);
+                        $ext = strtolower(end($ext));
+                        !in_array($ext, $allowedExtensions) && $errorArr[] = "<strong>$ext</strong> is not allowed as extension";
+                    }
+                }
+
+                $count && $errorArr[] = "the <strong>name</strong> is already exists";
+                strlen($name) < 4 && $errorArr[] = "<strong>name</strong> must be more than 4 characters";
+                strlen($name) > 20 && $errorArr[] = "<strong>name</strong> must be less than 20 characters";
+                strlen($status) < 4 && $errorArr[] = "<strong>status</strong> must be more than 4 characters";
+                strlen($status) > 20 && $errorArr[] = "<strong>status</strong> must be less than 20 characters";
+                strlen($description) < 4 && $errorArr[] = "<strong>description</strong> must be more than 4 characters";
+                strlen($description) > 50 && $errorArr[] = "<strong>description</strong> must be less than 50 characters";
+                !is_numeric($price) && $errorArr[] = "<strong>price</strong> must be numeric";
+                strlen($country) < 4 && $errorArr[] = "<strong>country</strong> must be more than 4 characters";
+                strlen($country) > 20 && $errorArr[] = "<strong>country</strong> must be less than 20 characters";
+                !is_numeric($rating) && $errorArr[] = "<strong>price</strong> must be numeric";
 
                 if (count($errorArr)) {
-                    echo "<ul style='padding-left:1em;'>";
+                    echo "<ul class='error-msgs'>";
                     foreach ($errorArr as $err) {
                         echo "<li>" . $err . "</li>";
                     }
@@ -154,22 +173,24 @@ if (isset($_SESSION["username"])) {
                     ");
                     $stmt->execute(array($name, $description, $price, $country, $status, $rating, $category, $user));
 
-                    $fileCount = count($_FILES['images']['name']);
-                    for ($i = 0; $i < $fileCount; $i++) {
-                        $fileName = $_FILES['images']['name'][$i];
-                        $fileTmpName = $_FILES['images']['tmp_name'][$i];
-                        $fileSize = $_FILES['images']['size'][$i];
-                        $fileType = $_FILES['images']['type'][$i];
-                        // Specify the upload destination folder
-                        $uploadFolder = '../data/uploads/';
-                        // Generate a unique filename to avoid conflicts
-                        $uniqueFilename = uniqid() . '_' . $fileName;
-                        $stmt = $conn->prepare("INSERT INTO items_images(item_id,img) VALUES (?,?)");
-                        $stmt->execute(array($item_id, $uploadFolder . $uniqueFilename));
-                        // Move the uploaded file to the destination folder
-                        $destination = $uploadFolder . $uniqueFilename;
-                        move_uploaded_file($fileTmpName, $destination);
-                        // Perform additional processing or database operations if needed
+                    if ($_FILES['images']['name'][0]) {
+                        $fileCount = count($_FILES['images']['name']);
+                        for ($i = 0; $i < $fileCount; $i++) {
+                            $fileName = $_FILES['images']['name'][$i];
+                            $fileTmpName = $_FILES['images']['tmp_name'][$i];
+                            $fileSize = $_FILES['images']['size'][$i];
+                            $fileType = $_FILES['images']['type'][$i];
+                            // Specify the upload destination folder
+                            $uploadFolder = '../data/uploads//';
+                            // Generate a unique filename to avoid conflicts
+                            $uniqueFilename = uniqid() . '_' . $fileName;
+                            $stmt = $conn->prepare("INSERT INTO items_images(item_id,img) VALUES (?,?)");
+                            $stmt->execute(array($item_id, $uploadFolder . $uniqueFilename));
+                            // Move the uploaded file to the destination folder
+                            $destination = $uploadFolder . $uniqueFilename;
+                            move_uploaded_file($fileTmpName, $destination);
+                            // Perform additional processing or database operations if needed
+                        }
                     }
                 }
             } else {

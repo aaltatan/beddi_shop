@@ -48,18 +48,18 @@
         border: none;
         outline: none;
         transition: 100ms;
+        border-bottom: 1px solid var(--clr-bg-light);
         &::placeholder {
           opacity: 0;
         }
         &:hover {
           background-color: var(--clr-bg-base) !important;
-          outline: 1px solid var(--clr-acnt-base);
-          border: none !important;
+          border-color: var(--clr-acnt-base);
         }
         &:focus,
         &:not(:placeholder-shown) {
           background-color: var(--clr-bg-dark);
-          border-bottom: 1px solid var(--clr-acnt-base);
+          // border-bottom: 1px solid var(--clr-acnt-base);
           height: calc(100% - 1px);
           + label {
             top: -60%;

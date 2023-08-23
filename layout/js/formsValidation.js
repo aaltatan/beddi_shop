@@ -24,21 +24,18 @@ export class Validate {
       case "username":
         re = /^[a-z]+[a-z0-9\.]{4,20}$/;
         msg =
-          "username must be start with small letter, it must be at least 4 characters and less than or equal 20 characters, it can include digits and period symbol only";
-        !re.test(input.value) && this.createMsg(msg);
-        input.focus();
-        break;
-      case "fullname":
-      case "country":
-        re = /^[A-Za-z]+\s[A-Za-z]+\s?.*$/;
-        msg = "the fullname must be two capitalized words";
+          inputName +
+          " must be start with small letter, it must be at least 4 characters and less than or equal 20 characters, it can include digits and period symbol only";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
       case "name":
+      case "country":
       case "description":
-        re = /^[A-Za-z][A-Za-z0-9\s]{3,19}$/;
-        msg = "name or description must be between 4 and 20 characters";
+      case "fullname":
+      case "status":
+        re = /^[A-Za-z][A-Za-z0-9\s]{3,50}$/;
+        msg = inputName + " must be between 4 and 50 characters";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
@@ -46,19 +43,19 @@ export class Validate {
       case "price":
       case "rating":
         re = /^\d+$/;
-        msg = "order must be positive number and grater than zero";
+        msg = inputName + " must be positive number and grater than zero";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
       case "email":
         re = /^[A-Za-z0-9\.\-_]+@[a-z0-9\-]+\.\w{2,4}$/;
-        msg = "Email not valid";
+        msg = inputName + " not valid";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
       case "password":
         re = /^.{8,}$/;
-        msg = "Password must be at least 8 characters";
+        msg = inputName + " must be at least 8 characters";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
@@ -73,7 +70,9 @@ export class Validate {
       this.onOpen();
       let criteria = true;
       this.form
-        .querySelectorAll("input:not([type='hidden'],[type='checkbox'])")
+        .querySelectorAll(
+          "input:not([type='hidden'],[type='checkbox'],[type='file'])"
+        )
         .forEach((input) => {
           let inputName = input.name;
           criteria &&= this.validateInput(inputName);

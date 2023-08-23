@@ -393,6 +393,23 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   color: var(--clr-fxd-txt-base);
 }
 
+.error-msgs {
+  list-style: none;
+}
+.error-msgs li {
+  padding: 1em;
+  background-color: var(--clr-danger-light);
+  color: var(--clr-fxd-txt-base);
+  margin: 0.25em auto;
+  border-radius: 8px;
+  width: min(100%, 800px);
+}
+.error-msgs li strong {
+  color: var(--clr-fxd-txt-base);
+  text-transform: capitalize;
+  text-decoration: underline;
+}
+
 .main-wrapper {
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -807,6 +824,7 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
   border: none;
   outline: none;
   transition: 100ms;
+  border-bottom: 1px solid var(--clr-bg-light);
 }
 .form .inputs.fields .form-input input::-moz-placeholder {
   opacity: 0;
@@ -816,17 +834,14 @@ input[name=main-search]:hover::placeholder, input[name=main-search]:focus::place
 }
 .form .inputs.fields .form-input input:hover {
   background-color: var(--clr-bg-base) !important;
-  outline: 1px solid var(--clr-acnt-base);
-  border: none !important;
+  border-color: var(--clr-acnt-base);
 }
 .form .inputs.fields .form-input input:not(:-moz-placeholder-shown) {
   background-color: var(--clr-bg-dark);
-  border-bottom: 1px solid var(--clr-acnt-base);
   height: calc(100% - 1px);
 }
 .form .inputs.fields .form-input input:focus, .form .inputs.fields .form-input input:not(:placeholder-shown) {
   background-color: var(--clr-bg-dark);
-  border-bottom: 1px solid var(--clr-acnt-base);
   height: calc(100% - 1px);
 }
 .form .inputs.fields .form-input input:not(:-moz-placeholder-shown) + label {

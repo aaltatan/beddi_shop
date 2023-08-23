@@ -225,7 +225,7 @@ if (isset($_SESSION["username"])) {
                 $re = '/^[A-Za-z0-9\.\-_]+@[a-z0-9\-]+\.\w{2,4}$/';
                 !preg_match($re, $email) && $errors[] = "Email not valid";
                 strlen($password) < 8 && $errors[] = "Password must be more than 8 characters";
-                echo "<ul style='padding-left:1em;'>";
+                echo "<ul class='error-msgs'>";
                 foreach ($errors as $err) {
                     echo "<li>$err</li>";
                 }
@@ -384,7 +384,7 @@ if (isset($_SESSION["username"])) {
                 $re = '/^[A-Za-z0-9\.\-_]+@[a-z0-9\-]+\.\w{2,4}$/';
                 !preg_match($re, $email) && $errors[] = "Email not valid";
                 strlen($password) < 8 && $errors[] = "Password must be more than 8 characters";
-                echo "<ul style='padding-left:1em;'>";
+                echo "<ul class='error-msgs'>";
                 foreach ($errors as $err) {
                     echo "<li>$err</li>";
                 }

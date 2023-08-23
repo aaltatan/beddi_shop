@@ -287,3 +287,20 @@ input[name="main-search"] {
     }
   }
 }
+
+.error-msgs {
+  list-style: none;
+  li {
+    padding: 1em;
+    background-color: var(--clr-danger-light);
+    color: var(--clr-fxd-txt-base);
+    margin: 0.25em auto;
+    border-radius: 8px;
+    width: min(100%, 800px);
+    strong {
+      color: var(--clr-fxd-txt-base);
+      text-transform: capitalize;
+      text-decoration: underline;
+    }
+  }
+}

@@ -150,7 +150,7 @@ if (isset($_SESSION["username"])) {
                 strlen($description) > 50 && $errorArr[] = "description must be less than 50 characters";
                 !is_numeric($order) && $errorArr[] =  "order must be numeric";
 
-                echo "<ul style='padding-left:1em;'>";
+                echo "<ul class='error-msgs'>";
                 foreach ($errorArr as $err) {
                     echo "<li>" . $err . "</li>";
                 }
@@ -297,7 +297,7 @@ if (isset($_SESSION["username"])) {
                 strlen($description) > 50 && $errorArr[] = "description must be less than 50 characters";
                 !is_numeric($order) && $errorArr[] =  "order must be numeric";
 
-                echo "<ul style='padding-left:1em;'>";
+                echo "<ul class='error-msgs'>";
                 foreach ($errorArr as $err) {
                     echo "<li>$err</li>";
                 }
