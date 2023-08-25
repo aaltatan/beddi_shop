@@ -36,12 +36,22 @@ if (isset($_SESSION["username"])) {
                                 <th>Visibility</th>
                                 <th>Comments</th>
                                 <th>Ads</th>
+                                <th>Likes</th>
+                                <th>Items</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             foreach ($rows as $row) {
-                                echo "<tr>";
+                                $title = "";
+                                $stmt = $conn->prepare("SELECT item_name FROM items WHERE cat_id = ?");
+                                $stmt->execute(array($row["id"]));
+                                $items_cnt = $stmt->rowCount();
+                                $items = $stmt->fetchAll();
+                                foreach ($items as $item) {
+                                    $title .= $item["item_name"] . "\n";
+                                }
+                                echo "<tr title='" . $title . "'>";
                                 echo "<td>" . $row["id"] . "</td>";
                                 echo "<td>" . $row["cat_name"] . "</td>";
                                 echo "<td>" . $row["cat_desc"] . "</td>";
@@ -49,11 +59,16 @@ if (isset($_SESSION["username"])) {
                                 echo "<td>" . ($row["visibility"] ? "Enabled" : "Disabled") . "</td>";
                                 echo "<td>" . ($row["allow_comment"] ? "Enabled" : "Disabled") . "</td>";
                                 echo "<td>" . ($row["allow_ads"] ? "Enabled" : "Disabled") . "</td>";
+                                $stmt = $conn->prepare("SELECT * FROM categories_likes WHERE id = ?");
+                                $stmt->execute(array($row["id"]));
+                                $cnt = $stmt->rowCount();
+                                echo "<td>" . $cnt . "</td>";
+                                echo "<td>" . $items_cnt . "</td>";
                                 echo "<td class='dots'>
                                         <div class='list'>
-                                            <a class='btn btn-secondary' href='?do=Edit&id=" . $row["id"] . "'>Edit</a>
-                                            <a class='btn btn-secondary confirm' href='?do=Delete&id=" . $row["id"] . "'>Delete</a>
-                                        </div>
+                                            <a class='btn btn-secondary' href='?do=Edit&id=" . $row["id"] . "'>Edit</a>";
+                                if (!hasDependencies("items", "cat_id = " . $row["id"])) echo "<a class='btn btn-secondary confirm' href='?do=Delete&id=" . $row["id"] . "'>Delete</a>";
+                                echo "</div>
                                      </td>";
                                 echo "</tr>";
                             }
@@ -62,8 +77,19 @@ if (isset($_SESSION["username"])) {
                     </table>
                 </div>
                 <p style="font-size: var(--fs-sm);"><?php echo $count . " categories was found." ?></p>
-                <a class="btn btn-primary" href='?do=Add'>Add New Category</a>
+                <a class="add-new-btn btn btn-primary" href='?do=Add' title="Add new Category"></a>
             </div>
+
+            <script>
+                let btns2 = document.querySelectorAll(".confirm");
+                btns2.forEach(confirmBtn => {
+                    confirmBtn.addEventListener("click", (e) => {
+                        const method = e.target.innerHTML;
+                        const input = confirm(`Do you want actually to ${method.toUpperCase()} ${confirmBtn.parentElement.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML}?`);
+                        !input && e.preventDefault();
+                    });
+                })
+            </script>
 
         <?php
 
@@ -79,15 +105,15 @@ if (isset($_SESSION["username"])) {
                     </ul>
                     <div class="inputs fields">
                         <div class="form-input">
-                            <input type="text" name="name" id="add-categories-name" placeholder="name" autocomplete="off" tabindex="1">
+                            <input type="text" name="name" id="add-categories-name" placeholder="name" autocomplete="off" tabindex="1" required>
                             <label for="add-categories-name">Name</label>
                         </div>
                         <div class="form-input">
-                            <input type="text" name="description" id="add-categories-description" placeholder="Full Name" autocomplete="off" tabindex="2">
+                            <input type="text" name="description" id="add-categories-description" placeholder="Full Name" autocomplete="off" tabindex="2" required>
                             <label for="add-categories-description">Description</label>
                         </div>
                         <div class="form-input">
-                            <input type="number" name="order" id="add-categories-order" placeholder="Order" autocomplete="off" tabindex="3" min="1">
+                            <input type="number" name="order" id="add-categories-order" placeholder="Order" autocomplete="off" tabindex="3" min="1" required>
                             <label for="add-categories-order">Order</label>
                         </div>
                     </div>
@@ -142,13 +168,12 @@ if (isset($_SESSION["username"])) {
 
                 extract($_POST);
 
-                $order_exists && $errorArr[] = "this order has been already found";
-                $count && $errorArr[] = "the category has already created";
-                strlen($name) < 4 &&  $errorArr[] = "name must be more than 4 characters";
-                strlen($name) > 20 && $errorArr[] = "name must be less than 20 characters";
-                strlen($description) < 4 && $errorArr[] = "description must be more than 4 characters";
-                strlen($description) > 50 && $errorArr[] = "description must be less than 50 characters";
-                !is_numeric($order) && $errorArr[] =  "order must be numeric";
+                $order_exists && $errorArr[] = "this <strong>Order</strong> has been already found";
+                $count && $errorArr[] = "the <strong>Category</strong> has already created";
+
+                !preg_match($name_country_re, $name) && $errorArr[] = "<strong>Name</strong> must be one Capitalized Word  between 4 and 20 characters";
+                !preg_match($description_re, $description) && $errorArr[] = "<strong>Description</strong> must be between 4 and 50 characters";
+                !preg_match($price_order_re, $order) && $errorArr[] = "<strong>Order</strong> must be positive number";
 
                 echo "<ul class='error-msgs'>";
                 foreach ($errorArr as $err) {
@@ -197,6 +222,7 @@ if (isset($_SESSION["username"])) {
         case "Edit";
             // Edit page content
             $catid = isset($_GET["id"]) && is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+
             $stmt = $conn->prepare("SELECT * FROM categories WHERE id = ? LIMIT 1");
             $stmt->execute(array($catid));
             $data = $stmt->fetch();
@@ -221,15 +247,15 @@ if (isset($_SESSION["username"])) {
                         <div class="inputs fields">
                             <input type="hidden" name="catid" value="<?php echo $catid ?>">
                             <div class="form-input">
-                                <input type="text" name="name" id="edit-categories-name" placeholder="name" autocomplete="off" tabindex="1" value="<?php echo $name ?>">
+                                <input type="text" name="name" id="edit-categories-name" placeholder="name" autocomplete="off" tabindex="1" value="<?php echo $name ?>" required>
                                 <label for="edit-categories-name">Name</label>
                             </div>
                             <div class="form-input">
-                                <input type="text" name="description" id="edit-categories-description" placeholder="Full Name" autocomplete="off" tabindex="2" value="<?php echo $description ?>">
+                                <input type="text" name="description" id="edit-categories-description" placeholder="Full Name" autocomplete="off" tabindex="2" value="<?php echo $description ?>" required>
                                 <label for="edit-categories-description">Description</label>
                             </div>
                             <div class="form-input">
-                                <input type="number" name="order" id="edit-categories-order" placeholder="Order" autocomplete="off" tabindex="3" min="1" value="<?php echo $order ?>">
+                                <input type="number" name="order" id="edit-categories-order" placeholder="Order" autocomplete="off" tabindex="3" min="1" value="<?php echo $order ?>" required>
                                 <label for="edit-categories-order">Order</label>
                             </div>
                         </div>
@@ -267,7 +293,7 @@ if (isset($_SESSION["username"])) {
 
             } /* End of if statement */ else {
                 $msg = "there's no Category like this";
-                redirect($msg, "back", 2, "danger");
+                redirect($msg, "categories.php", 1, "danger");
             }
 
             break;
@@ -282,6 +308,10 @@ if (isset($_SESSION["username"])) {
                 $comments = isset($_POST["comments"]) ? "1" : "0";
                 $ads = isset($_POST["ads"]) ? "1" : "0";
 
+                $stmt = $conn->prepare("SELECT cat_name FROM categories WHERE id != ? AND cat_name = ? LIMIT 1");
+                $stmt->execute(array($catid, $name));
+                $cat_exists = $stmt->rowCount();
+
                 $stmt = $conn->prepare("SELECT ordering FROM categories WHERE ordering != ?");
                 $stmt->execute(array($order));
                 $order_arr = $stmt->fetchAll();
@@ -290,12 +320,12 @@ if (isset($_SESSION["username"])) {
 
                 $errorArr = array();
 
-                $order_exists && $errorArr[] = "this order has been already found";
-                strlen($name) < 4 &&  $errorArr[] = "name must be more than 4 characters";
-                strlen($name) > 20 && $errorArr[] = "name must be less than 20 characters";
-                strlen($description) < 4 && $errorArr[] = "description must be more than 4 characters";
-                strlen($description) > 50 && $errorArr[] = "description must be less than 50 characters";
-                !is_numeric($order) && $errorArr[] =  "order must be numeric";
+                $cat_exists && $errorArr[] = "this <strong>Name</strong> has been already found";
+                $order_exists && $errorArr[] = "this <strong>Order</strong> has been already found";
+
+                !preg_match($name_country_re, $name) && $errorArr[] = "<strong>Name</strong> must be one Capitalized Word  between 4 and 20 characters";
+                !preg_match($description_re, $description) && $errorArr[] = "<strong>Description</strong> must be between 4 and 50 characters";
+                !preg_match($price_order_re, $order) && $errorArr[] = "<strong>Order</strong> must be positive number";
 
                 echo "<ul class='error-msgs'>";
                 foreach ($errorArr as $err) {
@@ -303,10 +333,7 @@ if (isset($_SESSION["username"])) {
                 }
                 echo "</ul>";
 
-                echo var_dump(!count($errorArr));
-
                 if (!count($errorArr)) {
-                    echo "Hello World!";
                     $stmt = $conn->prepare("UPDATE 
                                                 categories 
                                             SET 
@@ -321,13 +348,13 @@ if (isset($_SESSION["username"])) {
                                             ");
                     $stmt->execute(array($name, $description, $order, $visibility, $comments, $ads, $catid));
                     $msg =  "1 Category has been Updated";
-                    redirect($msg, "categories.php", 2, "success");
+                    redirect($msg, "categories.php", 1, "success");
                 }
             }
             break;
         default:
             $msg = "there is no page like $do";
-            redirect($msg, "categories.php", 2, "danger");
+            redirect($msg, "categories.php", 1, "danger");
     }
 
     include  $tpl . "footer.php";

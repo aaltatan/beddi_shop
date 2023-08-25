@@ -1,0 +1,33 @@
+#images-show-container {
+  &.opened {
+    display: block !important;
+  }
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100vh;
+  margin: 0 !important;
+  padding: 3em 1em;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  overflow-y: auto;
+  img {
+    display: block;
+    max-width: 700px;
+    margin-inline: auto;
+    margin-top: 1em;
+  }
+  span {
+    position: fixed;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 2rem;
+    cursor: pointer;
+    &:hover {
+      font-weight: bold;
+    }
+  }
+}

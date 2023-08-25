@@ -1,41 +1,40 @@
 <div class="main-wrapper">
     <aside class="main-aside flow">
-        <input type="search" name="main-search" placeholder="Alt + s to Search" data-status="showed" />
         <ul class="flow">
             <li>
                 <a href="dashboard.php" role="button" aria-current="false">
                     <span>🛒</span>
-                    <?php echo lang("HOME") ?>
+                    Dashboard
                 </a>
             </li>
             <li>
                 <a href="categories.php" role="button" aria-current="false">
                     <span>🛍️</span>
-                    <?php echo lang("CATAGORIES") ?>
+                    Categories
                 </a>
             </li>
             <li>
                 <a href="items.php" role="button" aria-current="false">
                     <span>🔦</span>
-                    <?php echo lang("ITEMS") ?>
+                    Items
                 </a>
             </li>
             <li>
                 <a href="members.php" role="button" aria-current="false">
                     <span>🧑‍🤝‍🧑</span>
-                    <?php echo lang("MEMBERS") ?>
+                    Members
                 </a>
             </li>
             <li>
                 <a href="#" role="button" aria-current="false">
                     <span>💹</span>
-                    <?php echo lang("STATISTICS") ?>
+                    Statistics
                 </a>
             </li>
             <li>
                 <a href="#" role="button" aria-current="false">
                     <span>📃</span>
-                    <?php echo lang("LOGS") ?>
+                    Logs
                 </a>
             </li>
         </ul>
@@ -45,10 +44,34 @@
             <nav>
                 <div class="brand">
                     <a href="dashboard.php">
-                        <h2>🛒<?php echo lang("TITLE") ?></h2>
+                        <h2>🛒Beddi Shop</h2>
                     </a>
                 </div>
-                <input type="search" name="main-search" placeholder="Alt + s to Search" data-status="hidden" />
+                <div class="search">
+                    <input type="search" name="main-search" placeholder="Alt + s to Search" data-status="hidden" tabindex="5" />
+                    <ul class="list">
+                        <?php
+                        $stmt = $conn->prepare("SELECT * FROM items WHERE acceptable = 1");
+                        $stmt->execute();
+                        $data = $stmt->fetchAll();
+
+                        foreach ($data as $item) :
+                            $stmt = $conn->prepare("SELECT img FROM items_images WHERE item_id = ? LIMIT 1");
+                            $stmt->execute(array($item["item_id"]));
+                            $img = $stmt->fetch();
+                        ?>
+
+                            <li>
+                                <a href="<?php echo 'items.php?do=Edit&id=' . $item['item_id'] ?>" tabindex="6">
+                                    <img src="<?php echo $img['img'] ?>" alt="">
+                                    <p><?php echo $item['item_name'] ?></p>
+                                </a>
+                            </li>
+
+                        <?php endforeach ?>
+
+                    </ul>
+                </div>
                 <span class="burger" id="burger"></span>
                 <span class="mode">
                     <input type="checkbox" name="" id="mode-btn" />
@@ -59,9 +82,9 @@
                         <h2 id="user-name"><?php echo ucfirst(explode(".", $_SESSION["username"])[0]) ?></h2>
                     </div>
                     <ul class="list">
-                        <li><a href="members.php?do=Edit&userid=<?php echo $_SESSION["userid"] ?>">✏️ <?php echo lang("EDITPROFILE") ?></a></li>
-                        <li><a href="#">⚙️ <?php echo lang("SETTINGS") ?></a></li>
-                        <li><a href="logout.php">📤 <?php echo lang("LOGOUT") ?></a></li>
+                        <li><a href="members.php?do=Edit&userid=<?php echo $_SESSION["userid"] ?>">✏️ Edit Profile</a></li>
+                        <li><a href="#">⚙️ Settings</a></li>
+                        <li><a href="logout.php">📤 Logout</a></li>
                     </ul>
                 </div>
             </nav>

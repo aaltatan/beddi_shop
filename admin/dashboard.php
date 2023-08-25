@@ -5,9 +5,49 @@ if (isset($_SESSION["username"])) {
     include "init.php";
     include $tpl . "aside.php";
 
-    $stmt = $conn->prepare("SELECT user_id,full_name,email,dt FROM users WHERE group_id = 0 AND reg_status = 1 ORDER BY dt DESC LIMIT 5");
+    $stmt = $conn->prepare("SELECT 
+                                user_id,full_name,email,dt 
+                            FROM 
+                                users 
+                            WHERE 
+                                group_id = 0 
+                            AND 
+                                reg_status = 1 
+                            ORDER BY 
+                                dt 
+                            DESC 
+                            LIMIT 
+                                5
+                        ");
     $stmt->execute();
     $rows = $stmt->fetchAll();
+
+    $stmt = $conn->prepare("SELECT 
+                                items.item_id,
+                                items.item_name,
+                                categories.cat_name,
+                                items.item_price,
+                                items.item_desc,
+                                users.full_name,
+                                items.add_date,
+                                items.country_made
+                            FROM
+                                items
+                            LEFT JOIN
+                                categories
+                            ON
+                                categories.id = items.cat_id
+                            LEFT JOIN
+                                users
+                            ON
+                                users.user_id = items.user_id
+                            WHERE
+                                items.acceptable = 1
+                            LIMIT
+                                5
+    ");
+    $stmt->execute();
+    $items = $stmt->fetchAll();
 ?>
 
     <div class="container flow">
@@ -17,22 +57,56 @@ if (isset($_SESSION["username"])) {
         <section class="statistics flow">
             <h2>Statistics</h2>
             <div class="wrapper">
-                <a href="members.php" class="count-card">
-                    <span>Total Members</span>
-                    <p><?php echo getCount("users") ?></p>
-                </a>
-                <a href="members.php?do=Pending" class="count-card">
-                    <span>Pending Members</span>
-                    <p><?php echo getCount("pending_users") ?></p>
-                </a>
-                <a href="members.php" class="count-card">
-                    <span>Total Items</span>
-                    <p>3,000</p>
-                </a>
-                <a href="members.php" class="count-card">
-                    <span>Total Comments</span>
-                    <p>1,500</p>
-                </a>
+
+                <?php if (getCount("users") > 0) : ?>
+                    <a href="members.php" class="count-card">
+                        <span>Total Members</span>
+                        <p><?php echo getCount("users") ?></p>
+                    </a>
+                <?php endif ?>
+
+                <?php if (getCount("pending_users") > 0) : ?>
+                    <a href="members.php?do=Pending" class="count-card">
+                        <span>Pending Members</span>
+                        <p><?php echo getCount("pending_users") ?></p>
+                    </a>
+                <?php endif ?>
+
+                <?php if (getCount("items") > 0) : ?>
+                    <a href="items.php" class="count-card">
+                        <span>Total Items</span>
+                        <p><?php echo getCount("items") ?></p>
+                    </a>
+                <?php endif ?>
+
+                <?php if (getCount("pending_items") > 0) : ?>
+                    <a href="items.php?do=Pending" class="count-card">
+                        <span>Pending Items</span>
+                        <p><?php echo getCount("pending_items") ?></p>
+                    </a>
+                <?php endif ?>
+
+                <?php if (getCount("categories") > 0) : ?>
+                    <a href="categories.php" class="count-card">
+                        <span>Total Categories</span>
+                        <p><?php echo getCount("categories") ?></p>
+                    </a>
+                <?php endif ?>
+
+                <?php if (getCount("items_likes") > 0) : ?>
+                    <a href="categories.php" class="count-card">
+                        <span>Total Likes</span>
+                        <p><?php echo getCount("items_likes") ?></p>
+                    </a>
+                <?php endif ?>
+
+                <?php if (getCount("items_images") > 0) : ?>
+                    <a href="items.php" class="count-card">
+                        <span>Total Images</span>
+                        <p><?php echo getCount("items_images") ?></p>
+                    </a>
+                <?php endif ?>
+
             </div>
         </section>
 
@@ -41,15 +115,18 @@ if (isset($_SESSION["username"])) {
             <div class="wrapper">
 
                 <div class="last-members">
-                    <p class="heading">Last Registered Members</p>
+                    <p class="heading">
+                        <span>Last Registered Members</span>
+                        <a class="add-new" href="members.php?do=Add" title="Add new Member"></a>
+                    </p>
+
                     <ul class="body">
                         <?php
-
                         foreach ($rows as $row) {
                             echo "<li>";
                             echo "
                             <a href='members.php?do=Edit&userid=" . $row["user_id"] . "'>
-                                <img src='../layout/images/login-landscape-1.jpg' alt='dasd'>
+                                <img src='../layout/images/user-128x128.png' alt='dasd'>
                                 <div class='title'>
                                     <p>" . $row["full_name"] . "</p>
                                     <p>" . $row["email"] . "</p>
@@ -63,11 +140,79 @@ if (isset($_SESSION["username"])) {
                 </div>
 
                 <div class="last-items">
-                    <p class="heading">Last Items</p>
+                    <p class="heading">
+                        <span>Last Acceptable Items</span>
+                        <a class="add-new" href="items.php?do=Add" title="Add new Item"></a>
+                    </p>
                     <ul class="body">
+                        <?php
+                        foreach ($items as $item) {
+                            $title = $item["item_desc"] . "\nBy " . $item["full_name"] . "\nAdd Date: " . $item["add_date"] . "\nMade in: " . $item["country_made"];
+                            echo "<li title='" . $title . "'>";
+                            echo "<a href='items.php?do=Edit&id=" . $item["item_id"] . "'>";
+                            $stmt = $conn->prepare("SELECT 
+                                                        img
+                                                    FROM
+                                                        items_images
+                                                    WHERE 
+                                                        item_id = ?
+                                                    LIMIT
+                                                        1          
+                            ");
+                            $stmt->execute(array($item["item_id"]));
+                            $image = $stmt->fetch();
+                            echo "<img src='" . $image["img"] . "' alt='dasd'>";
+                            echo "<div class='title'>
+                                    <p>" . $item["item_name"] . "</p>
+                                    <p>" . $item["cat_name"] . "</p>
+                                </div>
+                                <span>" . number_format($item["item_price"]) . "</span>
+                                </a>
+                            ";
+                            echo "</li>";
+                        }
+                        ?>
                     </ul>
                 </div>
 
+            </div>
+        </section>
+
+        <section class="gallery flow">
+            <h2>Gallery</h2>
+            <div class="wrapper">
+                <?php
+                $stmt = $conn->prepare("SELECT 
+                                            items.item_name,
+                                            items.item_id,
+                                            items_images.img
+                                        FROM
+                                            items_images
+                                        LEFT JOIN
+                                            items
+                                        ON
+                                            items.item_id = items_images.item_id
+                                        WHERE
+                                            items.acceptable = 1
+                                        ORDER BY
+                                            items.add_date
+                                        DESC
+                                        LIMIT
+                                            24
+                ");
+                $stmt->execute();
+                $data = $stmt->fetchAll();
+                foreach ($data as $item) :
+                ?>
+                    <a class="gallery-card" href="<?php echo 'items.php?do=Edit&id=' . $item['item_id'] ?>">
+                        <div class="image">
+                            <?php echo "<img src='" . $item["img"] . "' alt='dasdasd'>" ?>
+                        </div>
+                        <div class="info">
+                            <?php echo "<p>" . $item["item_name"] . "</p>" ?>
+                        </div>
+                    </a>
+                <?php endforeach ?>
             </div>
         </section>
 

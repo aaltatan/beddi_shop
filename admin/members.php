@@ -52,7 +52,9 @@ if (isset($_SESSION["username"])) {
                                 echo           $row["reg_status"] ? "" :  "<a class='btn btn-secondary confirm' href='?do=Activate&userid="   . $row["user_id"] . "'>Activate</a>";
                                 echo          !$row["reg_status"] ? "" :  "<a class='btn btn-secondary confirm' href='?do=Deactivate&userid=" . $row["user_id"] . "'>Deactivate</a>";
                                 echo           "<a class='btn btn-secondary' href='?do=Edit&userid=" . $row["user_id"] . "'>Edit</a>";
-                                echo           "<a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>";
+                                if (!hasDependencies("items", "user_id = " . $row["user_id"])) {
+                                    echo "<a class='btn btn-secondary confirm' href='?do=Delete&userid=" . $row["user_id"] . "'>Delete</a>";
+                                };
                                 echo        "</div>";
                                 echo    "</td>";
                                 echo "</tr>";
@@ -62,7 +64,7 @@ if (isset($_SESSION["username"])) {
                     </table>
                 </div>
                 <p style="font-size: var(--fs-sm);"><?php echo $count . " users was found." ?></p>
-                <a class="btn btn-primary" href='?do=Add'>Add New Member</a>
+                <a class="add-new-btn btn btn-primary" href='?do=Add' title="Add New Member"></a>
             </div>
 
             <script>
@@ -130,7 +132,7 @@ if (isset($_SESSION["username"])) {
                     </table>
                 </div>
                 <p style="font-size: var(--fs-sm);"><?php echo $count . " users was found." ?></p>
-                <a class="btn btn-primary" href='?do=Add'>Add New Member</a>
+                <a class="add-new-btn btn btn-primary" href='?do=Add'>Add New Member</a>
             </div>
 
             <script>
@@ -219,17 +221,18 @@ if (isset($_SESSION["username"])) {
                 $stmt->execute(array($username));
                 $count = $stmt->rowCount();
 
-                $count > 0 && $errors[] = "this name has been registered already";
-                strlen($username) < 4 && $errors[] = "User Name must be more than 4 characters";
-                strlen($username) > 20 && $errors[] = "User Name must be less than or equal 20 characters";
-                $re = '/^[A-Za-z0-9\.\-_]+@[a-z0-9\-]+\.\w{2,4}$/';
-                !preg_match($re, $email) && $errors[] = "Email not valid";
-                strlen($password) < 8 && $errors[] = "Password must be more than 8 characters";
+                $count > 0 && $errors[] = "<strong>Username</strong> has been registered already";
+                !preg_match($username_re, $username) && $errors[] = "<strong>UserName</strong> must start with small letter, it must be at least 4 characters and less than or equal 20 characters, it can include digits and period symbol only";
+                !preg_match($email_re, $email) && $errors[] = "<strong>Email</strong> not valid";
+                !preg_match($password_re, $password) && $errors[] = "<strong>Password</strong> must be more than 8 characters";
+                !preg_match($full_name_re, $fullname) && $errors[] = "<strong>Fullname</strong> must start with letter and can it has spaces and ends with letter";
+
                 echo "<ul class='error-msgs'>";
                 foreach ($errors as $err) {
                     echo "<li>$err</li>";
                 }
                 echo "</ul>";
+
                 if (count($errors) === 0) {
                     $stmt = $conn->prepare("INSERT INTO users(username, password, email, full_name, dt) VALUES (?,?,?,?,NOW())");
                     $stmt->execute(array($username, sha1($password), $email, $fullname));
@@ -254,19 +257,19 @@ if (isset($_SESSION["username"])) {
                     </ul>
                     <div class="inputs fields">
                         <div class="form-input">
-                            <input type="text" name="username" id="add-members-username" placeholder="username" autocomplete="off">
+                            <input type="text" name="username" id="add-members-username" placeholder="username" autocomplete="off" required>
                             <label for="add-members-username">Username</label>
                         </div>
                         <div class="form-input">
-                            <input type="text" name="fullname" id="add-members-fullname" placeholder="Full Name" autocomplete="off" ">
-                        <label for=" add-members-fullname">Full Name</label>
+                            <input type="text" name="fullname" id="add-members-fullname" placeholder="Full Name" autocomplete="off" required>
+                            <label for="add-members-fullname">Full Name</label>
                         </div>
                         <div class="form-input">
-                            <input type="text" name="email" id="add-members-email" placeholder="Email" autocomplete="off">
+                            <input type="text" name="email" id="add-members-email" placeholder="Email" autocomplete="off" required>
                             <label for="add-members-email">Email</label>
                         </div>
                         <div class="form-input">
-                            <input type="password" name="password" id="add-members-password" placeholder="password" autocomplete="new-password">
+                            <input type="password" name="password" id="add-members-password" placeholder="password" autocomplete="new-password" required>
                             <label for="add-members-password">Password</label>
                         </div>
                     </div>
@@ -322,19 +325,19 @@ if (isset($_SESSION["username"])) {
                         <div class="inputs fields">
                             <input type="hidden" name="userid" value="<?php echo $userid ?>">
                             <div class="form-input">
-                                <input type="text" name="username" id="edit-members-username" placeholder="username" autocomplete="off" value=<?php echo isset($username) ? $username : "" ?>>
+                                <input type="text" name="username" id="edit-members-username" placeholder="username" autocomplete="off" value=<?php echo isset($username) ? $username : "" ?> required>
                                 <label for="edit-members-username">Username</label>
                             </div>
                             <div class="form-input">
-                                <input type="text" name="fullname" id="edit-members-fullname" placeholder="Full Name" autocomplete="off" value="<?php echo isset($full_name) ? trim($full_name) : "" ?>">
+                                <input type="text" name="fullname" id="edit-members-fullname" placeholder="Full Name" autocomplete="off" value="<?php echo isset($full_name) ? trim($full_name) : "" ?>" required>
                                 <label for="edit-members-fullname">Full Name</label>
                             </div>
                             <div class="form-input">
-                                <input type="text" name="email" id="edit-members-email" placeholder="Email" autocomplete="off" value=<?php echo isset($email) ? $email : "" ?>>
+                                <input type="text" name="email" id="edit-members-email" placeholder="Email" autocomplete="off" value=<?php echo isset($email) ? $email : "" ?> required>
                                 <label for="edit-members-email">Email</label>
                             </div>
                             <div class="form-input">
-                                <input type="password" name="password" id="edit-members-password" placeholder="password" autocomplete="new-password">
+                                <input type="password" name="password" id="edit-members-password" placeholder="password" autocomplete="new-password" required>
                                 <label for="edit-members-password">Password</label>
                             </div>
                         </div>
@@ -369,7 +372,7 @@ if (isset($_SESSION["username"])) {
 <?php
             } /* end of if statement */ else {
                 $msg = "there is no user like this";
-                redirect($msg, "members.php", 2, "danger");
+                redirect($msg, "members.php", 1, "danger");
             }
 
             break;
@@ -379,16 +382,23 @@ if (isset($_SESSION["username"])) {
                 echo "<h1 style='font-size:var(--fs-xl);text-align:center;margin-bottom:1em'>Update Page</h1>";
                 extract($_POST);
                 $errors = array();
-                strlen($username) < 4 && $errors[] = "User Name must be more than 4 characters";
-                strlen($username) > 20 && $errors[] = "User Name must be less than or equal 20 characters";
-                $re = '/^[A-Za-z0-9\.\-_]+@[a-z0-9\-]+\.\w{2,4}$/';
-                !preg_match($re, $email) && $errors[] = "Email not valid";
-                strlen($password) < 8 && $errors[] = "Password must be more than 8 characters";
+
+                $stmt = $conn->prepare("SELECT username FROM users WHERE user_id != ? AND username = ? LIMIT 1");
+                $stmt->execute(array($userid, $username));
+                $user_exists = $stmt->rowCount();
+
+                $user_exists && $errors[] = "<strong>Username</strong> already found";
+                !preg_match($username_re, $username) && $errors[] = "<strong>UserName</strong> must start with small letter, it must be at least 4 characters and less than or equal 20 characters, it can include digits and period symbol only";
+                !preg_match($email_re, $email) && $errors[] = "<strong>Email</strong> not valid";
+                !preg_match($password_re, $password) && $errors[] = "<strong>Password</strong> must be more than 8 characters";
+                !preg_match($full_name_re, $fullname) && $errors[] = "<strong>Fullname</strong> must start with letter and can it has spaces and ends with letter";
+
                 echo "<ul class='error-msgs'>";
                 foreach ($errors as $err) {
                     echo "<li>$err</li>";
                 }
                 echo "</ul>";
+
                 if (count($errors) === 0) {
                     $stmt = $conn->prepare("UPDATE users SET username = ?, full_name = ?, email = ? , password = ? WHERE user_id = ?");
                     $stmt->execute(array($username, $fullname, $email, sha1($password), $userid));

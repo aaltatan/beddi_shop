@@ -45,19 +45,44 @@ try {
         item_price INT(11) NOT NULL,
         add_date DATETIME NOT NULL,
         country_made VARCHAR(255) NOT NULL,
-        item_status VARCHAR(255),
-        rating INT(11),
         cat_id INT(11) NOT NULL,
         user_id INT(11) NOT NULL,
+        available TINYINT DEFAULT 0,
+        acceptable TINYINT DEFAULT 0,
         CONSTRAINT fk_cat_id FOREIGN KEY (cat_id) REFERENCES categories(id),
         CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
     );
-    -- Creating image Tables
+    -- Creating image Table
     CREATE TABLE IF NOT EXISTS items_images(
         item_id INT(11) NOT NULL,
         img TEXT,
         CONSTRAINT fk_item_image FOREIGN KEY (item_id) REFERENCES items(item_id)
     );
+    -- Creating Items Likes Table
+    CREATE TABLE IF NOT EXISTS items_likes(
+        item_id INT(11) NOT NULL,
+        user_id INT(11) NOT NULL,
+        CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES items(item_id),
+        CONSTRAINT fk_likes_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
+    );
+    -- Creating a view to get count of Total Categories Likes
+    CREATE VIEW IF NOT EXISTS 
+        categories_likes 
+    AS 
+    SELECT 
+        categories.id
+    FROM
+        items_likes
+    LEFT JOIN
+        items
+    ON
+        items.item_id = items_likes.item_id
+    LEFT JOIN
+        categories
+    ON
+        categories.id = items.cat_id;
+    -- Creating a view to get count of all pending items
+    CREATE VIEW IF NOT EXISTS pending_items AS SELECT item_id FROM items WHERE acceptable = 0;
     ");
 
     $stmt = $conn->prepare("SELECT username FROM users;");

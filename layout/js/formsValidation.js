@@ -25,25 +25,38 @@ export class Validate {
         re = /^[a-z]+[a-z0-9\.]{4,20}$/;
         msg =
           inputName +
-          " must be start with small letter, it must be at least 4 characters and less than or equal 20 characters, it can include digits and period symbol only";
+          " must start with small letter, it must be at least 4 characters and less than or equal 20 characters, it can include digits and period symbol only";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
-      case "name":
-      case "country":
+      case "title":
       case "description":
-      case "fullname":
-      case "status":
-        re = /^[A-Za-z][A-Za-z0-9\s]{3,50}$/;
+        re = /^.{4,50}$/;
         msg = inputName + " must be between 4 and 50 characters";
+        !re.test(input.value) && this.createMsg(msg);
+        input.focus();
+        break;
+      case "country": //!
+      case "name": //!
+        re = /^[A-Z][a-z]{3,19}$/;
+        msg =
+          inputName +
+          " must be one Capitalized Word between 4 and 20 characters";
+        !re.test(input.value) && this.createMsg(msg);
+        input.focus();
+        break;
+      case "fullname": //!
+        re = /^[A-Z][A-Za-z\s]{2,48}[a-z]$/;
+        msg =
+          inputName +
+          " must start with letter and can it has spaces and ends with letter";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
       case "order":
       case "price":
-      case "rating":
         re = /^\d+$/;
-        msg = inputName + " must be positive number and grater than zero";
+        msg = inputName + " must be positive number";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;

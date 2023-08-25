@@ -1,34 +1,41 @@
 const modeBtn = document.querySelector("#mode-btn + label");
 const burgerBtn = document.querySelector("#burger");
 const mainAside = document.querySelector(".main-aside");
-const mainSearchInput = document.getElementsByName("main-search");
+const mainSearchInput = document.querySelector("input[name=main-search]");
 const userList = document.querySelector("header nav .user");
+const searchContainer = document.querySelector(".search");
+const searchInput = document.querySelector(".search input[name=main-search]");
+const searchList = document.querySelector(".search ul.list");
+
+searchInput.addEventListener("keyup", () => {
+  if (searchInput.value === "") {
+    searchList.classList.remove("opened");
+  } else {
+    searchList.classList.add("opened");
+    let re = new RegExp(searchInput.value, "i");
+    searchList.querySelectorAll("li a p").forEach((text) => {
+      text.parentElement.parentElement.classList.remove("opened");
+      re.test(text.innerHTML) &&
+        text.parentElement.parentElement.classList.add("opened");
+    });
+  }
+});
 
 userList.querySelector(".icon h2").addEventListener("click", () => {
   userList.querySelector(".list").classList.toggle("opened");
 });
 
 document.addEventListener("keydown", (e) => {
-  mainSearchInput.forEach((input) => {
-    if (getComputedStyle(input)["display"] === "block") {
-      if (e.key.toLowerCase() === "s" && e.altKey) {
-        if (mainAside.classList.contains("opened")) {
-          input.focus();
-        } else {
-          openAside();
-          input.focus();
-        }
-      }
-      if (e.key.toLowerCase() === "س" && e.altKey) {
-        burgerBtn.click();
-        input.focus();
-      }
-      if (e.code === "Escape") {
-        input.blur();
-        closeAside();
-      }
-    }
-  });
+  if (e.key.toLowerCase() === "s" && e.altKey) {
+    mainSearchInput.focus();
+  }
+  if (e.key.toLowerCase() === "س" && e.altKey) {
+    mainSearchInput.focus();
+  }
+  if (e.code === "Escape") {
+    mainSearchInput.blur();
+    closeAside();
+  }
 });
 
 document.addEventListener("click", (e) => {

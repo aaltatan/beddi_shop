@@ -236,4 +236,24 @@
       }
     }
   }
+  .images-edit-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 100px);
+    gap: 1em;
+    .image {
+      position: relative;
+      max-width: 100px;
+      img {
+        border: 3px solid white;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+      }
+      a {
+        padding: 0.25em !important;
+        position: absolute;
+        top: 3px;
+        right: 3px;
+      }
+    }
+  }
 }
