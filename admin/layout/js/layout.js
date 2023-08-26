@@ -20,6 +20,11 @@ searchInput.addEventListener("keyup", () => {
     });
   }
 });
+searchInput.addEventListener("blur", () => {
+  if (searchInput.value === "") {
+    searchList.classList.remove("opened");
+  }
+});
 
 userList.querySelector(".icon h2").addEventListener("click", () => {
   userList.querySelector(".list").classList.toggle("opened");
@@ -31,6 +36,18 @@ document.addEventListener("keydown", (e) => {
   }
   if (e.key.toLowerCase() === "س" && e.altKey) {
     mainSearchInput.focus();
+  }
+  if (e.key.toLowerCase() === "1" && e.altKey) {
+    window.location.href = "dashboard.php";
+  }
+  if (e.key.toLowerCase() === "2" && e.altKey) {
+    window.location.href = "categories.php";
+  }
+  if (e.key.toLowerCase() === "3" && e.altKey) {
+    window.location.href = "items.php";
+  }
+  if (e.key.toLowerCase() === "4" && e.altKey) {
+    window.location.href = "members.php";
   }
   if (e.code === "Escape") {
     mainSearchInput.blur();

@@ -108,7 +108,7 @@ if (isset($_SESSION["username"])) {
                                 if (!empty($item_images)) {
                                     echo "<img class='show-images' src='" . $item_images[0]["img"] . "' data-images-src='" . $src . "' style='cursor:pointer;'>";
                                 } else {
-                                    echo "<img class='show-images' src='../layout/images/no-item.png' data-images-src='" . $src . "' style='cursor:pointer;'>";
+                                    echo "<img class='show-images' src='./layout/images/no-item.png' data-images-src='" . $src . "' style='cursor:pointer;'>";
                                 }
 
                                 echo "<td>" . $item_likes . "</td>";
@@ -135,7 +135,7 @@ if (isset($_SESSION["username"])) {
 
             <div id="images-show-container"></div>
 
-            <script src="../layout/js/itemsImages.js"></script>
+            <script src="./layout/js/itemsImages.js"></script>
 
             <script>
                 let btns2 = document.querySelectorAll(".confirm");
@@ -222,7 +222,7 @@ if (isset($_SESSION["username"])) {
             <script type="module">
                 import {
                     Validate
-                } from "../layout/js/formsValidation.js";
+                } from "./layout/js/formsValidation.js";
                 let addForm = new Validate(
                     "add-items-form",
                     "add-items-form-messages",
@@ -319,7 +319,7 @@ if (isset($_SESSION["username"])) {
                     redirect("1 Item has been added", "items.php", 1, "success");
                 }
             } else {
-                redirect("You can't browse this page directly", "items.php?do=Add", 2);
+                redirect("You can't browse this page directly", "items.php?do=Add", 1);
             }
             break;
         case "Edit";
@@ -458,7 +458,7 @@ if (isset($_SESSION["username"])) {
                 <script type="module">
                     import {
                         Validate
-                    } from "../layout/js/formsValidation.js";
+                    } from "./layout/js/formsValidation.js";
                     let editForm = new Validate(
                         "edit-items-form",
                         "edit-items-form-messages",
@@ -582,7 +582,7 @@ if (isset($_SESSION["username"])) {
                     redirect("1 Item has been Updated", "items.php", 1, "success");
                 }
             } else {
-                redirect("You can't browse this page directly", "items.php?do=Add", 2);
+                redirect("You can't browse this page directly", "items.php?do=Add", 1);
             }
 
             break;
@@ -727,7 +727,7 @@ if (isset($_SESSION["username"])) {
 
             <div id="images-show-container"></div>
 
-            <script src="../layout/js/itemsImages.js"></script>
+            <script src="./layout/js/itemsImages.js"></script>
 
             <script>
                 let btns = document.querySelectorAll(".confirm");
@@ -753,7 +753,7 @@ if (isset($_SESSION["username"])) {
                 $stmt->execute(array($item_id));
                 redirect("1 Item has been Activated", "back", 1, "success");
             } else {
-                redirect("There is no id like that", "back", 2);
+                redirect("There is no id like that", "back", 1);
             }
             break;
 
@@ -767,7 +767,7 @@ if (isset($_SESSION["username"])) {
                 $stmt->execute(array($item_id));
                 redirect("1 Item has been Deactivated", "back", 1, "success");
             } else {
-                redirect("There is no id like that", "back", 2);
+                redirect("There is no id like that", "back", 1);
             }
             break;
     }

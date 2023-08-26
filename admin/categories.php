@@ -138,7 +138,7 @@ if (isset($_SESSION["username"])) {
             <script type="module">
                 import {
                     Validate
-                } from "../layout/js/formsValidation.js";
+                } from "./layout/js/formsValidation.js";
                 let addForm = new Validate(
                     "add-categories-form",
                     "add-categories-form-messages",
@@ -172,7 +172,7 @@ if (isset($_SESSION["username"])) {
                 $count && $errorArr[] = "the <strong>Category</strong> has already created";
 
                 !preg_match($name_country_re, $name) && $errorArr[] = "<strong>Name</strong> must be one Capitalized Word  between 4 and 20 characters";
-                !preg_match($description_re, $description) && $errorArr[] = "<strong>Description</strong> must be between 4 and 50 characters";
+                !preg_match($description_title_re, $description) && $errorArr[] = "<strong>Description</strong> must be between 4 and 50 characters";
                 !preg_match($price_order_re, $order) && $errorArr[] = "<strong>Order</strong> must be positive number";
 
                 echo "<ul class='error-msgs'>";
@@ -193,10 +193,10 @@ if (isset($_SESSION["username"])) {
                     VALUES (?,?,?,?,?,?);
                 ");
                     $stmt->execute(array($name, $description, $order, $visibility ? 1 : 0, $comments ? 1 : 0, $ads ? 1 : 0));
-                    redirect("1 category has been added", "categories.php", 2, "success");
+                    redirect("1 category has been added", "categories.php", 1, "success");
                 }
             } else {
-                redirect("You can't browse this page directly", "categories.php?do=Add", 2);
+                redirect("You can't browse this page directly", "categories.php?do=Add", 1);
             }
 
             break;
@@ -212,10 +212,10 @@ if (isset($_SESSION["username"])) {
                 $stmt = $conn->prepare("DELETE FROM categories WHERE id = ?");
                 $stmt->execute(array($catid));
                 $msg = "1 Category has been deleted";
-                redirect($msg, "back", 2, "success");
+                redirect($msg, "back", 1, "success");
             } else {
                 $msg = "there's no Category like this";
-                redirect($msg, "back", 2, "danger");
+                redirect($msg, "back", 1, "danger");
             }
             break;
 
@@ -280,7 +280,7 @@ if (isset($_SESSION["username"])) {
                 <script type="module">
                     import {
                         Validate
-                    } from "../layout/js/formsValidation.js";
+                    } from "./layout/js/formsValidation.js";
                     let editForm = new Validate(
                         "edit-categories-form",
                         "edit-categories-form-messages",

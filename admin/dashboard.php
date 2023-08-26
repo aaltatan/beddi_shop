@@ -9,15 +9,8 @@ if (isset($_SESSION["username"])) {
                                 user_id,full_name,email,dt 
                             FROM 
                                 users 
-                            WHERE 
-                                group_id = 0 
-                            AND 
-                                reg_status = 1 
-                            ORDER BY 
-                                dt 
-                            DESC 
-                            LIMIT 
-                                5
+                            WHERE
+                                reg_status = 0
                         ");
     $stmt->execute();
     $rows = $stmt->fetchAll();
@@ -42,9 +35,7 @@ if (isset($_SESSION["username"])) {
                             ON
                                 users.user_id = items.user_id
                             WHERE
-                                items.acceptable = 1
-                            LIMIT
-                                5
+                                items.acceptable = 0
     ");
     $stmt->execute();
     $items = $stmt->fetchAll();
@@ -65,24 +56,10 @@ if (isset($_SESSION["username"])) {
                     </a>
                 <?php endif ?>
 
-                <?php if (getCount("pending_users") > 0) : ?>
-                    <a href="members.php?do=Pending" class="count-card">
-                        <span>Pending Members</span>
-                        <p><?php echo getCount("pending_users") ?></p>
-                    </a>
-                <?php endif ?>
-
                 <?php if (getCount("items") > 0) : ?>
                     <a href="items.php" class="count-card">
                         <span>Total Items</span>
                         <p><?php echo getCount("items") ?></p>
-                    </a>
-                <?php endif ?>
-
-                <?php if (getCount("pending_items") > 0) : ?>
-                    <a href="items.php?do=Pending" class="count-card">
-                        <span>Pending Items</span>
-                        <p><?php echo getCount("pending_items") ?></p>
                     </a>
                 <?php endif ?>
 
@@ -116,7 +93,7 @@ if (isset($_SESSION["username"])) {
 
                 <div class="last-members">
                     <p class="heading">
-                        <span>Last Registered Members</span>
+                        <a href="members.php?do=Pending"><span>Pending Members (<?php echo getCount("pending_users") ?>)</span></a>
                         <a class="add-new" href="members.php?do=Add" title="Add new Member"></a>
                     </p>
 
@@ -126,7 +103,7 @@ if (isset($_SESSION["username"])) {
                             echo "<li>";
                             echo "
                             <a href='members.php?do=Edit&userid=" . $row["user_id"] . "'>
-                                <img src='../layout/images/user-128x128.png' alt='dasd'>
+                                <img src='./layout/images/user-128x128.png' alt='dasd'>
                                 <div class='title'>
                                     <p>" . $row["full_name"] . "</p>
                                     <p>" . $row["email"] . "</p>
@@ -141,7 +118,7 @@ if (isset($_SESSION["username"])) {
 
                 <div class="last-items">
                     <p class="heading">
-                        <span>Last Acceptable Items</span>
+                        <a href="items.php?do=Pending"><span>Pending Items (<?php echo getCount("pending_items") ?>)</a>
                         <a class="add-new" href="items.php?do=Add" title="Add new Item"></a>
                     </p>
                     <ul class="body">

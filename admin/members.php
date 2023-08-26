@@ -160,10 +160,10 @@ if (isset($_SESSION["username"])) {
                 $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
                 $stmt->execute(array($userid));
                 $msg =  "One user has been Deleted";
-                redirect($msg, "back", 2, "success");
+                redirect($msg, "back", 1, "success");
             } else {
                 $msg = "there's no user like this";
-                redirect($msg, "back", 2, "danger");
+                redirect($msg, "back", 1, "danger");
             }
 
             break;
@@ -183,7 +183,7 @@ if (isset($_SESSION["username"])) {
                 redirect($msg, "back", 1, "success");
             } else {
                 $msg = "there's no user like this";
-                redirect($msg, "back", 3, "danger");
+                redirect($msg, "back", 1, "danger");
             }
 
             break;
@@ -203,7 +203,7 @@ if (isset($_SESSION["username"])) {
                 redirect($msg, "back", 1, "success");
             } else {
                 $msg = "there's no user like this";
-                redirect($msg, "back", 3, "danger");
+                redirect($msg, "back", 1, "danger");
             }
 
             break;
@@ -237,11 +237,11 @@ if (isset($_SESSION["username"])) {
                     $stmt = $conn->prepare("INSERT INTO users(username, password, email, full_name, dt) VALUES (?,?,?,?,NOW())");
                     $stmt->execute(array($username, sha1($password), $email, $fullname));
                     $msg =  $stmt->rowCount() . " User has been Added";
-                    redirect($msg, "members.php", 3, $type = "success");
+                    redirect($msg, "members.php", 1, $type = "success");
                 }
             } else {
                 $msg = "You can't browse this page directly";
-                redirect($msg, "members.php", 2, "danger");
+                redirect($msg, "members.php", 1, "danger");
             }
             break;
 
@@ -290,7 +290,7 @@ if (isset($_SESSION["username"])) {
             <script type="module">
                 import {
                     Validate
-                } from "../layout/js/formsValidation.js";
+                } from "./layout/js/formsValidation.js";
                 let addForm = new Validate(
                     "add-members-form",
                     "add-members-form-messages",
@@ -360,7 +360,7 @@ if (isset($_SESSION["username"])) {
                 <script type="module">
                     import {
                         Validate
-                    } from "../layout/js/formsValidation.js";
+                    } from "./layout/js/formsValidation.js";
                     let editForm = new Validate(
                         "edit-members-form",
                         "members-form-messages",
@@ -406,12 +406,12 @@ if (isset($_SESSION["username"])) {
                 }
             } else {
                 $msg = "You can't browse this page directly";
-                redirect($msg, "members.php", 2, "danger");
+                redirect($msg, "members.php", 1, "danger");
             }
             break;
         default:
             $msg = "there is no page like $do";
-            redirect($msg, "members.php", 2, "danger");
+            redirect($msg, "members.php", 1, "danger");
     }
 
     include $tpl . "footer.php";

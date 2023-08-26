@@ -65,6 +65,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 1em;
+  a:first-of-type {
+    transition: 150ms;
+    &:hover {
+      transform: translateX(8px);
+    }
+  }
   .add-new {
     display: block;
     position: relative;
@@ -126,6 +132,9 @@
         background-color: rgba(0, 0, 0, 0.5);
         font-weight: 500;
         opacity: 0;
+        p {
+          color: var(--clr-fxd-txt-base);
+        }
       }
     }
   }
@@ -147,7 +156,7 @@ section {
 }
 
 .statistics {
-  --cols: 5;
+  --cols: 4;
   @include br(md) {
     --cols: 3;
   }

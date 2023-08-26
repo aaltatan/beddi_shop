@@ -52,6 +52,9 @@
         }
       }
       a {
+        & > * {
+          font-size: var(--fs-sm) !important;
+        }
         &:focus {
           background-color: var(--clr-acnt-base);
           outline: none;
@@ -171,8 +174,12 @@
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+    background-color: var(--clr-bg-dark);
     tr.dimmed {
-      background-color: var(--clr-bg-dark) !important;
+      background-color: var(--clr-danger-dark) !important;
+      > * {
+        color: var(--clr-fxd-txt-base);
+      }
       cursor: no-drop;
       *:not(button, a) {
         font-weight: 300;
