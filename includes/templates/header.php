@@ -38,12 +38,13 @@ $items = $stmt->fetchAll();
           <span>d</span>
           <span>i</span>
           <span>.</span>
+          <span>.</span>
         </a>
       </div>
       <ul class="links">
-        <li><a href="#" id="show-categories">Home</a></li>
+        <li><a href="#">Home</a></li>
         <li>
-          <a href="#">Categories</a>
+          <a href="#" id="show-categories">Categories</a>
           <ul class="categories" id="categories">
             <?php
             foreach ($categories as $cat) {
@@ -70,28 +71,34 @@ $items = $stmt->fetchAll();
       </ul>
       <ul class="icons">
         <li>
-          <a href="#">
+          <a href="#" title="Search">
             <i class="fa-solid fa-magnifying-glass"></i>
           </a>
         </li>
         <li>
-          <a href=" #">
+          <a href="#" title="User Profile">
             <i class="fa-regular fa-circle-user"></i>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class="fa-regular fa-lightbulb" style="color:gold"></i>
+          <a href="#" id="mode-btn" data-theme-dark="true" style="text-decoration:none;" title="light\dark mode">
+            <i class="fa-regular fa-lightbulb" style="color:gold;"></i>
             <i class="fa-regular fa-moon"></i>
           </a>
         </li>
-        <li>
-          <a href="#">
-            <i class="fa-solid fa-cart-shopping"></i>
-          </a>
-        </li>
       </ul>
+      <a href="#" id="shopping-cart-btn" title="Your Cart">
+        <i class="fa-solid fa-cart-shopping"></i>
+      </a>
       <div class="burger"></div>
     </nav>
-
   </header>
+
+  <div class="blur" id="blur"></div>
+
+  <aside class="shopping-cart" id="shopping-cart">
+    <div class="heading">
+      <h1>Your Cart</h1>
+      <span>×</span>
+    </div>
+  </aside>
