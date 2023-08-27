@@ -1,3 +1,15 @@
+<?php
+
+$stmt = $conn->prepare("SELECT id,cat_name FROM categories");
+$stmt->execute();
+$categories = $stmt->fetchAll();
+
+$stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE acceptable = 1");
+$stmt->execute();
+$items = $stmt->fetchAll();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,10 +21,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./layout/css/main.css">
+  <link rel="stylesheet" href="./layout/fontawesome/all.css">
   <title>Beddi Shop</title>
 </head>
 
-<body class="light">
+<body>
 
   <header>
     <div class="special">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio, doloremque?</div>
@@ -28,15 +41,55 @@
         </a>
       </div>
       <ul class="links">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Categories</a></li>
-        <li><a href="#">Items</a></li>
+        <li><a href="#" id="show-categories">Home</a></li>
+        <li>
+          <a href="#">Categories</a>
+          <ul class="categories" id="categories">
+            <?php
+            foreach ($categories as $cat) {
+              echo "<li>";
+              echo "<a href='category.php&id=" . $cat["id"] . "'>" . $cat["cat_name"] . "</a>";
+              echo "</li>";
+            }
+            ?>
+          </ul>
+        </li>
+        <li>
+          <a href="#" id="show-items">Items</a>
+          <ul class="items" id="items">
+            <?php
+            foreach ($items as $item) {
+              echo "<li>";
+              echo "<a href='item.php&id=" . $item["item_id"] . "'>" . $item["item_name"] . "</a>";
+              echo "</li>";
+            }
+            ?>
+          </ul>
+        </li>
         <li><a href="#">Special</a></li>
       </ul>
       <ul class="icons">
-        <li><a href="#">👤</a></li>
-        <li><a href="#">🔍</a></li>
-        <li><a href="#">🛒</a></li>
+        <li>
+          <a href="#">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </a>
+        </li>
+        <li>
+          <a href=" #">
+            <i class="fa-regular fa-circle-user"></i>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa-regular fa-lightbulb" style="color:gold"></i>
+            <i class="fa-regular fa-moon"></i>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+        </li>
       </ul>
       <div class="burger"></div>
     </nav>
