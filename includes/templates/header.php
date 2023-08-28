@@ -21,7 +21,7 @@ $items = $stmt->fetchAll();
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./layout/css/main.css">
-  <link rel="stylesheet" href="./layout/fontawesome/all.css">
+  <link rel="stylesheet" href="./layout/fontawesome/all.min.css">
   <title>Beddi Shop</title>
 </head>
 
@@ -31,7 +31,7 @@ $items = $stmt->fetchAll();
     <div class="special">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio, doloremque?</div>
     <nav>
       <div class="brand">
-        <a href="#">
+        <a href="index.php">
           <span>B</span>
           <span>e</span>
           <span>d</span>
@@ -42,9 +42,9 @@ $items = $stmt->fetchAll();
         </a>
       </div>
       <ul class="links">
-        <li><a href="#">Home</a></li>
+        <li><a href="index.php" aria-current="false">Home</a></li>
         <li>
-          <a href="#" id="show-categories">Categories</a>
+          <a href="#" id="show-categories" aria-current="false">Categories</a>
           <ul class="categories" id="categories">
             <?php
             foreach ($categories as $cat) {
@@ -56,7 +56,7 @@ $items = $stmt->fetchAll();
           </ul>
         </li>
         <li>
-          <a href="#" id="show-items">Items</a>
+          <a href="#" id="show-items" aria-current="false">Items</a>
           <ul class="items" id="items">
             <?php
             foreach ($items as $item) {
@@ -67,11 +67,11 @@ $items = $stmt->fetchAll();
             ?>
           </ul>
         </li>
-        <li><a href="#">Special</a></li>
+        <li><a href="#" aria-current="false">Special</a></li>
       </ul>
       <ul class="icons">
         <li>
-          <a href="#" title="Search">
+          <a href="#" title="Search" id="search-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
           </a>
         </li>
@@ -88,6 +88,7 @@ $items = $stmt->fetchAll();
         </li>
       </ul>
       <a href="#" id="shopping-cart-btn" title="Your Cart">
+        <span>0</span>
         <i class="fa-solid fa-cart-shopping"></i>
       </a>
       <div class="burger"></div>
@@ -101,4 +102,63 @@ $items = $stmt->fetchAll();
       <h1>Your Cart</h1>
       <span>×</span>
     </div>
+    <div class="body">
+      <div class="item">
+        <img src="data/uploads/64e9b6542fc6a_product-06-03.jpg" alt="">
+        <div class="info">
+          <div class="row-1">
+            <span>Title</span>
+            <span><i class="fa-solid fa-trash" title="Remove Item"></i></span>
+          </div>
+          <div class="row-2">
+            <div class="control">
+              <span><i class="fa-solid fa-plus-square"></i></span>
+              <span><i class="fa-solid fa-minus-square"></i></span>
+            </div>
+            <span>150,000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer flow">
+      <div class="subtotal">
+        <span>Subtotal</span>
+        <span>650,000</span>
+      </div>
+      <p>Shipping and taxes calculated at checkout.</p>
+      <a href="#" class="btn btn-primary">Checkout</a>
+    </div>
   </aside>
+
+  <div class="search-container">
+    <span>×</span>
+    <input type="search" name="main-search" id="" placeholder="Search" tabindex="50">
+    <ul class="list">
+      <?php
+
+      $current_page = explode("/", $_SERVER["PHP_SELF"]);
+      $current_page = end($current_page);
+
+      $stmt = $conn->prepare("SELECT * FROM items WHERE acceptable = 1");
+      $stmt->execute();
+      $data = $stmt->fetchAll();
+
+      foreach ($data as $item) :
+
+        $stmt = $conn->prepare("SELECT img FROM items_images WHERE item_id = ? LIMIT 1");
+        $stmt->execute(array($item["item_id"]));
+        $img = $stmt->fetch();
+
+        echo "<li>";
+        echo    "<a href='items.php?do=Edit&id=" . $item['item_id'] . "' tabindex='51'>";
+        echo        "<img src='data/uploads/64e9b6542fc6a_product-06-03.jpg' alt='' >";
+        echo        "<p>" . $item['item_name'] . "</p>";
+        echo    "</a>";
+        echo "</li>";
+
+      endforeach;
+
+      ?>
+
+    </ul>
+  </div>

@@ -12,6 +12,47 @@ const shoppingCartBtnClose = document.querySelector(
   "#shopping-cart .heading span"
 );
 const shoppingCartContainer = document.getElementById("shopping-cart");
+const searchInput = document.querySelector(
+  ".search-container input[name=main-search]"
+);
+const searchList = document.querySelector(".search-container ul.list");
+const searchBtn = document.getElementById("search-btn");
+const searchCloseBtn = document.querySelector(".search-container > span");
+
+searchBtn.addEventListener("click", () => {
+  document.querySelector(".search-container").classList.toggle("opened");
+  searchInput.focus();
+});
+searchCloseBtn.addEventListener("click", () => {
+  document.querySelector(".search-container").classList.remove("opened");
+});
+
+searchInput.addEventListener("keyup", () => {
+  if (searchInput.value === "") {
+    searchList.classList.remove("opened");
+  } else {
+    searchList.classList.add("opened");
+    let re = new RegExp(searchInput.value, "i");
+    searchList.querySelectorAll("li a p").forEach((text) => {
+      text.parentElement.parentElement.classList.remove("opened");
+      re.test(text.innerHTML) &&
+        text.parentElement.parentElement.classList.add("opened");
+    });
+  }
+});
+searchInput.addEventListener("blur", () => {
+  if (searchInput.value === "") {
+    searchList.classList.remove("opened");
+  }
+});
+
+document.querySelectorAll("nav .links > li > a").forEach((anchor) => {
+  anchor.ariaCurrent = "false";
+  const pathName = location.pathname.split("/").at(-1);
+  if (pathName === anchor.getAttribute("href")) {
+    anchor.ariaCurrent = "true";
+  }
+});
 
 shoppingCartBtn.addEventListener("click", () => {
   shoppingCartContainer.classList.toggle("opened");

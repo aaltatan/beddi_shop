@@ -4,6 +4,7 @@
 header {
   position: fixed;
   left: 0;
+  z-index: 999;
   width: 100%;
   height: 6rem;
   .special {
@@ -26,6 +27,7 @@ header {
     @include br(lg) {
       padding: 0.5em;
     }
+    padding: 0 1em;
     align-items: center;
     background-color: var(--clr-acnt-base);
     .brand {
@@ -114,6 +116,30 @@ header {
       align-items: center;
       list-style: none;
       margin-left: auto;
+      > li {
+        min-height: 4rem;
+        line-height: 4rem;
+        @include br(lg) {
+          padding-inline: 0;
+        }
+        > a {
+          position: relative;
+          display: block;
+          font-family: "Montserrat", sans-serif !important;
+          text-transform: uppercase;
+          text-decoration: none;
+          font-size: var(--fs-sm);
+          padding: 0 1em;
+          color: var(--clr-fxd-txt-base);
+          &[aria-current="true"] {
+            background-color: var(--clr-acnt-light);
+          }
+          &:hover,
+          &:focus {
+            background-color: var(--clr-acnt-dark);
+          }
+        }
+      }
       @include br(lg) {
         margin-left: 0;
         display: none;
@@ -142,38 +168,6 @@ header {
             }
             &::after {
               display: none;
-            }
-          }
-        }
-      }
-      > li {
-        min-height: 4rem;
-        line-height: 4rem;
-        padding-inline: 1em;
-        @include br(lg) {
-          padding-inline: 0;
-        }
-        > a {
-          position: relative;
-          display: block;
-          font-family: "Montserrat", sans-serif !important;
-          text-transform: uppercase;
-          text-decoration: none;
-          font-size: var(--fs-sm);
-          color: var(--clr-fxd-txt-base);
-          &::after {
-            content: "";
-            position: absolute;
-            top: 80%;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background-color: var(--clr-fxd-txt-base);
-            transition: 200ms;
-          }
-          &:hover {
-            &::after {
-              width: 100%;
             }
           }
         }
@@ -329,6 +323,22 @@ header {
       @include br(lg) {
         margin-left: auto;
       }
+      span {
+        position: absolute;
+        top: -12px;
+        right: -6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: var(--clr-danger-light);
+        color: var(--clr-fxd-txt-base);
+        font-weight: 700;
+        text-align: center;
+        font-size: var(--fs-sm);
+      }
       &::before {
         content: "";
         position: absolute;
@@ -373,14 +383,18 @@ aside.shopping-cart {
   transition: 400ms;
   top: 0;
   z-index: 1001;
-  min-height: 100vh;
+  height: 100vh;
   width: min(100%, 400px);
   border-left: 1px solid var(--clr-bg-light);
   background-color: var(--clr-bg-base);
+  overflow: auto;
   .heading {
     position: sticky;
+    top: 0;
+    right: 0;
     padding: 1em;
-    box-shadow: 0 0.5px 3px 0 rgba(0, 0, 0, 0.2);
+    background-color: inherit;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
     h1 {
       font-size: var(--fs-lg);
     }
@@ -391,6 +405,101 @@ aside.shopping-cart {
       transform: translateY(-50%);
       font-size: var(--fs-xl);
       cursor: pointer;
+    }
+  }
+  .body {
+    padding: 0.5em;
+    .item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1em;
+      padding: 0.5em;
+      transition: 100ms;
+      &:hover {
+        background-color: var(--clr-bg-dark);
+      }
+      &:not(:last-of-type) {
+        border-bottom: 1px solid var(--clr-bg-light);
+      }
+      > img {
+        max-width: 100px;
+        aspect-ratio: 3/2;
+        object-fit: cover;
+        flex: 25%;
+      }
+      i {
+        font-size: var(--fs-lg);
+      }
+      .info {
+        flex: 75%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+        .row-1,
+        .row-2 {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .row-1 {
+          span:first-of-type {
+            font-size: var(--fs-md);
+            font-weight: 500;
+          }
+          span:last-of-type {
+            cursor: pointer;
+            &:hover {
+              i {
+                color: var(--clr-danger-light);
+              }
+            }
+            i {
+              font-size: var(--fs-base) !important;
+            }
+          }
+        }
+        .row-2 {
+          .control {
+            span {
+              cursor: pointer;
+              &:hover {
+                i {
+                  color: var(--clr-acnt-base);
+                }
+              }
+            }
+          }
+          > span:last-of-type {
+            font-weight: 500;
+            font-size: var(--fs-sm);
+            letter-spacing: -0.5px;
+          }
+        }
+      }
+    }
+  }
+  .footer {
+    position: sticky;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    padding: 1em;
+    background-color: inherit;
+    box-shadow: 0 -2px 6px 0 rgba(0, 0, 0, 0.2);
+    .subtotal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    p {
+      font-weight: 300;
+      font-size: var(--fs-sm);
+      color: var(--clr-text-dark);
+    }
+    a {
+      width: 100%;
+      text-align: center;
     }
   }
 }
