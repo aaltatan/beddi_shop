@@ -49,7 +49,7 @@ $items = $stmt->fetchAll();
             <?php
             foreach ($categories as $cat) {
               echo "<li>";
-              echo "<a href='category.php&id=" . $cat["id"] . "'>" . $cat["cat_name"] . "</a>";
+              echo "<a href='categories.php?id=" . $cat["id"] . "&catname=" . $cat["cat_name"]  . "'>" . $cat["cat_name"] . "</a>";
               echo "</li>";
             }
             ?>
@@ -76,7 +76,7 @@ $items = $stmt->fetchAll();
           </a>
         </li>
         <li>
-          <a href="#" title="User Profile">
+          <a href="login.php" title="User Profile">
             <i class="fa-regular fa-circle-user"></i>
           </a>
         </li>
@@ -162,3 +162,5 @@ $items = $stmt->fetchAll();
 
     </ul>
   </div>
+
+  <main>

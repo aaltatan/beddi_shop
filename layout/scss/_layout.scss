@@ -3,6 +3,7 @@
 
 header {
   position: fixed;
+  top: 0;
   left: 0;
   z-index: 999;
   width: 100%;
@@ -305,6 +306,7 @@ header {
         top: 100%;
         left: 0;
         width: 100%;
+        background-color: var(--clr-bg-base);
         li {
           a {
             i {
@@ -502,4 +504,11 @@ aside.shopping-cart {
       text-align: center;
     }
   }
+}
+
+main {
+  margin-top: 6rem;
+  width: min(100%, 90ch);
+  padding: 1em;
+  margin-inline: auto;
 }
