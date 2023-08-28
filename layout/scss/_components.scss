@@ -98,16 +98,13 @@
     &:focus {
       border-bottom: 1px solid var(--clr-acnt-light);
       color: var(--clr-acnt-light);
-      &::placeholder {
-        opacity: 0;
-      }
     }
   }
   .list {
     &.opened {
       display: block;
     }
-    display: block;
+    display: none;
     position: relative;
     margin-inline: auto;
     top: 2rem;

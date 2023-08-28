@@ -15,8 +15,8 @@ const shoppingCartContainer = document.getElementById("shopping-cart");
 const searchInput = document.querySelector(
   ".search-container input[name=main-search]"
 );
-const searchList = document.querySelector(".search-container ul.list");
 const searchBtn = document.getElementById("search-btn");
+const searchList = document.querySelector(".search-container ul.list");
 const searchCloseBtn = document.querySelector(".search-container > span");
 
 searchBtn.addEventListener("click", () => {
@@ -25,6 +25,12 @@ searchBtn.addEventListener("click", () => {
 });
 searchCloseBtn.addEventListener("click", () => {
   document.querySelector(".search-container").classList.remove("opened");
+  searchInput.value = "";
+  searchInput.blur();
+  searchList.querySelectorAll("li").forEach((text) => {
+    text.classList.remove("opened");
+  });
+  searchList.classList.remove("opened");
 });
 
 searchInput.addEventListener("keyup", () => {
@@ -112,4 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
     modeBtn.querySelector("i:last-child").style.display = "block";
   }
   document.documentElement.removeAttribute("hidden");
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Escape") {
+    searchCloseBtn.click();
+    shoppingCartBtnClose.click();
+  }
 });
