@@ -43,10 +43,12 @@ header {
         text-decoration: none;
         font-weight: 800;
         span {
-          font-family: "Courier New", Courier, monospace;
+          font-family: "Montserrat", sans-serif !important;
           font-size: var(--fs-lg);
+          text-transform: uppercase;
           color: var(--clr-fxd-txt-base);
           opacity: 0;
+          font-weight: 300;
         }
         @for $i from 1 through 7 {
           $delay: $i * 300;
@@ -68,6 +70,7 @@ header {
       display: none;
       @include br(lg) {
         display: block;
+        margin-left: auto;
       }
       position: relative;
       min-width: 30px;
@@ -322,9 +325,7 @@ header {
       isolation: isolate;
       margin-right: 1rem;
       margin-left: 1.25em;
-      @include br(lg) {
-        margin-left: auto;
-      }
+      cursor: pointer;
       span {
         position: absolute;
         top: -12px;
@@ -463,6 +464,8 @@ aside.shopping-cart {
         }
         .row-2 {
           .control {
+            display: flex;
+            gap: 0.25em;
             span {
               cursor: pointer;
               &:hover {
@@ -508,7 +511,9 @@ aside.shopping-cart {
 
 main {
   margin-top: 6rem;
-  width: min(100%, 90ch);
-  padding: 1em;
-  margin-inline: auto;
+  .wrapper {
+    width: min(100%, 90ch);
+    padding: 1em;
+    margin-inline: auto;
+  }
 }

@@ -21,4 +21,13 @@ $func = "./admin/includes/functions/";
 // !Includes:
 
 include $func . "functions.php";
+
+$stmt = $conn->prepare("SELECT id,cat_name FROM categories");
+$stmt->execute();
+$categories = $stmt->fetchAll();
+
+$stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE acceptable = 1");
+$stmt->execute();
+$items = $stmt->fetchAll();
+
 include $tpl . "header.php";

@@ -6,7 +6,7 @@ session_start();
 
 $page_title = "Categories";
 
-if (isset($_SESSION["username"])) {
+if (isset($_SESSION["admin"])) {
 
     include "init.php";
     include $tpl . "aside.php";

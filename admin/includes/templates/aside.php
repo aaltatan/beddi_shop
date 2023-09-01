@@ -156,10 +156,10 @@
                 </span>
                 <div class="user">
                     <div class="icon">
-                        <h2 id="user-name"><?php echo ucfirst(explode(".", $_SESSION["username"])[0]) ?></h2>
+                        <h2 id="user-name"><?php echo ucfirst(explode(".", $_SESSION["admin"])[0]) ?></h2>
                     </div>
                     <ul class="list">
-                        <li><a href="members.php?do=Edit&userid=<?php echo $_SESSION["userid"] ?>">✏️ Edit Profile</a></li>
+                        <li><a href="members.php?do=Edit&userid=<?php echo $_SESSION["adminid"] ?>">✏️ Edit Profile</a></li>
                         <li><a href="../index.php" target="_blank">🌐 Main Site</a></li>
                         <li><a href="#">⚙️ Settings</a></li>
                         <li><a href="logout.php">📤 Logout</a></li>

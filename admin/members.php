@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-if (isset($_SESSION["username"])) {
+if (isset($_SESSION["admin"])) {
     $page_title = 'Members';
     include "init.php";
     include $tpl . "aside.php";

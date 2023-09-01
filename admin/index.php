@@ -1,7 +1,7 @@
 <?php
 session_start();
 $page_title = "Log in";
-if (isset($_SESSION["username"])) {
+if (isset($_SESSION["admin"])) {
     header("Location: dashboard.php");
     exit();
 }
@@ -26,8 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($count > 0) {
         $user_id = $query->fetchAll()[0][0];
-        $_SESSION["username"] = $username;
-        $_SESSION["userid"] = $user_id;
+        $_SESSION["admin"] = $username;
+        $_SESSION["adminid"] = $user_id;
+        $_SESSION["admin_session_id"] = $user_id;
         header("Location: dashboard.php");
         exit();
     }

@@ -1,0 +1,22 @@
+@use "../breakpoints" as *;
+
+.login {
+  max-width: 400px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.375em;
+  padding-top: 1rem;
+  h1 {
+    font-size: var(--fs-lg);
+    text-align: center;
+    font-family: "Montserrat", sans-serif !important;
+  }
+  > .btn {
+    display: block;
+    width: 100%;
+  }
+  > a {
+    font-size: var(--fs-sm);
+  }
+}

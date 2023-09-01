@@ -6,7 +6,7 @@ session_start();
 
 $page_title = "Items";
 
-if (isset($_SESSION["username"])) {
+if (isset($_SESSION["admin"])) {
 
     include "init.php";
     include $tpl . "aside.php";
@@ -14,6 +14,61 @@ if (isset($_SESSION["username"])) {
     $do = isset($_GET["do"]) ? $_GET["do"] : "Manage";
 
     switch ($do) {
+
+        case "Cover":
+            $id = isset($_GET["id"]) && is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+            $stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE item_id = ? LIMIT 1");
+            $stmt->execute(array($id));
+            $item_name = $stmt->fetch()["item_name"];
+            $count = $stmt->rowCount();
+
+            if ($count) {
+                $stmt = $conn->prepare("UPDATE items SET is_cover = 0");
+                $stmt->execute();
+                $stmt = $conn->prepare("UPDATE items SET is_cover = 1 WHERE item_id = ?");
+                $stmt->execute(array($id));
+                redirect("$item_name has been cover for main site", "back", 1, "success");
+            } else {
+                redirect("There is no item like this", "back", 2,);
+            }
+
+            break;
+
+        case "Special":
+            $id = isset($_GET["id"]) && is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+            $stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE item_id = ? LIMIT 1");
+            $stmt->execute(array($id));
+            $item_name = $stmt->fetch()["item_name"];
+            $count = $stmt->rowCount();
+
+            if ($count) {
+                $stmt = $conn->prepare("UPDATE items SET is_special = 1 WHERE item_id = ?");
+                $stmt->execute(array($id));
+                redirect("$item_name has been added to special list", "back", 1, "success");
+            } else {
+                redirect("There is no item like this", "back", 2,);
+            }
+
+            break;
+
+        case "Unspecial":
+
+            $id = isset($_GET["id"]) && is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+            $stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE item_id = ?");
+            $stmt->execute(array($id));
+            $item_name = $stmt->fetch()["item_name"];
+            $count = $stmt->rowCount();
+
+            if ($count) {
+                $stmt = $conn->prepare("UPDATE items SET is_special = 0 WHERE item_id = ?");
+                $stmt->execute(array($id));
+                redirect("$item_name has been removed from special list", "back", 2, "success");
+            } else {
+                redirect("There is no item like this", "back", 2,);
+            }
+
+            break;
+
         case "Manage";
 
             $stmt = $conn->prepare("SELECT 
@@ -27,7 +82,9 @@ if (isset($_SESSION["username"])) {
                                         users.full_name,
                                         items.user_id,
                                         items.add_date,
-                                        items.country_made
+                                        items.country_made,
+                                        items.is_cover,
+                                        items.is_special
                                     FROM 
                                         items
                                     LEFT JOIN
@@ -72,9 +129,17 @@ if (isset($_SESSION["username"])) {
                             foreach ($items as $item) {
                                 $status = $item["acceptable"] ? "Activated" : "Not Activated";
                                 $dimmed_class = $item["acceptable"] ? "" : "dimmed";
-                                $title = "Add Date: " . $item["add_date"] . "\nDescription: " . $item["item_desc"] . "\nMade in " . $item["country_made"];
+                                $is_special = $item["is_special"] ? "Special Item" : "";
+                                $is_cover = $item["is_cover"] ? "The Cover Item" : "";
+
+                                $title = "Add Date: " . $item["add_date"] .
+                                    "\nDescription: " . $item["item_desc"] .
+                                    "\nMade in " . $item["country_made"] .
+                                    "\n" . $is_special .
+                                    "\n" . $is_cover;
+
                                 echo "<tr class='" . $dimmed_class . "' title='" . $title . "'>";
-                                echo "<td>" . $item["item_id"] . "</td>";
+                                echo "<td data-special='" . $item["is_special"] . "' data-cover='" . $item["is_cover"] . "'>" . $item["item_id"] . "</td>";
                                 echo "<td>" . $item["item_name"] . "</td>";
                                 echo "<td>" . number_format($item["item_price"]) . "</td>";
                                 echo "<td>" . ($item["available"] === 1 ? "On" : "Off") . "</td>";
@@ -121,6 +186,13 @@ if (isset($_SESSION["username"])) {
                                 echo $item["acceptable"] === 0
                                     ? "<a class='btn btn-secondary confirm' href='?do=Activate&id=" . $item["item_id"] . "'>Activate</a>"
                                     : "<a class='btn btn-secondary confirm' href='?do=Deactivate&id=" . $item["item_id"] . "'>Deactivate</a>";
+
+                                !$item["is_cover"] && print "<a class='btn btn-secondary confirm' href='?do=Cover&id=" . $item["item_id"] . "'>Make it Cover</a>";
+
+                                echo $item["is_special"] === 0
+                                    ? "<a class='btn btn-secondary confirm' href='?do=Special&id=" . $item["item_id"] . "'>Add to Special</a>"
+                                    : "<a class='btn btn-secondary confirm' href='?do=Unspecial&id=" . $item["item_id"] . "'>Remove from special</a>";
+
                                 echo  "</div>";
                                 echo  "</td>";
                                 echo "</tr>";
@@ -150,6 +222,7 @@ if (isset($_SESSION["username"])) {
 
         <?php
             break;
+
         case "Add";
 
             $stmt = $conn->prepare("SELECT id,cat_name FROM categories");
@@ -322,6 +395,7 @@ if (isset($_SESSION["username"])) {
                 redirect("You can't browse this page directly", "items.php?do=Add", 1);
             }
             break;
+
         case "Edit";
 
             $id = isset($_GET["id"]) && is_numeric($_GET["id"]) ? $_GET["id"] : 0;
@@ -430,6 +504,19 @@ if (isset($_SESSION["username"])) {
                         </div>
                         <button type="submit" class="btn btn-primary" id="edit-items-submit" tabindex="11">Edit Item</button>
                     </form>
+                    <div class="btn-group">
+                        <a class="btn btn-success" href="items.php?do=Cover&id=<?php echo $id ?>" tabindex="12">Main Site Cover</a>
+                        <?php
+                        $stmt = $conn->prepare("SELECT is_special FROM items WHERE item_id = ? LIMIT 1");
+                        $stmt->execute(array($id));
+                        $is_special = $stmt->fetch()["is_special"];
+                        if ($is_special) :
+                        ?>
+                            <a class="btn btn-danger" href="items.php?do=Unspecial&id=<?php echo $id ?>" tabindex="13">Remove Special</a>
+                        <?php else : ?>
+                            <a class="btn btn-success" href="items.php?do=Special&id=<?php echo $id ?>" tabindex="13">Add to Special</a>
+                        <?php endif ?>
+                    </div>
                 </div>
 
                 <script>

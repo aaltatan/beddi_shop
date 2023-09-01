@@ -6,7 +6,7 @@ const itemsShow = document.getElementById("show-items");
 const categoriesContainer = document.getElementById("categories");
 const itemsContainer = document.getElementById("items");
 const modeBtn = document.getElementById("mode-btn");
-const shoppingCartBtn = document.getElementById("shopping-cart-btn");
+const shoppingCartBtn = document.querySelector("#shopping-cart-btn");
 const blurWall = document.getElementById("blur");
 const shoppingCartBtnClose = document.querySelector(
   "#shopping-cart .heading span"
@@ -60,18 +60,20 @@ document.querySelectorAll("nav .links > li > a").forEach((anchor) => {
   }
 });
 
-shoppingCartBtn.addEventListener("click", () => {
-  shoppingCartContainer.classList.toggle("opened");
-  blurWall.classList.toggle("opened");
-});
-shoppingCartBtnClose.addEventListener("click", () => {
-  shoppingCartContainer.classList.remove("opened");
-  blurWall.classList.remove("opened");
-});
-blurWall.addEventListener("click", () => {
-  shoppingCartContainer.classList.remove("opened");
-  blurWall.classList.remove("opened");
-});
+if (shoppingCartBtn) {
+  shoppingCartBtn.addEventListener("click", () => {
+    shoppingCartContainer.classList.toggle("opened");
+    blurWall.classList.toggle("opened");
+  });
+  shoppingCartBtnClose.addEventListener("click", () => {
+    shoppingCartContainer.classList.remove("opened");
+    blurWall.classList.remove("opened");
+  });
+  blurWall.addEventListener("click", () => {
+    shoppingCartContainer.classList.remove("opened");
+    blurWall.classList.remove("opened");
+  });
+}
 
 burgerBtn.addEventListener("click", () => {
   navBarList.classList.toggle("opened");
@@ -123,6 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("keydown", (e) => {
   if (e.code === "Escape") {
     searchCloseBtn.click();
-    shoppingCartBtnClose.click();
+    shoppingCartBtn && shoppingCartBtnClose.click();
   }
 });

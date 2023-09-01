@@ -49,6 +49,8 @@ try {
         user_id INT(11) NOT NULL,
         available TINYINT DEFAULT 0,
         acceptable TINYINT DEFAULT 0,
+        is_special TINYINT DEFAULT 0,
+        is_cover TINYINT DEFAULT 0,
         CONSTRAINT fk_cat_id FOREIGN KEY (cat_id) REFERENCES categories(id),
         CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
     );
@@ -83,6 +85,15 @@ try {
         categories.id = items.cat_id;
     -- Creating a view to get count of all pending items
     CREATE VIEW IF NOT EXISTS pending_items AS SELECT item_id FROM items WHERE acceptable = 0;
+    -- Creating Shopping Cart Table
+    CREATE TABLE IF NOT EXISTS cart(
+        user_id INT(11) NOT NULL,
+        item_id INT(11) NOT NULL,
+        quantity INT(11) NOT NULL DEFAULT 1,
+        add_date DATETIME NOT NULL DEFAULT NOW(),
+        CONSTRAINT fk_cart_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
+        CONSTRAINT fk_cart_item_id FOREIGN KEY (item_id) REFERENCES items(item_id)
+    );
     ");
 
     $stmt = $conn->prepare("SELECT username FROM users;");

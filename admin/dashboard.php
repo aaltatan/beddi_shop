@@ -1,7 +1,7 @@
 <?php
 session_start();
 $page_title = "Dashboard";
-if (isset($_SESSION["username"])) {
+if (isset($_SESSION["admin"])) {
     include "init.php";
     include $tpl . "aside.php";
 
@@ -84,6 +84,13 @@ if (isset($_SESSION["username"])) {
                     </a>
                 <?php endif ?>
 
+                <?php if (getCount("items", "is_special") > 0) : ?>
+                    <a href="items.php" class="count-card">
+                        <span>Total Specials</span>
+                        <p><?php echo getCount("items", "is_special") ?></p>
+                    </a>
+                <?php endif ?>
+
             </div>
         </section>
 
@@ -156,7 +163,87 @@ if (isset($_SESSION["username"])) {
         </section>
 
         <section class="gallery flow">
-            <h2>Gallery</h2>
+            <h2>Special Items</h2>
+            <div class="wrapper">
+                <?php
+                $stmt = $conn->prepare("SELECT 
+                                            items.item_name,
+                                            items.item_id,
+                                            items_images.img
+                                        FROM
+                                            items_images
+                                        LEFT JOIN
+                                            items
+                                        ON
+                                            items.item_id = items_images.item_id
+                                        WHERE
+                                            items.acceptable = 1
+                                        AND
+                                            items.is_special = 1
+                                        ORDER BY
+                                            items.add_date
+                                        DESC
+                                        LIMIT
+                                            24
+                ");
+                $stmt->execute();
+                $data = $stmt->fetchAll();
+                foreach ($data as $item) :
+                ?>
+                    <a class="gallery-card" href="<?php echo 'items.php?do=Edit&id=' . $item['item_id'] ?>">
+                        <div class="image">
+                            <?php echo "<img src='" . $item["img"] . "' alt='dasdasd'>" ?>
+                        </div>
+                        <div class="info">
+                            <?php echo "<p>" . $item["item_name"] . "</p>" ?>
+                        </div>
+                    </a>
+                <?php endforeach ?>
+            </div>
+        </section>
+
+        <section class="gallery flow">
+            <h2>Cover Item</h2>
+            <div class="wrapper">
+                <?php
+                $stmt = $conn->prepare("SELECT 
+                                            items.item_name,
+                                            items.item_id,
+                                            items_images.img
+                                        FROM
+                                            items_images
+                                        LEFT JOIN
+                                            items
+                                        ON
+                                            items.item_id = items_images.item_id
+                                        WHERE
+                                            items.acceptable = 1
+                                        AND
+                                            items.is_cover = 1
+                                        ORDER BY
+                                            items.add_date
+                                        DESC
+                                        LIMIT
+                                            24
+                ");
+                $stmt->execute();
+                $data = $stmt->fetchAll();
+                foreach ($data as $item) :
+                ?>
+                    <a class="gallery-card" href="<?php echo 'items.php?do=Edit&id=' . $item['item_id'] ?>">
+                        <div class="image">
+                            <?php echo "<img src='" . $item["img"] . "' alt='dasdasd'>" ?>
+                        </div>
+                        <div class="info">
+                            <?php echo "<p>" . $item["item_name"] . "</p>" ?>
+                        </div>
+                    </a>
+                <?php endforeach ?>
+            </div>
+        </section>
+
+        <section class="gallery flow">
+            <h2>Last Items</h2>
             <div class="wrapper">
                 <?php
                 $stmt = $conn->prepare("SELECT 

@@ -199,6 +199,18 @@
       padding: 0.25em 0.5em;
       text-align: left;
     }
+    td[data-special="1"] {
+      position: relative;
+      &::after {
+        content: "⭐";
+      }
+    }
+    td[data-cover="1"] {
+      position: relative;
+      &::before {
+        content: "🖼️";
+      }
+    }
     td.td-images {
       display: flex;
       align-items: center;
@@ -282,6 +294,11 @@
   }
 }
 
+tr:first-of-type td.dots .list {
+  top: 0;
+  bottom: auto;
+}
+
 .dots {
   position: relative;
   width: 30px;
@@ -318,7 +335,7 @@
     align-items: center;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: hidden;
     transform: scale(0);
     transform-origin: right center;
     transition: 150ms;
@@ -351,4 +368,10 @@
       text-decoration: underline;
     }
   }
+}
+.btn-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
 }

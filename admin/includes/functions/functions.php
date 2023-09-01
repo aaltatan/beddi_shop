@@ -15,10 +15,15 @@ function redirect($msg, $page, $sec = 3, $type = "danger")
     exit();
 }
 
-function getCount($tbl)
+function getCount($tbl, $where = "")
 {
     global $conn;
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM " . $tbl);
+    if ($where === "") {
+        $query = "SELECT COUNT(*) FROM " . $tbl;
+    } else {
+        $query = "SELECT COUNT(*) FROM " . $tbl . " WHERE " . $where;
+    }
+    $stmt = $conn->prepare($query);
     $stmt->execute();
     return number_format($stmt->fetch()[0]);
 }

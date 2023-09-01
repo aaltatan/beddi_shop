@@ -1,15 +1,3 @@
-<?php
-
-$stmt = $conn->prepare("SELECT id,cat_name FROM categories");
-$stmt->execute();
-$categories = $stmt->fetchAll();
-
-$stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE acceptable = 1");
-$stmt->execute();
-$items = $stmt->fetchAll();
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,10 +10,10 @@ $items = $stmt->fetchAll();
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./layout/css/main.css">
   <link rel="stylesheet" href="./layout/fontawesome/all.min.css">
-  <title>Beddi Shop</title>
+  <title><?php echo pageTitle() ?></title>
 </head>
 
-<body>
+<body data-user-id="<?php isset($_SESSION["user_session_id"]) && print $_SESSION["user_session_id"] ?>">
 
   <header>
     <div class="special">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio, doloremque?</div>
@@ -67,7 +55,7 @@ $items = $stmt->fetchAll();
             ?>
           </ul>
         </li>
-        <li><a href="#" aria-current="false">Special</a></li>
+        <li><a href="#specials" aria-current="false">Special</a></li>
       </ul>
       <ul class="icons">
         <li>
@@ -75,11 +63,24 @@ $items = $stmt->fetchAll();
             <i class="fa-solid fa-magnifying-glass"></i>
           </a>
         </li>
-        <li>
-          <a href="login.php" title="User Profile">
-            <i class="fa-regular fa-circle-user"></i>
-          </a>
-        </li>
+        <?php if (isset($_SESSION["user"])) : ?>
+          <li>
+            <a href="profile.php" title="<?php echo 'Profile ' . $_SESSION['user'] ?>">
+              <i class="fa-regular fa-circle-user"></i>
+            </a>
+          </li>
+          <li>
+            <a href="logout.php" title="<?php echo 'Logout ' . $_SESSION['user'] ?>">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+          </li>
+        <?php else : ?>
+          <li>
+            <a href="login.php" title="Login">
+              <i class="fa-regular fa-circle-user"></i>
+            </a>
+          </li>
+        <?php endif ?>
         <li>
           <a href="#" id="mode-btn" data-theme-dark="true" style="text-decoration:none;" title="light\dark mode">
             <i class="fa-regular fa-lightbulb" style="color:gold;"></i>
@@ -87,48 +88,39 @@ $items = $stmt->fetchAll();
           </a>
         </li>
       </ul>
-      <a href="#" id="shopping-cart-btn" title="Your Cart">
-        <span>0</span>
-        <i class="fa-solid fa-cart-shopping"></i>
-      </a>
+
       <div class="burger"></div>
+
+      <?php if (isset($_SESSION["user"])) : ?>
+        <span href="#" id="shopping-cart-btn" title="Your Cart">
+          <span id="shopping-cart-count">0</span>
+          <i class="fa-solid fa-cart-shopping"></i>
+        </span>
+      <?php endif ?>
+
     </nav>
   </header>
 
   <div class="blur" id="blur"></div>
 
-  <aside class="shopping-cart" id="shopping-cart">
-    <div class="heading">
-      <h1>Your Cart</h1>
-      <span>×</span>
-    </div>
-    <div class="body">
-      <div class="item">
-        <img src="data/uploads/64e9b6542fc6a_product-06-03.jpg" alt="">
-        <div class="info">
-          <div class="row-1">
-            <span>Title</span>
-            <span><i class="fa-solid fa-trash" title="Remove Item"></i></span>
-          </div>
-          <div class="row-2">
-            <div class="control">
-              <span><i class="fa-solid fa-plus-square"></i></span>
-              <span><i class="fa-solid fa-minus-square"></i></span>
-            </div>
-            <span>150,000</span>
-          </div>
+  <?php if (isset($_SESSION["user"])) : ?>
+    <aside class="shopping-cart" id="shopping-cart">
+      <div class="heading">
+        <h1>Your Cart</h1>
+        <span>×</span>
+      </div>
+      <div class="body">
+      </div>
+      <div class="footer flow">
+        <div class="subtotal">
+          <span>Subtotal</span>
+          <span id="shopping-cart-total"></span>
         </div>
+        <p>Shipping and taxes calculated at checkout.</p>
+        <a href="#" class="btn btn-primary">Checkout</a>
       </div>
-    </div>
-    <div class="footer flow">
-      <div class="subtotal">
-        <span>Subtotal</span>
-        <span>650,000</span>
-      </div>
-      <p>Shipping and taxes calculated at checkout.</p>
-      <a href="#" class="btn btn-primary">Checkout</a>
-    </div>
-  </aside>
+    </aside>
+  <?php endif ?>
 
   <div class="search-container">
     <span>×</span>
@@ -151,7 +143,7 @@ $items = $stmt->fetchAll();
 
         echo "<li>";
         echo    "<a href='items.php?do=Edit&id=" . $item['item_id'] . "' tabindex='51'>";
-        echo        "<img src='data/uploads/64e9b6542fc6a_product-06-03.jpg' alt='' >";
+        echo        "<img src='data/uploads/64ea18a807e4b_product-05-02.jpg' alt='' >";
         echo        "<p>" . $item['item_name'] . "</p>";
         echo    "</a>";
         echo "</li>";
