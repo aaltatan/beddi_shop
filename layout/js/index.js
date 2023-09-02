@@ -35,6 +35,7 @@ addToCartBtns.forEach((addToCartBtn) => {
   addToCartBtn.addEventListener("click", () => {
     let itemId = addToCartBtn.getAttribute("data-item-id");
     addToCart(itemId);
+    shoppingCartBtn.click();
   });
 });
 
@@ -43,14 +44,14 @@ likeBtns.forEach((btn) => {
     let itemId = btn.parentElement.getAttribute("data-item-id");
     let isLiked = btn.parentElement.getAttribute("data-is-liked");
     if (isLiked === "1") {
-      fetch(`api/likes.php?do=Unlike&userid=${userId}&itemid=${itemId}`).then(
-        (data) => data
-      );
+      fetch(`./api/likes.php?do=Unlike&userid=${userId}&itemid=${itemId}`)
+        .then((res) => res.text())
+        .then((data) => data);
       btn.parentElement.setAttribute("data-is-liked", "0");
     } else {
-      fetch(`api/likes.php?do=Like&userid=${userId}&itemid=${itemId}`).then(
-        (data) => data
-      );
+      fetch(`./api/likes.php?do=Like&userid=${userId}&itemid=${itemId}`)
+        .then((res) => res.text())
+        .then((data) => data);
       btn.parentElement.setAttribute("data-is-liked", "1");
     }
   });
@@ -109,9 +110,9 @@ function checker(current, images, lis) {
 async function getCart() {
   const res = await fetch(`./api/cart.php?do=Get&userid=${userId}`);
   const data = await res.json();
-  shoppingCartCountSpan.innerHTML = data.length;
 
-  shoppingCartBody.innerHTML = "";
+  if (shoppingCartCountSpan) shoppingCartCountSpan.innerHTML = data.length;
+  if (shoppingCartBody) shoppingCartBody.innerHTML = "";
 
   let total = 0;
 
@@ -182,7 +183,7 @@ async function getCart() {
     total += totalItem;
   }
 
-  shoppingCartTotal.innerHTML = total.toLocaleString();
+  if (shoppingCartTotal) shoppingCartTotal.innerHTML = total.toLocaleString();
 
   return data;
 }

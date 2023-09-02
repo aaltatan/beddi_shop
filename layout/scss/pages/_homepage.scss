@@ -90,7 +90,7 @@
       .info {
         flex-basis: 85%;
       }
-      > a {
+      > button {
         flex-basis: 15%;
       }
       .info span:first-of-type {
@@ -125,12 +125,15 @@
   }
 }
 
+.quote {
+  margin-top: 2em;
+}
 .quote .wrapper {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(40px);
   transition: 500ms;
   p {
-    padding: 1em 2em;
+    padding: 0 1em 1em;
     font-weight: 300;
     text-transform: uppercase;
     font-size: var(--fs-lg);
@@ -228,9 +231,15 @@ main > section {
   gap: 1em;
   padding: 1em;
   overflow-x: auto;
+  border: 1px solid var(--clr-bg-light);
+  border-radius: 8px;
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
   .item-card {
     flex: 1 0 250px;
     position: relative;
+    max-width: 250px;
     aspect-ratio: 1/1;
     overflow: hidden;
     border-radius: 16px;

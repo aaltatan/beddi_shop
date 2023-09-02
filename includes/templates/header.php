@@ -143,7 +143,7 @@
 
         echo "<li>";
         echo    "<a href='items.php?do=Edit&id=" . $item['item_id'] . "' tabindex='51'>";
-        echo        "<img src='data/uploads/64ea18a807e4b_product-05-02.jpg' alt='' >";
+        echo        "<img src='" . substr($img["img"], 1) . "' alt='' >";
         echo        "<p>" . $item['item_name'] . "</p>";
         echo    "</a>";
         echo "</li>";

@@ -2,7 +2,7 @@
 
 ob_start();
 
-include "init.php";
+include "../admin/connect.php";
 
 $do = isset($_GET["do"]) ? $_GET["do"] : "Manage";
 
