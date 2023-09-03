@@ -49,7 +49,7 @@
             <?php
             foreach ($items as $item) {
               echo "<li>";
-              echo "<a href='item.php&id=" . $item["item_id"] . "'>" . $item["item_name"] . "</a>";
+              echo "<a href='items.php?id=" . $item["item_id"] . "'>" . $item["item_name"] . "</a>";
               echo "</li>";
             }
             ?>
@@ -118,6 +118,7 @@
         </div>
         <p>Shipping and taxes calculated at checkout.</p>
         <a href="#" class="btn btn-primary">Checkout</a>
+        <img src="layout\images\payment.png" alt="" />
       </div>
     </aside>
   <?php endif ?>

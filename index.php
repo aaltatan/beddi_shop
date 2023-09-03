@@ -1,4 +1,5 @@
 <?php
+ob_start();
 
 session_start();
 
@@ -9,7 +10,8 @@ $stmt = $conn->prepare("SELECT
                             items.item_id,
                             items_images.img,
                             items.item_name,
-                            items.item_price
+                            items.item_price,
+                            items.offer_price
                         FROM 
                             items_images 
                         LEFT JOIN 
@@ -26,11 +28,16 @@ $images_count = $stmt->rowCount();
 $stmt = $conn->prepare("SELECT 
                             item_id,
                             item_name,
-                            item_price
+                            item_price,
+                            offer_price
                         FROM
                             items
                         WHERE
                             is_special = 1
+                        AND 
+                            items.acceptable = 1 
+                        AND 
+                            items.available
                         ");
 
 $stmt->execute();
@@ -57,7 +64,7 @@ $specials = $stmt->fetchAll();
         <div class="info">
             <a href="items.php?id=<?php echo $image["item_id"] ?>">
                 <span><?php echo $image["item_name"] ?></span>
-                <span><?php echo number_format($image["item_price"]) ?></span>
+                <span><?php echo $image["offer_price"] ? number_format($image["offer_price"]) : number_format($image["item_price"]) ?></span>
             </a>
         </div>
         <?php if (isset($_SESSION["user_session_id"])) : ?>
@@ -107,7 +114,7 @@ $specials = $stmt->fetchAll();
                     <?php endif ?>
                     <div class="price">
                         <span><?php echo $special["item_name"] ?></span>
-                        <span><?php echo number_format($special["item_price"]) ?></span>
+                        <span><?php echo $special["offer_price"] ? number_format($special["offer_price"]) : number_format($special["item_price"]) ?></span>
                     </div>
                     <div class="btns-group">
                         <?php if (isset($_SESSION["user_session_id"])) : ?>
@@ -135,8 +142,8 @@ $specials = $stmt->fetchAll();
                                         id as cat_id,
                                         cat_name,
                                         cat_desc,
-                                        (SELECT item_id FROM items WHERE items.cat_id = id LIMIT 1) as item_id_gen,
-                                        (SELECT item_name FROM items WHERE items.cat_id = id LIMIT 1) as item_name,
+                                        (SELECT item_id FROM items WHERE items.cat_id = id AND items.acceptable = 1 AND items.available LIMIT 1) as item_id_gen,
+                                        (SELECT item_name FROM items WHERE items.cat_id = id AND items.acceptable = 1 AND items.available LIMIT 1) as item_name,
                                         (SELECT img FROM items_images WHERE items_images.item_id = item_id_gen LIMIT 1) as item_image
                                     FROM
                                         categories
@@ -231,8 +238,59 @@ $specials = $stmt->fetchAll();
     </div>
 </section>
 
+<section class="all-items" id="all-items">
+    <div class="heading">
+        <h1 class="observe">All Items</h1>
+        <p>Our Collection.</p>
+    </div>
+    <div class="wrapper">
+        <div class="all-items-container">
+            <?php
+            $stmt = $conn->prepare("SELECT 
+                                item_id,
+                                item_name,
+                                item_price,
+                                offer_price
+                            FROM
+                                items
+                            WHERE
+                                acceptable = 1
+                            AND
+                                available = 1
+                            ");
+            $stmt->execute();
+            $items = $stmt->fetchAll();
+            foreach ($items as $item) :
+            ?>
+                <div class="item-card observe">
+                    <div class="images">
+                        <?php
+                        $stmt = $conn->prepare("SELECT img FROM items_images WHERE item_id = ? LIMIT 2");
+                        $stmt->execute(array($item["item_id"]));
+                        $images = $stmt->fetchAll();
+                        foreach ($images as $image) :
+                        ?>
+                            <img src="<?php echo substr($image["img"], 1) ?>" alt="dasd">
+                        <?php endforeach ?>
+                        <?php if (isset($_SESSION["user_session_id"])) : ?>
+                            <button data-role="add-to-cart" data-item-id="<?php echo $item["item_id"] ?>" class="btn btn-primary">Add to Cart</button>
+                        <?php else : ?>
+                            <a href="login.php" class="btn btn-primary">Add to Cart</a>
+                        <?php endif ?>
+                    </div>
+                    <a href="items.php?id=<?php echo $item["item_id"] ?>">
+                        <span><?php echo $item["item_name"] ?></span>
+                        <span><?php echo $item["offer_price"] ? number_format($item["offer_price"]) : number_format($item["item_price"]) ?></span>
+                    </a>
+                </div>
+            <?php endforeach ?>
+        </div>
+    </div>
+</section>
+
 <script src="layout/js/index.js"></script>
 
 <?php
 include $tpl . "footer.php";
+ob_end_flush();
 ?>
