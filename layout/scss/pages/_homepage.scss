@@ -1,5 +1,51 @@
 @use "../breakpoints" as *;
 
+.login-reminder {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 2010;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 1em 3em;
+  width: 100%;
+  background-color: var(--clr-bg-light);
+  &.closed {
+    display: none;
+  }
+  .links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25em;
+  }
+  span {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--fs-xl);
+    cursor: pointer;
+    isolation: isolate;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 150%;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+    }
+    &:hover::before {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
 .image-slider {
   position: relative;
   margin-top: 6rem;

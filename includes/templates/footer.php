@@ -60,6 +60,7 @@
             </a>
         </div>
 </footer>
+
 <script>
     const observedElementss = document.querySelectorAll(".observe");
     const elementsObservers = new IntersectionObserver((entries) => {
@@ -72,10 +73,12 @@
         });
     });
     observedElementss.forEach((observedElement) => {
-        elementsObserver.observe(observedElement);
+        elementsObservers.observe(observedElement);
     });
 </script>
+
 <script src="./layout/js/layout.js"></script>
+
 </body>
 
 </html>

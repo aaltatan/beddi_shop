@@ -49,7 +49,7 @@
             <?php
             foreach ($items as $item) {
               echo "<li>";
-              echo "<a href='items.php?id=" . $item["item_id"] . "'>" . $item["item_name"] . "</a>";
+              echo "<a href='items.php?id=" . $item["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $item["item_name"])) . "'>" . $item["item_name"] . "</a>";
               echo "</li>";
             }
             ?>
@@ -132,7 +132,7 @@
       $current_page = explode("/", $_SERVER["PHP_SELF"]);
       $current_page = end($current_page);
 
-      $stmt = $conn->prepare("SELECT * FROM items WHERE acceptable = 1");
+      $stmt = $conn->prepare("SELECT * FROM items WHERE acceptable = 1 AND available = 1");
       $stmt->execute();
       $data = $stmt->fetchAll();
 
@@ -141,9 +141,8 @@
         $stmt = $conn->prepare("SELECT img FROM items_images WHERE item_id = ? LIMIT 1");
         $stmt->execute(array($item["item_id"]));
         $img = $stmt->fetch();
-
         echo "<li>";
-        echo    "<a href='items.php?do=Edit&id=" . $item['item_id'] . "' tabindex='51'>";
+        echo    "<a href='items.php?id=" . $item['item_id'] . "&itemname=" . str_replace(" ", "_", $item["item_name"]) .  "' tabindex='51'>";
         echo        "<img src='" . substr($img["img"], 1) . "' alt='' >";
         echo        "<p>" . $item['item_name'] . "</p>";
         echo    "</a>";

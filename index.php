@@ -45,6 +45,17 @@ $specials = $stmt->fetchAll();
 
 ?>
 
+<?php if (!isset($_SESSION["user_session_id"])) : ?>
+    <div class="login-reminder">
+        <p>You need to login/register to be able to purchase</p>
+        <div class="links">
+            <a href="login.php" class="btn btn-primary">Log in</a>
+            <a href="register.php" class="btn btn-primary">Register</a>
+        </div>
+        <span>×</span>
+    </div>
+<?php endif ?>
+
 <section class="image-slider">
     <div class="images">
         <?php foreach ($images as $image) : ?>
@@ -62,7 +73,7 @@ $specials = $stmt->fetchAll();
     </div>
     <div class="title">
         <div class="info">
-            <a href="items.php?id=<?php echo $image["item_id"] ?>">
+            <a href="items.php?id=<?php echo $image["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $image["item_name"])) ?>">
                 <span><?php echo $image["item_name"] ?></span>
                 <span><?php echo $image["offer_price"] ? number_format($image["offer_price"]) : number_format($image["item_price"]) ?></span>
             </a>
@@ -122,7 +133,7 @@ $specials = $stmt->fetchAll();
                         <?php else : ?>
                             <a href="login.php" class="btn btn-primary">Add to Cart</a>
                         <?php endif ?>
-                        <a href="items.php?id=<?php echo $special["item_id"] ?>" class="btn btn-secondary">Details</a>
+                        <a href="items.php?id=<?php echo $special["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $special["item_name"])) ?>" class="btn btn-secondary">Details</a>
                     </div>
                 </div>
             </div>
@@ -226,7 +237,7 @@ $specials = $stmt->fetchAll();
                 <span><?php echo round((($offer["item_price"] - $offer["offer_price"]) / $offer["item_price"]) * 100, 0) ?>%</span>
                 <img src="<?php echo substr($offer["img"], 1) ?>" alt="">
                 <div class="text">
-                    <a href="<?php echo 'items.php?id=' . $offer["item_id"] ?>"><?php echo $offer["item_name"] ?></a>
+                    <a href="<?php $offer["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $offer["item_name"])) ?>"><?php echo $offer["item_name"] ?></a>
                     <a href="<?php echo 'categories.php?id=' . $offer["cat_id"] ?>"><?php echo $offer["cat_name"] ?></a>
                     <div class="price">
                         <span><?php echo number_format($offer["offer_price"]) ?></span>
@@ -278,7 +289,7 @@ $specials = $stmt->fetchAll();
                             <a href="login.php" class="btn btn-primary">Add to Cart</a>
                         <?php endif ?>
                     </div>
-                    <a href="items.php?id=<?php echo $item["item_id"] ?>">
+                    <a href="items.php?id=<?php echo $item["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $item["item_name"])) ?>">
                         <span><?php echo $item["item_name"] ?></span>
                         <span><?php echo $item["offer_price"] ? number_format($item["offer_price"]) : number_format($item["item_price"]) ?></span>
                     </a>
@@ -289,6 +300,7 @@ $specials = $stmt->fetchAll();
 </section>
 
 <script src="layout/js/index.js"></script>
+<script src="layout/js/shoppingCart.js"></script>
 
 <?php
 include $tpl . "footer.php";

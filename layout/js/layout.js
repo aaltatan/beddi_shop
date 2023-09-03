@@ -1,3 +1,4 @@
+var userId = +document.body.getAttribute("data-user-id");
 const burgerBtn = document.querySelector(".burger");
 const navBarList = document.querySelector("header nav .links");
 const navBarIcons = document.querySelector("header nav .icons");
