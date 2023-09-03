@@ -43,6 +43,7 @@ try {
         item_name VARCHAR(255) UNIQUE,
         item_desc TEXT,
         item_price INT(11) NOT NULL,
+        offer_price INT(11) NOT NULL DEFAULT 0,
         add_date DATETIME NOT NULL,
         country_made VARCHAR(255) NOT NULL,
         cat_id INT(11) NOT NULL,

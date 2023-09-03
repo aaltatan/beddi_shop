@@ -76,6 +76,7 @@ if (isset($_SESSION["admin"])) {
                                         items.item_name,
                                         items.item_desc,
                                         items.item_price,
+                                        items.offer_price,
                                         items.available,
                                         items.acceptable,
                                         categories.cat_name,
@@ -116,6 +117,7 @@ if (isset($_SESSION["admin"])) {
                                 <th>ID</th>
                                 <th>Title</th>
                                 <th>Price</th>
+                                <th>Offer Price</th>
                                 <th>Availability</th>
                                 <th>Acceptable</th>
                                 <th>Category</th>
@@ -142,6 +144,7 @@ if (isset($_SESSION["admin"])) {
                                 echo "<td data-special='" . $item["is_special"] . "' data-cover='" . $item["is_cover"] . "'>" . $item["item_id"] . "</td>";
                                 echo "<td>" . $item["item_name"] . "</td>";
                                 echo "<td>" . number_format($item["item_price"]) . "</td>";
+                                echo "<td>" . number_format($item["offer_price"]) . "</td>";
                                 echo "<td>" . ($item["available"] === 1 ? "On" : "Off") . "</td>";
                                 echo "<td>" . ($item["acceptable"] === 1 ? "On" : "Off") . "</td>";
                                 echo "<td>" . $item["cat_name"] . "</td>";
@@ -444,6 +447,10 @@ if (isset($_SESSION["admin"])) {
                                 <label for="edit-items-price">Price</label>
                             </div>
                             <div class="form-input">
+                                <input type="number" name="offerprice" id="edit-items-offer-price" placeholder="Offer Price" autocomplete="off" tabindex="3" min="0" value="<?php echo $item["offer_price"] ?>">
+                                <label for="edit-items-offer-price">Offer Price</label>
+                            </div>
+                            <div class="form-input">
                                 <input type="text" name="country" id="edit-items-country" placeholder="Country" autocomplete="off" tabindex="4" value="<?php echo $item["country_made"] ?>" required>
                                 <label for="edit-items-country">Country</label>
                             </div>
@@ -607,7 +614,9 @@ if (isset($_SESSION["admin"])) {
                 !preg_match($description_title_re, $title) && $errorArr[] = "<strong>Title</strong> must be between 4 and 50 characters";
                 !preg_match($description_title_re, $description) && $errorArr[] = "<strong>Description</strong> must be between 4 and 50 characters";
                 !preg_match($price_order_re, $price) && $errorArr[] = "<strong>Price</strong> must be positive number";
+                !preg_match($price_order_re, $offerprice) && $errorArr[] = "<strong>Offer Price</strong> must be positive number";
                 !preg_match($name_country_re, $country) && $errorArr[] = "<strong>Country</strong> must be one Capitalized Word between 4 and 20 characters";
+                $offerprice >= $price && $errorArr[] = "<strong>Offer Price</strong> must be less than <strong>Price</strong>";
 
                 if (count($errorArr)) {
                     echo "<ul class='error-msgs'>";
@@ -638,6 +647,7 @@ if (isset($_SESSION["admin"])) {
                                                 item_name = ?,
                                                 item_desc = ?,
                                                 item_price = ?,
+                                                offer_price = ?,
                                                 country_made = ?,
                                                 cat_id = ?,
                                                 user_id = ?,
@@ -645,7 +655,7 @@ if (isset($_SESSION["admin"])) {
                                             WHERE
                                                 item_id = ?
                                             ");
-                    $stmt->execute(array($title, $description, $price, $country, $category, $user, $available, $item_id));
+                    $stmt->execute(array($title, $description, $price, $offerprice, $country, $category, $user, $available, $item_id));
 
                     if ($_FILES['images']['name'][0]) {
                         $fileCount = count($_FILES['images']['name']);
@@ -710,6 +720,7 @@ if (isset($_SESSION["admin"])) {
                                         items.item_name,
                                         items.item_desc,
                                         items.item_price,
+                                        items.offer_price,
                                         items.available,
                                         items.acceptable,
                                         categories.cat_name,
@@ -745,6 +756,7 @@ if (isset($_SESSION["admin"])) {
                                 <th>ID</th>
                                 <th>Title</th>
                                 <th>Price</th>
+                                <th>Offer Price</th>
                                 <th>Availability</th>
                                 <th>Acceptable</th>
                                 <th>Category</th>
@@ -763,6 +775,7 @@ if (isset($_SESSION["admin"])) {
                                 echo "<td>" . $item["item_id"] . "</td>";
                                 echo "<td>" . $item["item_name"] . "</td>";
                                 echo "<td>" . number_format($item["item_price"]) . "</td>";
+                                echo "<td>" . number_format($item["offer_price"]) . "</td>";
                                 echo "<td>" . ($item["available"] === 1 ? "On" : "Off") . "</td>";
                                 echo "<td>" . ($item["acceptable"] === 1 ? "On" : "Off") . "</td>";
                                 echo "<td>" . $item["cat_name"] . "</td>";

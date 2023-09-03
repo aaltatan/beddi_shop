@@ -32,7 +32,7 @@
       <ul class="links">
         <li><a href="index.php" aria-current="false">Home</a></li>
         <li>
-          <a href="#" id="show-categories" aria-current="false">Categories</a>
+          <a href="index.php#categories-container" id="show-categories" aria-current="false">Categories</a>
           <ul class="categories" id="categories">
             <?php
             foreach ($categories as $cat) {

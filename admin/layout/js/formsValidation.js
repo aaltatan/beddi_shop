@@ -20,6 +20,7 @@ export class Validate {
   validateInput(inputName) {
     const input = document.getElementsByName(inputName)[0];
     let re, msg;
+    console.log(inputName);
     switch (inputName) {
       case "username":
         re = /^[a-z]+[a-z0-9\.]{4,20}$/;
@@ -54,6 +55,7 @@ export class Validate {
         input.focus();
         break;
       case "order":
+      case "offerprice":
       case "price":
         re = /^\d+$/;
         msg = inputName + " must be positive number";
