@@ -51,57 +51,61 @@ if ($count) :
     $data = $stmt->fetch();
 
 ?>
-    <div class="items-item-container">
-        <div class="images">
+    <div class="main-container flow">
+
+        <div class="items-item-container">
             <?php
             $stmt = $conn->prepare("SELECT img FROM items_images WHERE item_id = ?");
             $stmt->execute(array($item_id));
             $images = $stmt->fetchAll();
             $images_count = $stmt->rowCount();
             ?>
-            <div class="sub-images flow">
-                <?php for ($i = 0; $i < $images_count; $i++) : ?>
-                    <img src="<?php echo substr($images[$i]["img"], 1) ?>" alt="dasd">
-                <?php endfor ?>
+            <div class="images">
+                <div class="sub-images flow">
+                    <?php for ($i = 0; $i < $images_count; $i++) : ?>
+                        <img src="<?php echo substr($images[$i]["img"], 1) ?>" alt="dasd">
+                    <?php endfor ?>
+                </div>
+                <img src="<?php echo substr($images[0]["img"], 1) ?>" alt="">
             </div>
-            <img src="<?php echo substr($images[0]["img"], 1) ?>" alt="">
-        </div>
-        <div class="info">
-            <a href="categories.php?id=<?php echo $data["cat_id"] ?>"><?php echo $data["cat_name"] ?></a>
-            <div class="title">
-                <h1><?php echo $data["item_name"] ?></h1>
-                <span class="likes"><?php echo $data["likes"] ?></span>
-                <?php if ($data["is_special"]) : ?>
-                    <span class="special"><?php echo $data["is_special"] ?></span>
+            <div class="info">
+                <div class="title">
+                    <h1><?php echo $data["item_name"] ?></h1>
+                    <a href="categories.php?id=<?php echo $data["cat_id"] ?>">(<?php echo $data["cat_name"] ?>)</a>
+                    <span class="likes"><i class="fa-solid fa-heart" style="color:var(--clr-danger-base);"></i> <small>(<?php echo $data["likes"] ?>)</small></span>
+                    <?php if ($data["is_special"]) : ?>
+                        <span class="special"><i class="fa-solid fa-star" title="Special Item" style="color:gold;"></i></span>
+                    <?php endif ?>
+                </div>
+                <div class="price">
+                    <span><?php echo number_format($data["item_price"]) ?></span>
+                    <?php if ($data["offer_price"]) : ?>
+                        <span><?php echo number_format($data["offer_price"]) ?></span>
+                    <?php endif ?>
+                </div>
+                <p class="desc">
+                    <?php echo $data["item_desc"] ?>
+                </p>
+                <span class="country">
+                    <?php echo $data["country_made"] ?>
+                </span>
+                <span class="add-date">
+                    <?php echo explode(" ", $data["add_date"])[0] ?>
+                </span>
+                <span class="user">
+                    By <?php echo $data["full_name"] ?>
+                </span>
+                <?php if (isset($_SESSION["user_session_id"])) : ?>
+                    <button data-role="add-to-cart" data-item-id="<?php echo $data["main_id"] ?>" class="btn btn-primary">Add to Cart</button>
                 <?php endif ?>
             </div>
-            <div class="price">
-                <span><?php echo $data["item_price"] ?></span>
-                <?php if ($data["offer_price"]) : ?>
-                    <span><?php echo $data["offer_price"] ?></span>
-                <?php endif ?>
-            </div>
-            <p class="desc">
-                <?php echo $data["item_desc"] ?>
-            </p>
-            <span class="country">
-                <?php echo $data["country_made"] ?>
-            </span>
-            <span class="add-date">
-                <?php echo explode(" ", $data["add_date"])[0] ?>
-            </span>
-            <span class="user">
-                By <?php echo $data["full_name"] ?>
-            </span>
-            <?php if (isset($_SESSION["user_session_id"])) : ?>
-                <button data-role="add-to-cart" data-item-id="<?php echo $data["main_id"] ?>" class="btn btn-primary">Add to Cart</button>
-            <?php endif ?>
         </div>
-    </div>
 
-    <div class="more-cat">
-        <?php
-        $stmt = $conn->prepare("SELECT 
+        <div class="more-cat">
+            <h2>More from this category: </h2>
+            <div class="more-cat-container">
+                <?php
+                $stmt = $conn->prepare("SELECT 
                                     items.item_id AS main_id,
                                     items.item_name,
                                     items.cat_id,
@@ -122,18 +126,22 @@ if ($count) :
                                 AND
                                     items.item_id != ?
             ");
-        $stmt->execute(array($data["cat_id"], $data["main_id"]));
-        $cat_items = $stmt->fetchAll();
-        foreach ($cat_items as $cat_item) :
-        ?>
-            <div class="item-card">
-                <div class="image">
-                    <img src="<?php echo substr($cat_item['img'], 1) ?>" alt="dasd">
-                </div>
+                $stmt->execute(array($data["cat_id"], $data["main_id"]));
+                $cat_items = $stmt->fetchAll();
+                foreach ($cat_items as $cat_item) :
+                ?>
+                    <div class="item-card">
+                        <div class="image">
+                            <img src="<?php echo substr($cat_item['img'], 1) ?>" alt="dasd">
+                        </div>
+                        <a href="items.php?id=<?php echo $cat_item["main_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $cat_item["item_name"])) ?>">
+                            <?php echo $cat_item["item_name"] ?>
+                        </a>
+                    </div>
+                <?php endforeach ?>
             </div>
-        <?php endforeach ?>
+        </div>
     </div>
-
     <script src="layout/js/shoppingCart.js"></script>
 
 <?php
