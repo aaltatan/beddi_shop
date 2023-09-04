@@ -79,7 +79,10 @@ async function getCart() {
     controlDiv.appendChild(plusSpan);
     controlDiv.appendChild(minusSpan);
 
-    let totalItem = itemChild["item_price"] * itemChild["quantity"];
+    let totalItem = itemChild["offer_price"]
+      ? itemChild["offer_price"]
+      : itemChild["item_price"];
+    totalItem = totalItem * itemChild["quantity"];
     let totalSpan = createEl("span", totalItem.toLocaleString());
 
     infoRowTwo.appendChild(controlDiv);

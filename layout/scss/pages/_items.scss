@@ -1,0 +1,41 @@
+@use "../breakpoints" as *;
+
+.items-item-container {
+  --cols: 2;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: 0.5em;
+  padding: 1em;
+  @include br(lg) {
+    --cols: 1;
+  }
+
+  .images {
+    display: grid;
+    grid-template-columns: 15% 1fr;
+    gap: 0.5em;
+    @include br(lg) {
+      order: 2;
+    }
+    > img {
+      display: block;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sub-images img {
+      display: block;
+      border: 4px solid white;
+      cursor: pointer;
+    }
+  }
+
+  .info {
+  }
+}
+
+.more-cat {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 0.5em;
+  padding: 0 1em;
+}

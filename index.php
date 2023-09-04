@@ -88,7 +88,7 @@ $specials = $stmt->fetchAll();
 
 <section class="quote">
     <div class="wrapper observe">
-        <p>&quot; Lorem ipsum dolor, sit amet consectetur adipisicing elit. Temporibus aut maxime autem obcaecati tempora, sed perferendis nisi maiores molestiae aliquam? &quot;</p>
+        <p>&quot; The easiest and most powerful way to increase customer loyalty is really very simple. Make your customers happy. &quot;</p>
     </div>
 </section>
 

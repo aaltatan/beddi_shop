@@ -1,4 +1,5 @@
 var userId = +document.body.getAttribute("data-user-id");
+let specialCounter = 0;
 const burgerBtn = document.querySelector(".burger");
 const navBarList = document.querySelector("header nav .links");
 const navBarIcons = document.querySelector("header nav .icons");
@@ -9,6 +10,11 @@ const itemsContainer = document.getElementById("items");
 const modeBtn = document.getElementById("mode-btn");
 const shoppingCartBtn = document.querySelector("#shopping-cart-btn");
 const blurWall = document.getElementById("blur");
+const specialContainerHeader = document.querySelector("header .special");
+const specialContainerHeaderLi =
+  document.querySelectorAll("header .special li");
+const specialContainerHeaderLiCount = specialContainerHeaderLi.length;
+const nextOfferBtn = document.getElementById("next-offer");
 const shoppingCartBtnClose = document.querySelector(
   "#shopping-cart .heading span"
 );
@@ -19,6 +25,29 @@ const searchInput = document.querySelector(
 const searchBtn = document.getElementById("search-btn");
 const searchList = document.querySelector(".search-container ul.list");
 const searchCloseBtn = document.querySelector(".search-container > span");
+
+specialContainerHeaderLi.forEach((li, idx) => {
+  li.ariaCurrent = false;
+  if (idx === specialCounter) li.ariaCurrent = true;
+});
+nextOfferBtn.addEventListener("click", () => {
+  if (specialCounter === specialContainerHeaderLiCount - 1) {
+    specialCounter = 0;
+    specialContainerHeaderLi.forEach((li, idx) => {
+      li.ariaCurrent = false;
+      if (idx === specialCounter) li.ariaCurrent = true;
+    });
+  } else {
+    specialCounter++;
+    specialContainerHeaderLi.forEach((li, idx) => {
+      li.ariaCurrent = false;
+      if (idx === specialCounter) li.ariaCurrent = true;
+    });
+  }
+});
+setInterval(() => {
+  nextOfferBtn.click();
+}, 3000);
 
 searchBtn.addEventListener("click", () => {
   document.querySelector(".search-container").classList.toggle("opened");

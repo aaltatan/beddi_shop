@@ -16,7 +16,37 @@
 <body data-user-id="<?php isset($_SESSION["user_session_id"]) && print $_SESSION["user_session_id"] ?>">
 
   <header>
-    <div class="special">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio, doloremque?</div>
+    <ul class="special">
+      <?php
+      $stmt = $conn->prepare("SELECT 
+                                item_id,
+                                item_name,
+                                item_price,
+                                offer_price
+                              FROM
+                                items
+                              WHERE
+                                acceptable = 1
+                              AND
+                                available = 1
+                              AND
+                                offer_price != 0
+                          ");
+      $stmt->execute();
+      $itms = $stmt->fetchAll();
+      foreach ($itms as $itm) :
+      ?>
+        <button id="next-offer">ss</button>
+        <li>
+          <a href="items.php?id=<?php echo $itm["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $itm["item_id"])) ?>">
+            <?php
+            $percentage = round((($itm["item_price"] - $itm["offer_price"]) / $itm["item_price"]) * 100, 0);
+            echo "SAVE $percentage% RIGHT NOW AND BUY <span>" . $itm["item_name"] . "</span> with " . number_format($itm["offer_price"]) . " INSTEAD OF " . number_format($itm["item_price"]);
+            ?>
+          </a>
+        </li>
+      <?php endforeach ?>
+    </ul>
     <nav>
       <div class="brand">
         <a href="index.php">

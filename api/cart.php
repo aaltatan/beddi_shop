@@ -19,6 +19,7 @@ switch ($do) {
                                     items.item_id,
                                     items.item_name,
                                     items.item_price,
+                                    items.offer_price,
                                     cart.quantity,
                                     (
                                         SELECT img 
