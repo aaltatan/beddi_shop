@@ -53,6 +53,14 @@ if ($count) :
 ?>
     <div class="main-container flow">
 
+        <div class="breadcrumbs">
+            <a href="index.php">Beddi Shop</a>
+            <span> > </span>
+            <a href="categories.php?id=<?php echo $data["cat_id"] ?>"><?php echo $data["cat_name"] ?></a>
+            <span> > </span>
+            <a href="items.php?id=<?php echo $data["main_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $data["item_name"])) ?>"><?php echo $data["item_name"] ?></a>
+        </div>
+
         <div class="items-item-container">
             <?php
             $stmt = $conn->prepare("SELECT img FROM items_images WHERE item_id = ?");
@@ -71,38 +79,48 @@ if ($count) :
             <div class="info">
                 <div class="title">
                     <h1><?php echo $data["item_name"] ?></h1>
-                    <a href="categories.php?id=<?php echo $data["cat_id"] ?>">(<?php echo $data["cat_name"] ?>)</a>
                     <span class="likes"><i class="fa-solid fa-heart" style="color:var(--clr-danger-base);"></i> <small>(<?php echo $data["likes"] ?>)</small></span>
                     <?php if ($data["is_special"]) : ?>
                         <span class="special"><i class="fa-solid fa-star" title="Special Item" style="color:gold;"></i></span>
                     <?php endif ?>
                 </div>
                 <div class="price">
-                    <span><?php echo number_format($data["item_price"]) ?></span>
                     <?php if ($data["offer_price"]) : ?>
                         <span><?php echo number_format($data["offer_price"]) ?></span>
                     <?php endif ?>
+                    <span><?php echo number_format($data["item_price"]) ?></span>
                 </div>
-                <p class="desc">
-                    <?php echo $data["item_desc"] ?>
-                </p>
-                <span class="country">
-                    <?php echo $data["country_made"] ?>
-                </span>
-                <span class="add-date">
-                    <?php echo explode(" ", $data["add_date"])[0] ?>
-                </span>
-                <span class="user">
-                    By <?php echo $data["full_name"] ?>
-                </span>
+                <ul class="desc">
+                    <h3>Description:</h3>
+                    <li><?php echo $data["item_desc"] ?></li>
+                    <li>Made in <?php echo $data["country_made"] ?></li>
+                    <li>Added <?php echo explode(" ", $data["add_date"])[0] ?></li>
+                    <li>By <?php echo $data["full_name"] ?></li>
+                </ul>
                 <?php if (isset($_SESSION["user_session_id"])) : ?>
                     <button data-role="add-to-cart" data-item-id="<?php echo $data["main_id"] ?>" class="btn btn-primary">Add to Cart</button>
+                <?php else : ?>
+                    <a href="login.php" class="btn btn-primary">Add to Cart</a>
                 <?php endif ?>
+                <div class="services">
+                    <div>
+                        <i class="fa-solid fa-location-arrow fa-2x"></i>
+                        <span>Free Shipping over 100,000</span>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-arrow-rotate-right fa-2x"></i>
+                        <span>Easy Returns</span>
+                    </div>
+                    <div>
+                        <i class="fa-regular fa-comment fa-2x"></i>
+                        <span>Live Chat</span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="more-cat">
-            <h2>More from this category: </h2>
+            <h2>More from same category: </h2>
             <div class="more-cat-container">
                 <?php
                 $stmt = $conn->prepare("SELECT 
@@ -130,18 +148,28 @@ if ($count) :
                 $cat_items = $stmt->fetchAll();
                 foreach ($cat_items as $cat_item) :
                 ?>
-                    <div class="item-card">
+                    <a class="item-card" href="items.php?id=<?php echo $cat_item["main_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $cat_item["item_name"])) ?>">
                         <div class="image">
                             <img src="<?php echo substr($cat_item['img'], 1) ?>" alt="dasd">
                         </div>
-                        <a href="items.php?id=<?php echo $cat_item["main_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $cat_item["item_name"])) ?>">
-                            <?php echo $cat_item["item_name"] ?>
-                        </a>
-                    </div>
+                        <span><?php echo $cat_item["item_name"] ?></span>
+                    </a>
                 <?php endforeach ?>
             </div>
         </div>
     </div>
+
+    <script>
+        const primaryImage = document.querySelector(".items-item-container .images > img");
+        const secondaryImages = document.querySelectorAll(".items-item-container .images .sub-images img");
+
+        secondaryImages.forEach(img => {
+            img.addEventListener("click", () => {
+                let imgSrc = img.getAttribute("src");
+                primaryImage.setAttribute("src", imgSrc);
+            })
+        });
+    </script>
     <script src="layout/js/shoppingCart.js"></script>
 
 <?php
