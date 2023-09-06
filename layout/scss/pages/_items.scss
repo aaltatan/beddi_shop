@@ -81,9 +81,21 @@
         }
       }
 
-      .likes {
+      .like {
         margin-left: auto;
-        white-space: nowrap;
+        &[data-is-liked="0"] i:last-of-type {
+          display: none;
+        }
+        &[data-is-liked="1"] i:first-of-type {
+          display: none;
+        }
+        i {
+          cursor: pointer;
+          color: white;
+        }
+        i:last-of-type {
+          color: var(--clr-danger-base);
+        }
         small {
           font-size: var(--fs-sm);
         }
@@ -126,6 +138,7 @@
     a,
     button {
       width: 100%;
+      text-align: center;
     }
 
     .services {

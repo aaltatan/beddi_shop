@@ -4,9 +4,9 @@ ob_start();
 
 session_start();
 
-$page_title = "Categories";
+$page_title = "Template";
 
-if (isset($_SESSION["username"])) {
+if (isset($_SESSION["admin"])) {
 
     include "init.php";
     include $tpl . "aside.php";

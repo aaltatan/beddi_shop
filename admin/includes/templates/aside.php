@@ -25,6 +25,12 @@
                     Members
                 </a>
             </li>
+            <li>
+                <a href="comments.php" role="button" aria-current="false" title="Alt + 5">
+                    <span>💬</span>
+                    Comments
+                </a>
+            </li>
         </ul>
     </aside>
     <div class="main">

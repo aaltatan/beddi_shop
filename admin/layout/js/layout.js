@@ -49,6 +49,9 @@ document.addEventListener("keydown", (e) => {
   if (e.key.toLowerCase() === "4" && e.altKey) {
     window.location.href = "members.php";
   }
+  if (e.key.toLowerCase() === "5" && e.altKey) {
+    window.location.href = "comments.php";
+  }
   if (e.code === "Escape") {
     mainSearchInput.blur();
     closeAside();

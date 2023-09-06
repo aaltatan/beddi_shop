@@ -95,6 +95,19 @@ try {
         CONSTRAINT fk_cart_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
         CONSTRAINT fk_cart_item_id FOREIGN KEY (item_id) REFERENCES items(item_id)
     );
+    -- Creating Comments Table
+    CREATE TABLE IF NOT EXISTS comments(
+        comment_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+        comment TEXT NOT NULL,
+        comment_status TINYINT DEFAULT 0,
+        added_date DATETIME NOT NULL DEFAULT NOW(),
+        item_id INT(11) NOT NULL,
+        user_id INT(11) NOT NULL,
+        CONSTRAINT fk_comment_item_id FOREIGN KEY (item_id) REFERENCES items(item_id),
+        CONSTRAINT fk_comment_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
+    );
+    -- Creating a view to get count of all pending comments
+    CREATE VIEW IF NOT EXISTS pending_comments AS SELECT comment_id FROM comments WHERE comment_status = 0;
     ");
 
     $stmt = $conn->prepare("SELECT username FROM users;");

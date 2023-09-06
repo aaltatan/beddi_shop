@@ -78,11 +78,39 @@ if ($count) :
             </div>
             <div class="info">
                 <div class="title">
+
                     <h1><?php echo $data["item_name"] ?></h1>
-                    <span class="likes"><i class="fa-solid fa-heart" style="color:var(--clr-danger-base);"></i> <small>(<?php echo $data["likes"] ?>)</small></span>
+
+                    <?php
+                    if (isset($_SESSION["user_session_id"])) :
+                        $stmt = $conn->prepare("SELECT 
+                                                    users.full_name,
+                                                    users.user_id
+                                                FROM 
+                                                    items_likes 
+                                                LEFT JOIN
+                                                    users
+                                                ON
+                                                    users.user_id = items_likes.user_id
+                                                WHERE 
+                                                    items_likes.item_id = ? 
+                                            ");
+                        $stmt->execute(array($data["main_id"]));
+                        $dta =  $stmt->fetchAll();
+                        $likes = join("\n", array_map(fn ($arr) => $arr["user_id"] === $_SESSION['user_session_id'] ? "You" : $arr["full_name"], $dta));
+                        $is_liked = array_map(fn ($arr) => $arr["user_id"], $dta);
+                        $is_liked = array_search($_SESSION['user_session_id'], $is_liked);
+                    ?>
+                        <div class="like" title="<?php echo $likes ?>" data-is-liked="<?php echo $is_liked !== false ? "1" : "0" ?>" data-item-id="<?php echo $data['main_id'] ?>" data-user-id="<?php echo $_SESSION['user_session_id'] ?>">
+                            <i class="fa-regular fa-heart like-btn"></i>
+                            <i class="fa-solid fa-heart like-btn"></i>
+                            <small id="likes-count" title="<?php echo $likes ?>">(<?php echo $data["likes"] ?>)</small>
+                        </div>
+                    <?php endif ?>
                     <?php if ($data["is_special"]) : ?>
                         <span class="special"><i class="fa-solid fa-star" title="Special Item" style="color:gold;"></i></span>
                     <?php endif ?>
+
                 </div>
                 <div class="price">
                     <?php if ($data["offer_price"]) : ?>
@@ -162,6 +190,28 @@ if ($count) :
     <script>
         const primaryImage = document.querySelector(".items-item-container .images > img");
         const secondaryImages = document.querySelectorAll(".items-item-container .images .sub-images img");
+        const likeBtns = document.querySelectorAll(".like-btn");
+        const likesCount = document.getElementById("likes-count");
+
+        likeBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                let itemId = btn.parentElement.getAttribute("data-item-id");
+                let isLiked = btn.parentElement.getAttribute("data-is-liked");
+                if (isLiked === "1") {
+                    fetch(`./api/likes.php?do=Unlike&userid=${userId}&itemid=${itemId}`)
+                        .then((res) => res.text())
+                        .then((data) => data);
+                    btn.parentElement.setAttribute("data-is-liked", "0");
+                    getLikers(itemId);
+                } else {
+                    fetch(`./api/likes.php?do=Like&userid=${userId}&itemid=${itemId}`)
+                        .then((res) => res.text())
+                        .then((data) => data);
+                    btn.parentElement.setAttribute("data-is-liked", "1");
+                    getLikers(itemId);
+                }
+            });
+        });
 
         secondaryImages.forEach(img => {
             img.addEventListener("click", () => {
@@ -169,6 +219,18 @@ if ($count) :
                 primaryImage.setAttribute("src", imgSrc);
             })
         });
+
+        function getLikers(itemId) {
+            return (
+                fetch("./api/likes.php?do=Get&itemid=" + itemId)
+                .then(res => res.json())
+                .then(data => {
+                    likesCount.innerHTML = `(${data.length})`;
+                    likesCount.parentElement.setAttribute("title", data.join("\n"));
+                    likesCount.setAttribute("title", data.join("\n"));
+                })
+            );
+        }
     </script>
     <script src="layout/js/shoppingCart.js"></script>
 

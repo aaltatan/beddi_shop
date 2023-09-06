@@ -91,6 +91,13 @@ if (isset($_SESSION["admin"])) {
                     </a>
                 <?php endif ?>
 
+                <?php if (getCount("comments") > 0) : ?>
+                    <a href="comments.php" class="count-card">
+                        <span>Total Comments</span>
+                        <p><?php echo getCount("comments") ?></p>
+                    </a>
+                <?php endif ?>
+
             </div>
         </section>
 
