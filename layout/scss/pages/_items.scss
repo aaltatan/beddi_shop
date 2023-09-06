@@ -15,7 +15,6 @@
 
 .breadcrumbs a {
   text-decoration: none;
-  font-size: var(--fs-lg);
   &:hover {
     text-decoration: underline;
   }
@@ -155,6 +154,55 @@
         span {
           font-size: var(--fs-sm);
           text-align: center;
+        }
+      }
+    }
+  }
+}
+
+.comment-container {
+  .add-comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+    textarea {
+      flex: 1;
+      display: block;
+      padding: 1em;
+      resize: none;
+      background-color: var(--clr-bg-light);
+      outline: none;
+      border: none;
+      &:hover,
+      &:not(:placeholder-shown) {
+        outline: 1px solid var(--clr-acnt-light);
+      }
+    }
+    button {
+      font-size: var(--fs-sm);
+    }
+  }
+
+  .comments .comment-wrapper {
+    display: flex;
+    border: 1px solid var(--clr-bg-light);
+    padding: 1em;
+
+    .title {
+      flex: 1 1 25%;
+      span {
+        display: block;
+      }
+    }
+
+    .btns {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      button {
+        aspect-ratio: 1/1;
+        i {
+          font-size: var(--fs-sm);
         }
       }
     }

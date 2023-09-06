@@ -104,9 +104,36 @@ if (isset($_SESSION["admin"])) {
                 })
             </script>
 
-<?php
+        <?php
             break;
         case "Edit";
+
+        ?>
+
+            <div class="container">
+                <h1>Edit Comment</h1>
+                <form action="?do=Update" method="POST" class="form flow" id="edit-comment-form">
+                    <ul class="msgs" id="edit-comment-form-messages">
+                    </ul>
+                    <div class="inputs fields">
+                        <input type="hidden" name="item_id" value="<?php echo $id ?>">
+                        <div class="form-input">
+                            <textarea type="text" name="comment" id="edit-comment-description" placeholder="Full Name" autocomplete="off" tabindex="1" value="<?php echo $item["item_desc"] ?>" required>
+                            </textarea>
+                            <label for="edit-comment">Comment</label>
+                        </div>
+                    </div>
+                    <div class="inputs checks">
+                        <div class="form-input-check">
+                            <input type="checkbox" name="accept" value="1" id="edit-comment-accepting" <?php echo $item["available"] === 1 ? "checked" : "" ?>>
+                            <label for="edit-comment-accepting" tabindex="2">Accepted</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="edit-comment-submit" tabindex="3">Edit Comment</button>
+                </form>
+            </div>
+
+<?php
             break;
         case "Update";
             break;

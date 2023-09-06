@@ -147,6 +147,27 @@ if ($count) :
             </div>
         </div>
 
+        <div class="comment-container flow">
+            <h2>Comments:</h2>
+            <div class="add-comment">
+                <textarea id="comment-box" cols="100" rows="5" placeholder="Write your comment ..."></textarea>
+                <button title="Add a Comment" class="btn btn-primary" data-role="add-comment"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <div class="comments flow">
+                <div class="comment-wrapper">
+                    <div class="title flow">
+                        <span>User</span>
+                        <span>Add Date</span>
+                    </div>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde nostrum vel asperiores ipsa delectus voluptatibus vitae ipsum at enim rerum?</p>
+                    <div class="dots">
+                        <button class="btn btn-primary"><i class="fa-solid fa-pencil-alt"></i></button>
+                        <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="more-cat">
             <h2>More from same category: </h2>
             <div class="more-cat-container">
