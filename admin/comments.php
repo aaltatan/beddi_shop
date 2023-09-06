@@ -69,7 +69,8 @@ if (isset($_SESSION["admin"])) {
                             <?php
                             foreach ($rows as $row) {
                                 $title = $row["comment"];
-                                echo "<tr title='" . $title . "'>";
+                                $dimmed_class = $row["comment_status"] ? "" : "dimmed";
+                                echo "<tr class='" . $dimmed_class . "' title='" . $title . "'>";
                                 echo "<td>" . $row["comment_id"] . "</td>";
                                 echo "<td>" . $row["comment"] . "</td>";
                                 echo "<td>" . ($row["comment_status"] ? "Enabled" : "Disabled") . "</td>";
@@ -77,10 +78,15 @@ if (isset($_SESSION["admin"])) {
                                 echo "<td>" . $row["full_name"] . "</td>";
                                 echo "<td>" . $row["item_name"] . "</td>";
                                 echo "<td>" . $row["cat_name"] . "</td>";
-                                echo "<img class='show-images' src='" . $row["img"] . "' data-images-src='" . $src . "' style='cursor:pointer;'>";
+                                echo "<td class='td-images'>";
+                                echo "<img class='show-images' src='" . $row["img"] . "' style='cursor:pointer;'>";
+                                echo "</td>";
                                 echo "<td class='dots'>
                                         <div class='list'>
                                             <a class='btn btn-secondary' href='?do=Edit&id=" . $row["comment_id"] . "'>Edit</a>";
+                                echo $row["comment_status"] === 0
+                                    ? "<a class='btn btn-secondary confirm' href='?do=Activate&id=" . $row["comment_id"] . "'>Activate</a>"
+                                    : "<a class='btn btn-secondary confirm' href='?do=Deactivate&id=" . $row["comment_id"] . "'>Deactivate</a>";
                                 echo       "<a class='btn btn-secondary confirm' href='?do=Delete&id=" . $row["comment_id"] . "'>Delete</a>";
                                 echo "</div>
                                      </td>";

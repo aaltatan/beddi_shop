@@ -237,7 +237,7 @@ $specials = $stmt->fetchAll();
                 <span><?php echo round((($offer["item_price"] - $offer["offer_price"]) / $offer["item_price"]) * 100, 0) ?>%</span>
                 <img src="<?php echo substr($offer["img"], 1) ?>" alt="">
                 <div class="text">
-                    <a href="<?php $offer["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $offer["item_name"])) ?>"><?php echo $offer["item_name"] ?></a>
+                    <a href="items.php?id=<?php echo $offer["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $offer["item_name"])) ?>"><?php echo $offer["item_name"] ?></a>
                     <a href="<?php echo 'categories.php?id=' . $offer["cat_id"] ?>"><?php echo $offer["cat_name"] ?></a>
                     <div class="price">
                         <span><?php echo number_format($offer["offer_price"]) ?></span>

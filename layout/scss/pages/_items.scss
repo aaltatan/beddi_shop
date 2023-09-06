@@ -144,7 +144,6 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       padding: 1em 0;
-      border-top: 1px solid var(--clr-bg-light);
       > div {
         display: flex;
         justify-content: center;
@@ -184,26 +183,45 @@
   }
 
   .comments .comment-wrapper {
-    display: flex;
-    border: 1px solid var(--clr-bg-light);
+    background-color: var(--clr-bg-dark);
     padding: 1em;
-
-    .title {
-      flex: 1 1 25%;
-      span {
-        display: block;
+    opacity: 0;
+    animation: op 400ms 1 alternate both;
+    @keyframes op {
+      to {
+        opacity: 1;
       }
     }
 
-    .btns {
+    .heading {
       display: flex;
-      justify-content: center;
       align-items: center;
-      button {
+      gap: 1em;
+      margin-bottom: 1em;
+
+      img {
+        display: block;
+        flex-basis: 40px;
+        max-width: 40px;
         aspect-ratio: 1/1;
-        i {
-          font-size: var(--fs-sm);
-        }
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .dots {
+        margin-left: auto;
+      }
+
+      .name span {
+        display: block;
+        font-size: var(--fs-sm);
+      }
+      .name span:first-of-type {
+        font-weight: 700;
+        // font-size: var(--fs-md);
+      }
+      .name span:last-of-type {
+        font-weight: 300;
       }
     }
   }

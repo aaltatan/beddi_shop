@@ -149,23 +149,40 @@ if ($count) :
 
         <div class="comment-container flow">
             <h2>Comments:</h2>
+
             <div class="add-comment">
                 <textarea id="comment-box" cols="100" rows="5" placeholder="Write your comment ..."></textarea>
-                <button title="Add a Comment" class="btn btn-primary" data-role="add-comment"><i class="fa-solid fa-plus"></i></button>
+                <button title="Add a Comment" data-item-id="<?php echo $data["main_id"] ?>" role="add-comment" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
             </div>
+
             <div class="comments flow">
+
                 <div class="comment-wrapper">
-                    <div class="title flow">
-                        <span>User</span>
-                        <span>Add Date</span>
+
+                    <div class="heading">
+                        <img src="./admin/layout/images/user-128x128.png" alt="dasd">
+                        <div class="name">
+                            <span>Name</span>
+                            <span>Add Date</span>
+                        </div>
+                        <div class="dots">
+                            <div class="list">
+                                <button title="Delete Comment" class="btn btn-secondary">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde nostrum vel asperiores ipsa delectus voluptatibus vitae ipsum at enim rerum?</p>
-                    <div class="dots">
-                        <button class="btn btn-primary"><i class="fa-solid fa-pencil-alt"></i></button>
-                        <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
-                    </div>
+
+                    <p>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                        Unde nostrum vel asperiores ipsa delectus voluptatibus vitae ipsum at enim rerum?
+                    </p>
+
                 </div>
+
             </div>
+
         </div>
 
         <div class="more-cat">
@@ -208,51 +225,7 @@ if ($count) :
         </div>
     </div>
 
-    <script>
-        const primaryImage = document.querySelector(".items-item-container .images > img");
-        const secondaryImages = document.querySelectorAll(".items-item-container .images .sub-images img");
-        const likeBtns = document.querySelectorAll(".like-btn");
-        const likesCount = document.getElementById("likes-count");
-
-        likeBtns.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                let itemId = btn.parentElement.getAttribute("data-item-id");
-                let isLiked = btn.parentElement.getAttribute("data-is-liked");
-                if (isLiked === "1") {
-                    fetch(`./api/likes.php?do=Unlike&userid=${userId}&itemid=${itemId}`)
-                        .then((res) => res.text())
-                        .then((data) => data);
-                    btn.parentElement.setAttribute("data-is-liked", "0");
-                    getLikers(itemId);
-                } else {
-                    fetch(`./api/likes.php?do=Like&userid=${userId}&itemid=${itemId}`)
-                        .then((res) => res.text())
-                        .then((data) => data);
-                    btn.parentElement.setAttribute("data-is-liked", "1");
-                    getLikers(itemId);
-                }
-            });
-        });
-
-        secondaryImages.forEach(img => {
-            img.addEventListener("click", () => {
-                let imgSrc = img.getAttribute("src");
-                primaryImage.setAttribute("src", imgSrc);
-            })
-        });
-
-        function getLikers(itemId) {
-            return (
-                fetch("./api/likes.php?do=Get&itemid=" + itemId)
-                .then(res => res.json())
-                .then(data => {
-                    likesCount.innerHTML = `(${data.length})`;
-                    likesCount.parentElement.setAttribute("title", data.join("\n"));
-                    likesCount.setAttribute("title", data.join("\n"));
-                })
-            );
-        }
-    </script>
+    <script src="layout/js/items.js"></script>
     <script src="layout/js/shoppingCart.js"></script>
 
 <?php

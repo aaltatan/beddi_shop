@@ -39,6 +39,35 @@ if (isset($_SESSION["admin"])) {
     ");
     $stmt->execute();
     $items = $stmt->fetchAll();
+
+    $stmt = $conn->prepare("SELECT 
+                                users.full_name,
+                                comments.comment_id,
+                                comments.added_date,
+                                comments.comment,
+                                items.item_name
+                            FROM
+                                comments
+                            LEFT JOIN
+                                users
+                            ON
+                                users.user_id = comments.user_id
+                            LEFT JOIN
+                                items
+                            ON
+                                items.item_id = comments.item_id
+                            LEFT JOIN
+                                categories
+                            ON
+                                categories.id = items.cat_id
+                            WHERE
+                                categories.allow_comment = 1
+                            ORDER BY
+                                comments.added_date
+                            DESC
+                            ");
+    $stmt->execute();
+    $comments = $stmt->fetchAll();
 ?>
 
     <div class="container flow">
@@ -123,6 +152,30 @@ if (isset($_SESSION["admin"])) {
                                     <p>" . $row["email"] . "</p>
                                 </div>
                                 <span>" . explode(" ", $row["dt"])[0] . "</span>
+                                </a>
+                            ";
+                            echo "</li>";
+                        }
+                        ?>
+                </div>
+
+                <div class="pending-comments">
+                    <p class="heading">
+                        <a href="comments.php?do=Pending"><span>Pending Comments (<?php echo getCount("pending_comments") ?>)</span></a>
+                    </p>
+
+                    <ul class="body">
+                        <?php
+                        foreach ($comments as $comment) {
+                            echo "<li title='" . $comment["comment"] . "'>";
+                            echo "
+                            <a href='comments.php?do=Edit&commentid=" . $comment["comment_id"] . "'>
+                                <img src='./layout/images/user-128x128.png' alt='dasd'>
+                                <div class='title'>
+                                    <p>" . $comment["comment"] . "</p>
+                                    <p>" . $comment["full_name"] . " on " . $comment["item_name"] . "</p>
+                                </div>
+                                <span>" . explode(" ", $comment["added_date"])[0] . "</span>
                                 </a>
                             ";
                             echo "</li>";

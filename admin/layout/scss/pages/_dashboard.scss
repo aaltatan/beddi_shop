@@ -12,6 +12,8 @@
   }
   .body {
     list-style: none;
+    max-height: 20rem;
+    overflow: auto;
     li {
       &:hover {
         background-color: var(--clr-acnt-base);
