@@ -158,7 +158,10 @@ section {
 }
 
 .statistics {
-  --cols: 4;
+  --cols: 6;
+  @include br(lg) {
+    --cols: 4;
+  }
   @include br(md) {
     --cols: 3;
   }
@@ -168,7 +171,10 @@ section {
 }
 
 .last-updates {
-  --cols: 2;
+  --cols: 3;
+  @include br(xl) {
+    --cols: 2;
+  }
   @include br(md) {
     --cols: 1;
   }

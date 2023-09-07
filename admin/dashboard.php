@@ -14,6 +14,7 @@ if (isset($_SESSION["admin"])) {
                         ");
     $stmt->execute();
     $rows = $stmt->fetchAll();
+    $rows_count = $stmt->rowCount();
 
     $stmt = $conn->prepare("SELECT 
                                 items.item_id,
@@ -39,6 +40,41 @@ if (isset($_SESSION["admin"])) {
     ");
     $stmt->execute();
     $items = $stmt->fetchAll();
+    $items_count = $stmt->rowCount();
+
+    $stmt = $conn->prepare("SELECT 
+                                users.full_name,
+                                comments.comment_id,
+                                comments.added_date,
+                                comments.comment,
+                                items.item_name
+                            FROM
+                                pending_comments
+                            LEFT JOIN
+                                comments
+                            ON
+                                comments.comment_id = pending_comments.comment_id
+                            LEFT JOIN
+                                users
+                            ON
+                                users.user_id = comments.user_id
+                            LEFT JOIN
+                                items
+                            ON
+                                items.item_id = comments.item_id
+                            LEFT JOIN
+                                categories
+                            ON
+                                categories.id = items.cat_id
+                            WHERE
+                                categories.allow_comment = 1
+                            ORDER BY
+                                comments.added_date
+                            DESC
+                            ");
+    $stmt->execute();
+    $comments = $stmt->fetchAll();
+    $comments_count = $stmt->rowCount();
 
     $stmt = $conn->prepare("SELECT 
                                 users.full_name,
@@ -65,9 +101,12 @@ if (isset($_SESSION["admin"])) {
                             ORDER BY
                                 comments.added_date
                             DESC
+                            LIMIT
+                                20
                             ");
     $stmt->execute();
-    $comments = $stmt->fetchAll();
+    $recent_comments = $stmt->fetchAll();
+    $recent_comments_count = $stmt->rowCount();
 ?>
 
     <div class="container flow">
@@ -134,17 +173,18 @@ if (isset($_SESSION["admin"])) {
             <h2>Last Updates</h2>
             <div class="wrapper">
 
-                <div class="last-members">
-                    <p class="heading">
-                        <a href="members.php?do=Pending"><span>Pending Members (<?php echo getCount("pending_users") ?>)</span></a>
-                        <a class="add-new" href="members.php?do=Add" title="Add new Member"></a>
-                    </p>
+                <?php if ($rows_count) : ?>
+                    <div class="last-members">
+                        <p class="heading">
+                            <a href="members.php?do=Pending"><span>Pending Members (<?php echo getCount("pending_users") ?>)</span></a>
+                            <a class="add-new" href="members.php?do=Add" title="Add new Member"></a>
+                        </p>
 
-                    <ul class="body">
-                        <?php
-                        foreach ($rows as $row) {
-                            echo "<li>";
-                            echo "
+                        <ul class="body">
+                            <?php
+                            foreach ($rows as $row) {
+                                echo "<li>";
+                                echo "
                             <a href='members.php?do=Edit&userid=" . $row["user_id"] . "'>
                                 <img src='./layout/images/user-128x128.png' alt='dasd'>
                                 <div class='title'>
@@ -154,22 +194,24 @@ if (isset($_SESSION["admin"])) {
                                 <span>" . explode(" ", $row["dt"])[0] . "</span>
                                 </a>
                             ";
-                            echo "</li>";
-                        }
-                        ?>
-                </div>
+                                echo "</li>";
+                            }
+                            ?>
+                    </div>
+                <?php endif ?>
 
-                <div class="pending-comments">
-                    <p class="heading">
-                        <a href="comments.php?do=Pending"><span>Pending Comments (<?php echo getCount("pending_comments") ?>)</span></a>
-                    </p>
+                <?php if ($comments_count) : ?>
+                    <div class="pending-comments">
+                        <p class="heading">
+                            <a href="comments.php?do=Pending"><span>Pending Comments (<?php echo getCount("pending_comments") ?>)</span></a>
+                        </p>
 
-                    <ul class="body">
-                        <?php
-                        foreach ($comments as $comment) {
-                            echo "<li title='" . $comment["comment"] . "'>";
-                            echo "
-                            <a href='comments.php?do=Edit&commentid=" . $comment["comment_id"] . "'>
+                        <ul class="body">
+                            <?php
+                            foreach ($comments as $comment) {
+                                echo "<li title='" . $comment["comment"] . "'>";
+                                echo "
+                            <a href='comments.php?do=Edit&id=" . $comment["comment_id"] . "'>
                                 <img src='./layout/images/user-128x128.png' alt='dasd'>
                                 <div class='title'>
                                     <p>" . $comment["comment"] . "</p>
@@ -178,23 +220,51 @@ if (isset($_SESSION["admin"])) {
                                 <span>" . explode(" ", $comment["added_date"])[0] . "</span>
                                 </a>
                             ";
-                            echo "</li>";
-                        }
-                        ?>
-                </div>
+                                echo "</li>";
+                            }
+                            ?>
+                    </div>
+                <?php endif ?>
 
-                <div class="last-items">
-                    <p class="heading">
-                        <a href="items.php?do=Pending"><span>Pending Items (<?php echo getCount("pending_items") ?>)</a>
-                        <a class="add-new" href="items.php?do=Add" title="Add new Item"></a>
-                    </p>
-                    <ul class="body">
-                        <?php
-                        foreach ($items as $item) {
-                            $title = $item["item_desc"] . "\nBy " . $item["full_name"] . "\nAdd Date: " . $item["add_date"] . "\nMade in: " . $item["country_made"];
-                            echo "<li title='" . $title . "'>";
-                            echo "<a href='items.php?do=Edit&id=" . $item["item_id"] . "'>";
-                            $stmt = $conn->prepare("SELECT 
+                <?php if ($recent_comments_count) : ?>
+                    <div class="pending-comments">
+                        <p class="heading">
+                            <a href="comments.php?do=Pending"><span>Recent Comments (<?php echo $recent_comments_count ?>)</span></a>
+                        </p>
+
+                        <ul class="body">
+                            <?php
+                            foreach ($recent_comments as $comment) {
+                                echo "<li title='" . $comment["comment"] . "'>";
+                                echo "
+                            <a href='comments.php?do=Edit&id=" . $comment["comment_id"] . "'>
+                                <img src='./layout/images/user-128x128.png' alt='dasd'>
+                                <div class='title'>
+                                    <p>" . $comment["comment"] . "</p>
+                                    <p>" . $comment["full_name"] . " on " . $comment["item_name"] . "</p>
+                                </div>
+                                <span>" . explode(" ", $comment["added_date"])[0] . "</span>
+                                </a>
+                            ";
+                                echo "</li>";
+                            }
+                            ?>
+                    </div>
+                <?php endif ?>
+
+                <?php if ($items_count) : ?>
+                    <div class="last-items">
+                        <p class="heading">
+                            <a href="items.php?do=Pending"><span>Pending Items (<?php echo getCount("pending_items") ?>)</a>
+                            <a class="add-new" href="items.php?do=Add" title="Add new Item"></a>
+                        </p>
+                        <ul class="body">
+                            <?php
+                            foreach ($items as $item) {
+                                $title = $item["item_desc"] . "\nBy " . $item["full_name"] . "\nAdd Date: " . $item["add_date"] . "\nMade in: " . $item["country_made"];
+                                echo "<li title='" . $title . "'>";
+                                echo "<a href='items.php?do=Edit&id=" . $item["item_id"] . "'>";
+                                $stmt = $conn->prepare("SELECT 
                                                         img
                                                     FROM
                                                         items_images
@@ -203,21 +273,22 @@ if (isset($_SESSION["admin"])) {
                                                     LIMIT
                                                         1          
                             ");
-                            $stmt->execute(array($item["item_id"]));
-                            $image = $stmt->fetch();
-                            echo "<img src='" . $image["img"] . "' alt='dasd'>";
-                            echo "<div class='title'>
+                                $stmt->execute(array($item["item_id"]));
+                                $image = $stmt->fetch();
+                                echo "<img src='" . $image["img"] . "' alt='dasd'>";
+                                echo "<div class='title'>
                                     <p>" . $item["item_name"] . "</p>
                                     <p>" . $item["cat_name"] . "</p>
                                 </div>
                                 <span>" . number_format($item["item_price"]) . "</span>
                                 </a>
                             ";
-                            echo "</li>";
-                        }
-                        ?>
-                    </ul>
-                </div>
+                                echo "</li>";
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                <?php endif ?>
 
             </div>
         </section>

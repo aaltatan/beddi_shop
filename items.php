@@ -148,40 +148,17 @@ if ($count) :
         </div>
 
         <div class="comment-container flow">
-            <h2>Comments:</h2>
 
-            <div class="add-comment">
-                <textarea id="comment-box" cols="100" rows="5" placeholder="Write your comment ..."></textarea>
-                <button title="Add a Comment" data-item-id="<?php echo $data["main_id"] ?>" role="add-comment" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-            </div>
+            <h2 id="item-heading-id" data-item-id="<?php echo $data["main_id"] ?>">Comments:</h2>
 
-            <div class="comments flow">
-
-                <div class="comment-wrapper">
-
-                    <div class="heading">
-                        <img src="./admin/layout/images/user-128x128.png" alt="dasd">
-                        <div class="name">
-                            <span>Name</span>
-                            <span>Add Date</span>
-                        </div>
-                        <div class="dots">
-                            <div class="list">
-                                <button title="Delete Comment" class="btn btn-secondary">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                        Unde nostrum vel asperiores ipsa delectus voluptatibus vitae ipsum at enim rerum?
-                    </p>
-
+            <?php if (isset($_SESSION["user_session_id"])) : ?>
+                <div class="add-comment">
+                    <textarea id="comment-box" cols="100" rows="5" placeholder="Write your comment ..."></textarea>
+                    <button title="Add a Comment" data-item-id="<?php echo $data["main_id"] ?>" role="add-comment" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
                 </div>
+            <?php endif ?>
 
-            </div>
+            <div class="comments flow"></div>
 
         </div>
 

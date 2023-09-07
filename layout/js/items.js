@@ -1,3 +1,4 @@
+var userId = document.body.getAttribute("data-user-id");
 const primaryImage = document.querySelector(
   ".items-item-container .images > img"
 );
@@ -8,18 +9,22 @@ const likeBtns = document.querySelectorAll(".like-btn");
 const likesCount = document.getElementById("likes-count");
 const commentBox = document.getElementById("comment-box");
 const addCommentBtn = document.querySelector("button[role='add-comment']");
-const itemId = addCommentBtn.getAttribute("data-item-id");
+const itemId = document
+  .getElementById("item-heading-id")
+  .getAttribute("data-item-id");
 const commentsContainer = document.querySelector(
   ".comment-container .comments"
 );
 
 getComments(itemId);
 
-addCommentBtn.addEventListener("click", () => {
-  let commentValue = commentBox.value;
-  addComment(commentValue, itemId);
-  getComments(itemId);
-});
+if (addCommentBtn) {
+  addCommentBtn.addEventListener("click", () => {
+    let commentValue = commentBox.value;
+    setTimeout(addComment, 500, commentValue, itemId);
+    setTimeout(getComments, 500, itemId);
+  });
+}
 
 likeBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -36,7 +41,7 @@ likeBtns.forEach((btn) => {
         .then((res) => res.text())
         .then((data) => data);
       btn.parentElement.setAttribute("data-is-liked", "1");
-      getLikers(itemId);
+      setTimeout(getLikers, 500, itemId);
     }
   });
 });
@@ -56,6 +61,14 @@ function addComment(comment, itemId) {
     });
 }
 
+function deleteComment(itemId, commentId) {
+  return fetch(
+    `./api/comments.php?do=Delete&comment=${commentId}&itemid=${itemId}`
+  )
+    .then((res) => res.text())
+    .then((data) => data);
+}
+
 function getComments(itemId) {
   return fetch(`./api/comments.php?do=Get&itemid=${itemId}`)
     .then((res) => res.json())
@@ -63,7 +76,7 @@ function getComments(itemId) {
       commentsContainer.innerHTML = "";
 
       for (let row of data) {
-        const { added_date, comment, comment_id, full_name } = row;
+        const { added_date, comment, comment_id, full_name, user_id } = row;
 
         const commentWrapper = createEl("div", "", [
           "class",
@@ -91,8 +104,13 @@ function getComments(itemId) {
           "",
           ["title", "Delete Comment"],
           ["class", "btn btn-primary"],
-          ["role", "delete-comment"]
+          ["role", "delete-comment"],
+          ["data-comment-id", comment_id]
         );
+        commentDotsListDeleteBtn.addEventListener("click", () => {
+          setTimeout(deleteComment, 500, itemId, comment_id);
+          setTimeout(getComments, 500, itemId);
+        });
         const commentDotsListDeleteBtnI = createEl("i", "", [
           "class",
           "fa-solid fa-trash",
@@ -103,7 +121,7 @@ function getComments(itemId) {
 
         commentHeading.appendChild(commentImage);
         commentHeading.appendChild(commentName);
-        commentHeading.appendChild(commentDots);
+        userId == user_id && commentHeading.appendChild(commentDots);
 
         commentWrapper.appendChild(commentHeading);
         commentWrapper.appendChild(commentP);

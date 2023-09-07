@@ -294,7 +294,7 @@
   }
 }
 
-tr:first-of-type td.dots .list {
+tr:first-of-type:not(:only-child) td.dots .list {
   top: 0;
   bottom: auto;
 }

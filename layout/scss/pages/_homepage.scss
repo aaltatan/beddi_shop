@@ -388,6 +388,7 @@ main > section {
   article:last-of-type {
     display: grid;
     grid-template-columns: repeat(var(--sub-cols), 1fr);
+    grid-template-rows: 1fr 1fr;
     gap: 0.25vw;
   }
   &.opened article .cat-card {

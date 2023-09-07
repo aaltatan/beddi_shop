@@ -37,9 +37,12 @@
     @include br(sm) {
       --cols: 1;
     }
-
+    &:has(.form-input-textarea) {
+      --cols: 1 !important;
+    }
     .form-input {
       position: relative;
+
       input {
         width: 100%;
         height: 100%;
@@ -59,7 +62,6 @@
         &:focus,
         &:not(:placeholder-shown) {
           background-color: var(--clr-bg-dark);
-          // border-bottom: 1px solid var(--clr-acnt-base);
           height: calc(100% - 1px);
           + label {
             top: -60%;
@@ -68,6 +70,7 @@
           }
         }
       }
+
       label {
         position: absolute;
         left: 0.5rem;
@@ -76,12 +79,31 @@
         transition: 200ms;
       }
     }
+
+    .form-input-textarea {
+      width: 100%;
+      textarea {
+        width: 100%;
+        display: block;
+        padding: 1em;
+        resize: none;
+        background-color: var(--clr-bg-light);
+        outline: none;
+        border: none;
+        &:hover,
+        &:not(:placeholder-shown) {
+          outline: 1px solid var(--clr-acnt-light);
+        }
+      }
+    }
+
     .form-input-select {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 0.5em;
+
       select {
         width: 100%;
         height: 100%;
@@ -109,6 +131,7 @@
           }
         }
       }
+
       label {
         font-size: var(--fs-base) !important;
         border: 1px solid var(--clr-bg-light);
@@ -120,12 +143,14 @@
         }
       }
     }
+
     .form-input-file {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 0.5em;
+
       input {
         width: 100%;
         height: 100%;
@@ -174,6 +199,7 @@
           }
         }
       }
+
       label {
         font-size: var(--fs-base) !important;
         background-color: var(--clr-bg-light);
@@ -207,6 +233,7 @@
           }
         }
       }
+
       label {
         position: relative;
         padding-left: 36px;
@@ -236,6 +263,7 @@
       }
     }
   }
+
   .images-edit-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, 100px);

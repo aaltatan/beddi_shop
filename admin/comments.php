@@ -110,44 +110,129 @@ if (isset($_SESSION["admin"])) {
                 })
             </script>
 
-        <?php
+            <?php
             break;
         case "Edit";
 
-        ?>
+            $comment_id = is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+            $stmt = $conn->prepare("SELECT * FROM comments WHERE comment_id = ? LIMIT 1");
+            $stmt->execute(array($comment_id));
+            $count = $stmt->rowCount();
+            $comment = $stmt->fetch();
+            if ($count) :
 
-            <div class="container">
-                <h1>Edit Comment</h1>
-                <form action="?do=Update" method="POST" class="form flow" id="edit-comment-form">
-                    <ul class="msgs" id="edit-comment-form-messages">
-                    </ul>
-                    <div class="inputs fields">
-                        <input type="hidden" name="item_id" value="<?php echo $id ?>">
-                        <div class="form-input">
-                            <textarea type="text" name="comment" id="edit-comment-description" placeholder="Full Name" autocomplete="off" tabindex="1" value="<?php echo $item["item_desc"] ?>" required>
-                            </textarea>
-                            <label for="edit-comment">Comment</label>
+            ?>
+
+                <div class="container">
+                    <h1>Edit Comment</h1>
+                    <form action="?do=Update" method="POST" class="form flow" id="edit-comment-form">
+                        <ul class="msgs" id="edit-comment-form-messages">
+                        </ul>
+                        <div class="inputs fields">
+                            <input type="hidden" name="id" value="<?php echo $comment_id ?>">
+                            <div class="form-input-textarea">
+                                <textarea name="comment" id="edit-comment" tabindex="1" required><?php echo trim($comment["comment"]) ?></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div class="inputs checks">
-                        <div class="form-input-check">
-                            <input type="checkbox" name="accept" value="1" id="edit-comment-accepting" <?php echo $item["available"] === 1 ? "checked" : "" ?>>
-                            <label for="edit-comment-accepting" tabindex="2">Accepted</label>
+                        <div class="inputs checks">
+                            <div class="form-input-check">
+                                <input type="checkbox" name="status" value="1" id="edit-comment-accepting" <?php echo $comment["comment_status"] === 1 ? "checked" : "" ?>>
+                                <label for="edit-comment-accepting" tabindex="2">Accepted</label>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="edit-comment-submit" tabindex="3">Edit Comment</button>
-                </form>
-            </div>
+                        <button type="submit" class="btn btn-primary" id="edit-comment-submit" tabindex="3">Edit Comment</button>
+                    </form>
+                </div>
+
+            <?php
+            else :
+                redirect("there is no comment id like this", "back", 1);
+            endif;
+            ?>
 
 <?php
             break;
+
         case "Update";
+
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+                $comment_id = $_POST["id"];
+                $comment = $_POST["comment"];
+                $comment_status = $_POST["status"] === "1" ? 1 : 0;
+                $stmt = $conn->prepare("SELECT comment_id FROM comments WHERE comment_id = ?");
+                $stmt->execute(array($comment_id));
+                $count = $stmt->rowCount();
+
+                if ($count) {
+                    $stmt = $conn->prepare("UPDATE 
+                                                comments 
+                                            SET 
+                                                comment = ?, 
+                                                comment_status = ? 
+                                            WHERE 
+                                                comment_id = ?
+                                            ");
+                    $stmt->execute(array($comment, $comment_status, $comment_id));
+                    redirect("one comment has been updated", "comments.php", 1, "success");
+                } else {
+                    redirect("there is no comment id like this", "back", 1);
+                }
+            } else {
+                redirect("you can not browse this page directly", "back", 1);
+            }
+
             break;
+
         case "Delete";
+
+            $comment_id = is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+            $stmt = $conn->prepare("SELECT comment_id FROM comments WHERE comment_id = ?");
+            $stmt->execute(array($comment_id));
+            $count = $stmt->rowCount();
+
+            if ($count) {
+                $stmt = $conn->prepare("DELETE FROM comments WHERE comment_id = ?");
+                $stmt->execute(array($comment_id));
+                redirect("one comment has been Deleted", "back", 1, "success");
+            } else {
+                redirect("there is no comment_id like this", "back", 1);
+            }
+
             break;
+
         case "Activate";
+
+            $comment_id = is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+            $stmt = $conn->prepare("SELECT comment_id FROM comments WHERE comment_id = ?");
+            $stmt->execute(array($comment_id));
+            $count = $stmt->rowCount();
+
+            if ($count) {
+                $stmt = $conn->prepare("UPDATE comments SET comment_status = 1 WHERE comment_id = ?");
+                $stmt->execute(array($comment_id));
+                redirect("one comment has been activated", "back", 1, "success");
+            } else {
+                redirect("there is no comment_id like this", "back", 1);
+            }
+
             break;
+
         case "Deactivate";
+
+            $comment_id = is_numeric($_GET["id"]) ? $_GET["id"] : 0;
+            $stmt = $conn->prepare("SELECT comment_id FROM comments WHERE comment_id = ?");
+            $stmt->execute(array($comment_id));
+            $count = $stmt->rowCount();
+
+            if ($count) {
+                $stmt = $conn->prepare("UPDATE comments SET comment_status = 0 WHERE comment_id = ?");
+                $stmt->execute(array($comment_id));
+                redirect("one comment has been Deactivated", "back", 1, "success");
+            } else {
+                redirect("there is no comment_id like this", "back", 1);
+            }
+
             break;
     }
 

@@ -5,27 +5,26 @@ session_start();
 
 include "../admin/connect.php";
 
-if (isset($_SESSION["user_session_id"])) {
 
-    $do = isset($_GET["do"]) ? $_GET["do"] : "Manage";
-    $user_id = $_SESSION["user_session_id"];
-    $item_id = isset($_GET["itemid"]) && is_numeric($_GET["itemid"]) ? $_GET["itemid"] : 0;
+$do = isset($_GET["do"]) ? $_GET["do"] : "Manage";
+$item_id = isset($_GET["itemid"]) && is_numeric($_GET["itemid"]) ? $_GET["itemid"] : 0;
 
-    $stmt = $conn->prepare("SELECT item_id FROM items WHERE acceptable = 1 AND available = 1 AND item_id = ? LIMIT 1");
-    $stmt->execute(array($item_id));
-    $count = $stmt->rowCount();
+$stmt = $conn->prepare("SELECT item_id FROM items WHERE acceptable = 1 AND available = 1 AND item_id = ? LIMIT 1");
+$stmt->execute(array($item_id));
+$count = $stmt->rowCount();
 
-    if ($count) {
+if ($count) {
 
-        switch ($do) {
+    switch ($do) {
 
-            case "Manage":
-                header("Location: index.php");
-                exit();
-                break;
+        case "Manage":
+            header("Location: index.php");
+            exit();
+            break;
 
-            case "Get":
-                $stmt = $conn->prepare("SELECT 
+        case "Get":
+            $stmt = $conn->prepare("SELECT 
+                                            users.user_id,
                                             users.full_name,
                                             comments.comment_id,
                                             comments.added_date,
@@ -48,31 +47,33 @@ if (isset($_SESSION["user_session_id"])) {
                                             categories.allow_comment = 1
                                         AND
                                             comments.item_id = ?
+                                        AND
+                                            comments.comment_status = 1
                                         ORDER BY
                                             comments.added_date
                                         DESC
                 ");
-                $stmt->execute(array($item_id));
-                $data = $stmt->fetchAll();
-                header("Content-type: application/json");
-                echo json_encode($data);
-                break;
+            $stmt->execute(array($item_id));
+            $data = $stmt->fetchAll();
+            header("Content-type: application/json");
+            echo json_encode($data);
+            break;
 
-            case "Add":
-                $stmt = $conn->prepare("INSERT INTO comments(comment,item_id,user_id) VALUES (?,?,?)");
-                $stmt->execute(array($_GET["comment"], $item_id, $user_id));
-                break;
+        case "Add":
+            $user_id = $_SESSION["user_session_id"];
+            $stmt = $conn->prepare("INSERT INTO comments(comment,item_id,user_id,comment_status) VALUES (?,?,?,1)");
+            $stmt->execute(array($_GET["comment"], $item_id, $user_id));
+            break;
 
-            case "Delete":
-                break;
-        }
-    } else {
-        header("Location: index.php");
-        exit();
+        case "Delete":
+            $stmt = $conn->prepare("DELETE FROM comments WHERE comment_id = ?");
+            $stmt->execute(array($_GET["comment"]));
+            break;
     }
 } else {
     header("Location: index.php");
     exit();
 }
+
 
 ob_end_flush();

@@ -706,6 +706,10 @@ if (isset($_SESSION["admin"])) {
                     $stmt = $conn->prepare("DELETE FROM items_likes WHERE item_id = ?");
                     $stmt->execute(array($id));
                 }
+                if (hasDependencies("comments", "item_id = " . $id)) {
+                    $stmt = $conn->prepare("DELETE FROM comments WHERE item_id = ?");
+                    $stmt->execute(array($id));
+                }
                 $stmt = $conn->prepare("DELETE FROM items WHERE item_id = ?");
                 $stmt->execute(array($id));
                 redirect("1 Item has been deleted", "items.php", 1, "success");
