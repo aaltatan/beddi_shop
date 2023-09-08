@@ -17,27 +17,37 @@ $stmt = $conn->prepare("SELECT
                         LEFT JOIN 
                             items 
                         ON 
-                            items.item_id = items_images.item_id 
+                            items.item_id = items_images.item_id
                         WHERE 
                             items.is_cover = 1
+                        AND
+                            items.available = 1
+                        AND
+                            items.acceptable = 1
                         ");
 $stmt->execute();
 $images = $stmt->fetchAll();
 $images_count = $stmt->rowCount();
 
 $stmt = $conn->prepare("SELECT 
-                            item_id,
-                            item_name,
-                            item_price,
-                            offer_price
+                            items.item_id,
+                            items.item_name,
+                            items.item_price,
+                            items.offer_price
                         FROM
                             items
+                        LEFT JOIN
+                            categories
+                        ON
+                            categories.id = items.cat_id
                         WHERE
-                            is_special = 1
+                            items.is_special = 1
                         AND 
                             items.acceptable = 1 
                         AND 
-                            items.available
+                            items.available = 1
+                        AND
+                            categories.visibility = 1
                         ");
 
 $stmt->execute();
@@ -158,6 +168,8 @@ $specials = $stmt->fetchAll();
                                         (SELECT img FROM items_images WHERE items_images.item_id = item_id_gen LIMIT 1) as item_image
                                     FROM
                                         categories
+                                    WHERE
+                                        visibility = 1
                                     HAVING
                                         item_id_gen IS NOT NULL
                                     LIMIT 5
@@ -190,7 +202,7 @@ $specials = $stmt->fetchAll();
         <div class="all-cats">
             <span>All Categories:</span>
             <?php
-            $stmt = $conn->prepare("SELECT * FROM categories");
+            $stmt = $conn->prepare("SELECT * FROM categories WHERE visibility = 1");
             $stmt->execute();
             $data = $stmt->fetchAll();
             foreach ($data as $cat) :
@@ -228,6 +240,8 @@ $specials = $stmt->fetchAll();
                                     items.available = 1
                                 AND
                                     items.offer_price != 0
+                                AND
+                                    categories.visibility = 1
         ");
         $stmt->execute();
         $offers = $stmt->fetchAll();
@@ -238,7 +252,7 @@ $specials = $stmt->fetchAll();
                 <img src="<?php echo substr($offer["img"], 1) ?>" alt="">
                 <div class="text">
                     <a href="items.php?id=<?php echo $offer["item_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $offer["item_name"])) ?>"><?php echo $offer["item_name"] ?></a>
-                    <a href="<?php echo 'categories.php?id=' . $offer["cat_id"] ?>"><?php echo $offer["cat_name"] ?></a>
+                    <a href="<?php echo 'categories.php?id=' . $offer["cat_id"] . "&catname=" . $offer["cat_name"] ?>"><?php echo $offer["cat_name"] ?></a>
                     <div class="price">
                         <span><?php echo number_format($offer["offer_price"]) ?></span>
                         <span><?php echo number_format($offer["item_price"]) ?></span>
@@ -258,17 +272,23 @@ $specials = $stmt->fetchAll();
         <div class="all-items-container">
             <?php
             $stmt = $conn->prepare("SELECT 
-                                item_id,
-                                item_name,
-                                item_price,
-                                offer_price
-                            FROM
-                                items
-                            WHERE
-                                acceptable = 1
-                            AND
-                                available = 1
-                            ");
+                                        items.item_id,
+                                        items.item_name,
+                                        items.item_price,
+                                        items.offer_price
+                                    FROM
+                                        items
+                                    LEFT JOIN
+                                        categories
+                                    ON
+                                        categories.id = items.cat_id
+                                    WHERE
+                                        items.acceptable = 1
+                                    AND
+                                        items.available = 1
+                                    AND
+                                        categories.visibility = 1
+                                    ");
             $stmt->execute();
             $items = $stmt->fetchAll();
             foreach ($items as $item) :
@@ -276,7 +296,15 @@ $specials = $stmt->fetchAll();
                 <div class="item-card observe">
                     <div class="images">
                         <?php
-                        $stmt = $conn->prepare("SELECT img FROM items_images WHERE item_id = ? LIMIT 2");
+                        $stmt = $conn->prepare("SELECT 
+                                                    img 
+                                                FROM 
+                                                    items_images 
+                                                WHERE 
+                                                    item_id = ? 
+                                                LIMIT 
+                                                    2
+                                                ");
                         $stmt->execute(array($item["item_id"]));
                         $images = $stmt->fetchAll();
                         foreach ($images as $image) :

@@ -79,7 +79,9 @@ if (isset($_SESSION["admin"])) {
                                         items.offer_price,
                                         items.available,
                                         items.acceptable,
+                                        items.cat_id,
                                         categories.cat_name,
+                                        categories.visibility,
                                         users.full_name,
                                         items.user_id,
                                         items.add_date,
@@ -96,8 +98,6 @@ if (isset($_SESSION["admin"])) {
                                         users
                                     ON 
                                         users.user_id = items.user_id
-                                    WHERE
-                                        categories.visibility = 1
                                     ORDER BY
                                         items.add_date 
                                     DESC
@@ -121,6 +121,7 @@ if (isset($_SESSION["admin"])) {
                                 <th>Availability</th>
                                 <th>Acceptable</th>
                                 <th>Category</th>
+                                <th>Category Visibility</th>
                                 <th>Owner</th>
                                 <th>Image</th>
                                 <th>Likes</th>
@@ -130,7 +131,7 @@ if (isset($_SESSION["admin"])) {
                             <?php
                             foreach ($items as $item) {
                                 $status = $item["acceptable"] ? "Activated" : "Not Activated";
-                                $dimmed_class = $item["acceptable"] ? "" : "dimmed";
+                                $dimmed_class = $item["acceptable"] && $item["visibility"]  ? "" : "dimmed";
                                 $is_special = $item["is_special"] ? "Special Item" : "";
                                 $is_cover = $item["is_cover"] ? "The Cover Item" : "";
 
@@ -142,13 +143,14 @@ if (isset($_SESSION["admin"])) {
 
                                 echo "<tr class='" . $dimmed_class . "' title='" . $title . "'>";
                                 echo "<td data-special='" . $item["is_special"] . "' data-cover='" . $item["is_cover"] . "'>" . $item["item_id"] . "</td>";
-                                echo "<td>" . $item["item_name"] . "</td>";
+                                echo "<td><a href='items.php?do=Edit&id=" . $item["item_id"] . "'>" . $item["item_name"] . "</a></td>";
                                 echo "<td>" . number_format($item["item_price"]) . "</td>";
                                 echo "<td>" . number_format($item["offer_price"]) . "</td>";
                                 echo "<td>" . ($item["available"] === 1 ? "On" : "Off") . "</td>";
                                 echo "<td>" . ($item["acceptable"] === 1 ? "On" : "Off") . "</td>";
-                                echo "<td>" . $item["cat_name"] . "</td>";
-                                echo "<td>" . $item["full_name"] . "</td>";
+                                echo "<td><a href='categories.php?do=Edit&id=" . $item["cat_id"] . "'>" . $item["cat_name"] . "</a></td>";
+                                echo "<td>" . ($item["visibility"] === 1 ? "Visible" : "Hidden") . "</td>";
+                                echo "<td><a href='members.php?do=Edit&userid=" . $item["user_id"] . "'>" . $item["full_name"] . "</a></td>";
                                 echo "<td class='td-images'>";
                                 $stmt = $conn->prepare("SELECT 
                                 items_images.img,
@@ -190,11 +192,21 @@ if (isset($_SESSION["admin"])) {
                                     ? "<a class='btn btn-secondary confirm' href='?do=Activate&id=" . $item["item_id"] . "'>Activate</a>"
                                     : "<a class='btn btn-secondary confirm' href='?do=Deactivate&id=" . $item["item_id"] . "'>Deactivate</a>";
 
-                                !$item["is_cover"] && print "<a class='btn btn-secondary confirm' href='?do=Cover&id=" . $item["item_id"] . "'>Make it Cover</a>";
+                                !$item["is_cover"]
+                                    && $item["visibility"]
+                                    && $item["acceptable"] === 1
+                                    && $item["available"] === 1
+                                    && print "<a class='btn btn-secondary confirm' href='?do=Cover&id=" . $item["item_id"] . "'>Make it Cover</a>";
 
-                                echo $item["is_special"] === 0
-                                    ? "<a class='btn btn-secondary confirm' href='?do=Special&id=" . $item["item_id"] . "'>Add to Special</a>"
-                                    : "<a class='btn btn-secondary confirm' href='?do=Unspecial&id=" . $item["item_id"] . "'>Remove from special</a>";
+                                if (
+                                    $item["acceptable"] === 1
+                                    && $item["available"] === 1
+                                    && $item["visibility"] === 1
+                                ) {
+                                    echo $item["is_special"] === 0
+                                        ? "<a class='btn btn-secondary confirm' href='?do=Special&id=" . $item["item_id"] . "'>Add to Special</a>"
+                                        : "<a class='btn btn-secondary confirm' href='?do=Unspecial&id=" . $item["item_id"] . "'>Remove from special</a>";
+                                }
 
                                 echo  "</div>";
                                 echo  "</td>";
@@ -727,7 +739,9 @@ if (isset($_SESSION["admin"])) {
                                         items.offer_price,
                                         items.available,
                                         items.acceptable,
+                                        items.cat_id,
                                         categories.cat_name,
+                                        categories.visibility,
                                         users.full_name,
                                         items.user_id
                                     FROM 
@@ -764,6 +778,7 @@ if (isset($_SESSION["admin"])) {
                                 <th>Availability</th>
                                 <th>Acceptable</th>
                                 <th>Category</th>
+                                <th>Category Visibility</th>
                                 <th>Owner</th>
                                 <th>Image</th>
                                 <th>Likes</th>
@@ -773,17 +788,18 @@ if (isset($_SESSION["admin"])) {
                             <?php
                             foreach ($items as $item) {
                                 $status = $item["acceptable"] ? "Activated" : "Not Activated";
-                                $dimmed_class = $item["acceptable"] ? "" : "dimmed";
+                                $dimmed_class = $item["acceptable"] && $item["visibility"]  ? "" : "dimmed";
                                 $title = "" . $item["item_desc"];
                                 echo "<tr class='" . $dimmed_class . "' title='" . $title . "'>";
                                 echo "<td>" . $item["item_id"] . "</td>";
-                                echo "<td>" . $item["item_name"] . "</td>";
+                                echo "<td><a href='items.php?do=Edit&id=" . $item["item_id"] . "'>" . $item["item_name"] . "</a></td>";
                                 echo "<td>" . number_format($item["item_price"]) . "</td>";
                                 echo "<td>" . number_format($item["offer_price"]) . "</td>";
                                 echo "<td>" . ($item["available"] === 1 ? "On" : "Off") . "</td>";
                                 echo "<td>" . ($item["acceptable"] === 1 ? "On" : "Off") . "</td>";
-                                echo "<td>" . $item["cat_name"] . "</td>";
-                                echo "<td>" . $item["full_name"] . "</td>";
+                                echo "<td><a href='categories.php?do=Edit&id=" . $item["cat_id"] . "'>" . $item["cat_name"] . "</a></td>";
+                                echo "<td>" . ($item["visibility"] === 1 ? "Visible" : "Hidden") . "</td>";
+                                echo "<td><a href='members.php?do=Edit&userid=" . $item["user_id"] . "'>" . $item["full_name"] . "</a></td>";
                                 echo "<td class='td-images'>";
                                 $stmt = $conn->prepare("SELECT 
                                                             items_images.img,

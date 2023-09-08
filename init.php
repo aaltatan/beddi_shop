@@ -22,11 +22,26 @@ $func = "./admin/includes/functions/";
 
 include $func . "functions.php";
 
-$stmt = $conn->prepare("SELECT id,cat_name FROM categories");
+$stmt = $conn->prepare("SELECT id,cat_name FROM categories WHERE visibility = 1");
 $stmt->execute();
 $categories = $stmt->fetchAll();
 
-$stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE acceptable = 1");
+$stmt = $conn->prepare("SELECT 
+                            items.item_id,
+                            items.item_name 
+                        FROM 
+                            items 
+                        LEFT JOIN
+                            categories
+                        ON
+                            categories.id = items.cat_id
+                        WHERE 
+                            items.acceptable = 1 
+                        AND 
+                            items.available = 1
+                        AND
+                            categories.visibility = 1
+                        ");
 $stmt->execute();
 $items = $stmt->fetchAll();
 

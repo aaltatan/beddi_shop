@@ -19,18 +19,24 @@
     <ul class="special">
       <?php
       $stmt = $conn->prepare("SELECT 
-                                item_id,
-                                item_name,
-                                item_price,
-                                offer_price
+                                  items.item_id,
+                                  items.item_name,
+                                  items.item_price,
+                                  items.offer_price
                               FROM
-                                items
+                                  items
+                              LEFT JOIN
+                                  categories
+                              ON
+                                  categories.id = items.cat_id
                               WHERE
-                                acceptable = 1
+                                  items.acceptable = 1
                               AND
-                                available = 1
+                                  items.available = 1
                               AND
-                                offer_price != 0
+                                  items.offer_price != 0
+                              AND
+                                  categories.visibility = 1
                           ");
       $stmt->execute();
       $itms = $stmt->fetchAll();
@@ -95,11 +101,6 @@
         </li>
         <?php if (isset($_SESSION["user"])) : ?>
           <li>
-            <a href="profile.php" title="<?php echo 'Profile ' . $_SESSION['user'] ?>">
-              <i class="fa-regular fa-circle-user"></i>
-            </a>
-          </li>
-          <li>
             <a href="logout.php" title="<?php echo 'Logout ' . $_SESSION['user'] ?>">
               <i class="fa-solid fa-arrow-right-from-bracket"></i>
             </a>
@@ -147,7 +148,7 @@
           <span id="shopping-cart-total"></span>
         </div>
         <p>Shipping and taxes calculated at checkout.</p>
-        <a href="#" class="btn btn-primary">Checkout</a>
+        <a href="checkout.php" class="btn btn-primary">Checkout</a>
         <img src="layout\images\payment.png" alt="" />
       </div>
     </aside>
@@ -162,7 +163,21 @@
       $current_page = explode("/", $_SERVER["PHP_SELF"]);
       $current_page = end($current_page);
 
-      $stmt = $conn->prepare("SELECT * FROM items WHERE acceptable = 1 AND available = 1");
+      $stmt = $conn->prepare("SELECT 
+                                * 
+                              FROM 
+                                items
+                              LEFT JOIN
+                                categories
+                              ON
+                                categories.id = items.cat_id
+                              WHERE 
+                                items.acceptable = 1 
+                              AND 
+                                items.available = 1
+                              AND
+                                categories.visibility = 1
+                              ");
       $stmt->execute();
       $data = $stmt->fetchAll();
 

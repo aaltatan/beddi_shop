@@ -1,8 +1,8 @@
 -----------------------------------------------------
----1-- Items can be cover or special without activate
----2-- Items can Added without category or user
----4-- add links in dashboard tables
----5-- add (multiple add to main dashboard.php)
----6-- Dependencies comments
----7-- Likes update in item page 
+---1--- Items can Added without category or user
+---2--- add (multiple add to main dashboard.php)
+---3--- place order page
+---4--- add comment settimeout
+---5--- active on header opened page main site
+---6--- add likes control to admin dashboard
 -----------------------------------------------------

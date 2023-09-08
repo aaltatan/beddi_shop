@@ -229,7 +229,7 @@ if (isset($_SESSION["admin"])) {
                 <?php if ($recent_comments_count) : ?>
                     <div class="pending-comments">
                         <p class="heading">
-                            <a href="comments.php?do=Pending"><span>Recent Comments (<?php echo $recent_comments_count ?>)</span></a>
+                            <a href="comments.php?"><span>Recent Comments (<?php echo $recent_comments_count ?>)</span></a>
                         </p>
 
                         <ul class="body">

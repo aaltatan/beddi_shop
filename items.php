@@ -46,6 +46,8 @@ if ($count) :
                                 users.reg_status = 1
                             AND
                                 items.item_id = ?
+                            AND
+                                categories.visibility = 1
     ");
     $stmt->execute(array($item_id));
     $data = $stmt->fetch();
@@ -56,7 +58,7 @@ if ($count) :
         <div class="breadcrumbs">
             <a href="index.php">Beddi Shop</a>
             <span> > </span>
-            <a href="categories.php?id=<?php echo $data["cat_id"] ?>"><?php echo $data["cat_name"] ?></a>
+            <a href="categories.php?id=<?php echo $data["cat_id"] . "&catname=" . $data["cat_name"] ?>"><?php echo $data["cat_name"] ?></a>
             <span> > </span>
             <a href="items.php?id=<?php echo $data["main_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $data["item_name"])) ?>"><?php echo $data["item_name"] ?></a>
         </div>
@@ -162,11 +164,8 @@ if ($count) :
 
         </div>
 
-        <div class="more-cat">
-            <h2>More from same category: </h2>
-            <div class="more-cat-container">
-                <?php
-                $stmt = $conn->prepare("SELECT 
+        <?php
+        $stmt = $conn->prepare("SELECT 
                                     items.item_id AS main_id,
                                     items.item_name,
                                     items.cat_id,
@@ -186,20 +185,29 @@ if ($count) :
                                     items.available = 1
                                 AND
                                     items.item_id != ?
-            ");
-                $stmt->execute(array($data["cat_id"], $data["main_id"]));
-                $cat_items = $stmt->fetchAll();
-                foreach ($cat_items as $cat_item) :
-                ?>
-                    <a class="item-card" href="items.php?id=<?php echo $cat_item["main_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $cat_item["item_name"])) ?>">
-                        <div class="image">
-                            <img src="<?php echo substr($cat_item['img'], 1) ?>" alt="dasd">
-                        </div>
-                        <span><?php echo $cat_item["item_name"] ?></span>
-                    </a>
-                <?php endforeach ?>
+                                ");
+        $stmt->execute(array($data["cat_id"], $data["main_id"]));
+        $cat_items = $stmt->fetchAll();
+        $cat_items_count = $stmt->rowCount();
+        if ($cat_items_count) :
+        ?>
+            <div class="more-cat">
+                <h2>More from same category: </h2>
+                <div class="more-cat-container">
+                    <?php
+                    foreach ($cat_items as $cat_item) :
+                    ?>
+                        <a class="item-card" href="items.php?id=<?php echo $cat_item["main_id"] . "&itemname=" . strtolower(str_replace(" ", "_", $cat_item["item_name"])) ?>">
+                            <div class="image">
+                                <img src="<?php echo substr($cat_item['img'], 1) ?>" alt="dasd">
+                            </div>
+                            <span><?php echo $cat_item["item_name"] ?></span>
+                        </a>
+                    <?php endforeach ?>
+                </div>
             </div>
-        </div>
+        <?php endif ?>
+
     </div>
 
     <script src="layout/js/items.js"></script>

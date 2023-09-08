@@ -531,7 +531,7 @@ main > section {
   --card-width: 250px;
   display: grid;
   grid-template-columns: repeat(
-    auto-fit,
+    auto-fill,
     minmax(min(100%, var(--card-width)), 1fr)
   );
   @include br(lg) {

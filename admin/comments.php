@@ -24,6 +24,9 @@ if (isset($_SESSION["admin"])) {
                                         users.full_name,
                                         items.item_name,
                                         categories.cat_name,
+                                        categories.id as cat_id,
+                                        comments.user_id,
+                                        items.item_id,
                                         (SELECT img FROM items_images WHERE items_images.item_id = items.item_id LIMIT 1) as img
                                     FROM 
                                         comments
@@ -75,9 +78,9 @@ if (isset($_SESSION["admin"])) {
                                 echo "<td>" . $row["comment"] . "</td>";
                                 echo "<td>" . ($row["comment_status"] ? "Enabled" : "Disabled") . "</td>";
                                 echo "<td>" . $row["added_date"] . "</td>";
-                                echo "<td>" . $row["full_name"] . "</td>";
-                                echo "<td>" . $row["item_name"] . "</td>";
-                                echo "<td>" . $row["cat_name"] . "</td>";
+                                echo "<td><a href='members.php?do=Edit&userid=" . $row["user_id"] . "'>" . $row["full_name"] . "</a></td>";
+                                echo "<td><a href='items.php?do=Edit&id=" . $row["item_id"] . "'>" . $row["item_name"] . "</a></td>";
+                                echo "<td><a href='categories.php?do=Edit&id=" . $row["cat_id"] . "'>" . $row["cat_name"] . "</a></td>";
                                 echo "<td class='td-images'>";
                                 echo "<img class='show-images' src='" . $row["img"] . "' style='cursor:pointer;'>";
                                 echo "</td>";
@@ -110,8 +113,113 @@ if (isset($_SESSION["admin"])) {
                 })
             </script>
 
+        <?php
+            break;
+
+        case "Pending";
+
+            $stmt = $conn->prepare("SELECT 
+                                        comments.comment_id,
+                                        comments.comment,
+                                        comments.comment_status,
+                                        comments.added_date,
+                                        users.full_name,
+                                        items.item_name,
+                                        categories.cat_name,
+                                        categories.id as cat_id,
+                                        comments.user_id,
+                                        items.item_id,
+                                        (SELECT img FROM items_images WHERE items_images.item_id = items.item_id LIMIT 1) as img
+                                    FROM 
+                                        comments
+                                    LEFT JOIN
+                                        users
+                                    ON
+                                        users.user_id = comments.user_id
+                                    LEFT JOIN
+                                        items
+                                    ON
+                                        items.item_id = comments.item_id
+                                    LEFT JOIN
+                                        categories
+                                    ON
+                                        categories.id = items.cat_id
+                                    WHERE
+                                        comments.comment_status = 0
+                                    ORDER BY 
+                                        comments.added_date 
+                                    DESC
+            ");
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
+            $count = $stmt->rowCount();
+
+        ?>
+
+            <div class="container flow">
+                <h1>Comments</h1>
+                <div class="table-container flow">
+                    <table class="table" id="categories-table" cellpadding="0px" cellspacing="0px">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Comment</th>
+                                <th>Status</th>
+                                <th>Add Date</th>
+                                <th>User</th>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>Images</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($rows as $row) {
+                                $title = $row["comment"];
+                                $dimmed_class = $row["comment_status"] ? "" : "dimmed";
+                                echo "<tr class='" . $dimmed_class . "' title='" . $title . "'>";
+                                echo "<td>" . $row["comment_id"] . "</td>";
+                                echo "<td>" . $row["comment"] . "</td>";
+                                echo "<td>" . ($row["comment_status"] ? "Enabled" : "Disabled") . "</td>";
+                                echo "<td>" . $row["added_date"] . "</td>";
+                                echo "<td><a href='members.php?do=Edit&userid=" . $row["user_id"] . "'>" . $row["full_name"] . "</a></td>";
+                                echo "<td><a href='items.php?do=Edit&id=" . $row["item_id"] . "'>" . $row["item_name"] . "</a></td>";
+                                echo "<td><a href='categories.php?do=Edit&id=" . $row["cat_id"] . "'>" . $row["cat_name"] . "</a></td>";
+                                echo "<td class='td-images'>";
+                                echo "<img class='show-images' src='" . $row["img"] . "' style='cursor:pointer;'>";
+                                echo "</td>";
+                                echo "<td class='dots'>
+                                        <div class='list'>
+                                            <a class='btn btn-secondary' href='?do=Edit&id=" . $row["comment_id"] . "'>Edit</a>";
+                                echo $row["comment_status"] === 0
+                                    ? "<a class='btn btn-secondary confirm' href='?do=Activate&id=" . $row["comment_id"] . "'>Activate</a>"
+                                    : "<a class='btn btn-secondary confirm' href='?do=Deactivate&id=" . $row["comment_id"] . "'>Deactivate</a>";
+                                echo       "<a class='btn btn-secondary confirm' href='?do=Delete&id=" . $row["comment_id"] . "'>Delete</a>";
+                                echo "</div>
+                                     </td>";
+                                echo "</tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size: var(--fs-sm);"><?php echo $count . " comments was found." ?></p>
+            </div>
+
+            <script>
+                let btns = document.querySelectorAll(".confirm");
+                btns.forEach(confirmBtn => {
+                    confirmBtn.addEventListener("click", (e) => {
+                        const method = e.target.innerHTML;
+                        const input = confirm(`Do you want actually to ${method.toUpperCase()} ${confirmBtn.parentElement.parentElement.parentElement.querySelector("td:nth-of-type(2)").innerHTML}?`);
+                        !input && e.preventDefault();
+                    });
+                })
+            </script>
+
             <?php
             break;
+
         case "Edit";
 
             $comment_id = is_numeric($_GET["id"]) ? $_GET["id"] : 0;

@@ -323,8 +323,13 @@ if (isset($_SESSION["admin"])) {
                 $cat_exists && $errorArr[] = "this <strong>Name</strong> has been already found";
                 $order_exists && $errorArr[] = "this <strong>Order</strong> has been already found";
 
+                $stmt = $conn->prepare("SELECT cat_id FROM items WHERE is_cover = 1 LIMIT 1");
+                $stmt->execute();
+                $has_the_cover = $stmt->fetch()["cat_id"];
+                $visibility === "0" && $has_the_cover == $catid && $errorArr[] = "<strong>$name</strong> has the main cover item, you cannot modified it, change the cover to another category first";
+
                 !preg_match($name_country_re, $name) && $errorArr[] = "<strong>Name</strong> must be one Capitalized Word  between 4 and 20 characters";
-                !preg_match($description_re, $description) && $errorArr[] = "<strong>Description</strong> must be between 4 and 50 characters";
+                !preg_match($description_title_re, $description) && $errorArr[] = "<strong>Description</strong> must be between 4 and 50 characters";
                 !preg_match($price_order_re, $order) && $errorArr[] = "<strong>Order</strong> must be positive number";
 
                 echo "<ul class='error-msgs'>";

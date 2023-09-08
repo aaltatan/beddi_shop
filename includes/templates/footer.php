@@ -20,12 +20,12 @@
             <h2>Categories</h2>
             <div class="links">
                 <?php
-                $stmt = $conn->prepare("SELECT id,cat_name FROM categories LIMIT 5");
+                $stmt = $conn->prepare("SELECT id,cat_name FROM categories WHERE visibility = 1 LIMIT 5");
                 $stmt->execute();
                 $cats = $stmt->fetchAll();
                 foreach ($cats as $cat) :
                 ?>
-                    <a href="categories.php?id=<?php echo $cat["id"] ?>"><?php echo $cat["cat_name"] ?></a>
+                    <a href="categories.php?id=<?php echo $cat["id"] . "&catname=" . $cat["cat_name"] ?>"><?php echo $cat["cat_name"] ?></a>
                 <?php endforeach ?>
                 <a href="categories.php">See More</a>
             </div>
@@ -35,12 +35,31 @@
             <h2>Specials</h2>
             <div class="links">
                 <?php
-                $stmt = $conn->prepare("SELECT item_id,item_name FROM items WHERE acceptable = 1 AND available = 1 AND is_special = 1 LIMIT 5");
+                $stmt = $conn->prepare("SELECT 
+                                            items.item_id,
+                                            items.item_name 
+                                        FROM 
+                                            items 
+                                        LEFT JOIN
+                                            categories
+                                        ON
+                                            categories.id = items.cat_id
+                                        WHERE 
+                                            items.acceptable = 1 
+                                        AND 
+                                            items.available = 1 
+                                        AND 
+                                            items.is_special = 1 
+                                        AND
+                                            categories.visibility = 1
+                                        LIMIT 
+                                            5
+                                        ");
                 $stmt->execute();
                 $items = $stmt->fetchAll();
                 foreach ($items as $item) :
                 ?>
-                    <a href="items.php?id=<?php echo $item["item_id"] . '&itemid=' . strtolower(str_replace(" ", "_", $item["item_name"])) ?>"><?php echo $item["item_name"] ?></a>
+                    <a href="items.php?id=<?php echo $item["item_id"] . '&itemname=' . strtolower(str_replace(" ", "_", $item["item_name"])) ?>"><?php echo $item["item_name"] ?></a>
                 <?php endforeach ?>
                 <a href="items.php">See More</a>
             </div>
