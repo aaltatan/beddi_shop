@@ -25,8 +25,6 @@ try {
         reg_status int(11) DEFAULT 0,
         dt DATETIME
     );
-    -- Creating a view to get count of all pending users
-    CREATE VIEW IF NOT EXISTS pending_users AS SELECT user_id FROM users WHERE reg_status = 0;
     -- Creating Categories Table
     CREATE TABLE IF NOT EXISTS categories(
         id INT(11) PRIMARY KEY AUTO_INCREMENT,
@@ -68,24 +66,6 @@ try {
         CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES items(item_id),
         CONSTRAINT fk_likes_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
     );
-    -- Creating a view to get count of Total Categories Likes
-    CREATE VIEW IF NOT EXISTS 
-        categories_likes 
-    AS 
-    SELECT 
-        categories.id
-    FROM
-        items_likes
-    LEFT JOIN
-        items
-    ON
-        items.item_id = items_likes.item_id
-    LEFT JOIN
-        categories
-    ON
-        categories.id = items.cat_id;
-    -- Creating a view to get count of all pending items
-    CREATE VIEW IF NOT EXISTS pending_items AS SELECT item_id FROM items WHERE acceptable = 0;
     -- Creating Shopping Cart Table
     CREATE TABLE IF NOT EXISTS cart(
         user_id INT(11) NOT NULL,
@@ -106,8 +86,6 @@ try {
         CONSTRAINT fk_comment_item_id FOREIGN KEY (item_id) REFERENCES items(item_id),
         CONSTRAINT fk_comment_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)
     );
-    -- Creating a view to get count of all pending comments
-    CREATE VIEW IF NOT EXISTS pending_comments AS SELECT comment_id FROM comments WHERE comment_status = 0;
     ");
 
     $stmt = $conn->prepare("SELECT username FROM users;");

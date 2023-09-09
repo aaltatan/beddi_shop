@@ -153,12 +153,14 @@ if ($count) :
 
             <h2 id="item-heading-id" data-item-id="<?php echo $data["main_id"] ?>">Comments:</h2>
 
-            <?php if (isset($_SESSION["user_session_id"])) : ?>
-                <div class="add-comment">
-                    <textarea id="comment-box" cols="100" rows="5" placeholder="Write your comment ..."></textarea>
+            <div class="add-comment">
+                <textarea id="comment-box" cols="100" rows="5" placeholder="Write your comment ..."></textarea>
+                <?php if (isset($_SESSION["user_session_id"])) : ?>
                     <button title="Add a Comment" data-item-id="<?php echo $data["main_id"] ?>" role="add-comment" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                </div>
-            <?php endif ?>
+                <?php else : ?>
+                    <a href="login.php" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+                <?php endif ?>
+            </div>
 
             <div class="comments flow"></div>
 

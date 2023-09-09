@@ -58,7 +58,7 @@ $specials_count = $stmt->rowCount();
 $stmt = $conn->prepare("SELECT 
                             id as cat_id_generated,
                             cat_name,
-                            (SELECT COUNT(*) FROM items WHERE cat_id_generated = items.cat_id) AS items_count,
+                            (SELECT COUNT(*) FROM items WHERE cat_id_generated = items.cat_id AND items.acceptable = 1 AND items.available = 1) AS items_count,
                             (SELECT item_id FROM items WHERE cat_id_generated = items.cat_id LIMIT 1) AS item_id_generated,
                             (SELECT img FROM items_images WHERE item_id_generated = items_images.item_id LIMIT 1) AS item_image
                         FROM 
@@ -259,7 +259,7 @@ $items_count = $stmt->rowCount();
                 $stmt = $conn->prepare("SELECT 
                                             id,
                                             cat_name,
-                                            (SELECT COUNT(*) FROM items WHERE id = items.cat_id) as items_count 
+                                            (SELECT COUNT(*) FROM items WHERE id = items.cat_id AND items.acceptable = 1 AND items.available = 1) as items_count 
                                         FROM 
                                             categories 
                                         WHERE 

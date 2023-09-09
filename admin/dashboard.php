@@ -49,11 +49,7 @@ if (isset($_SESSION["admin"])) {
                                 comments.comment,
                                 items.item_name
                             FROM
-                                pending_comments
-                            LEFT JOIN
                                 comments
-                            ON
-                                comments.comment_id = pending_comments.comment_id
                             LEFT JOIN
                                 users
                             ON
@@ -68,6 +64,8 @@ if (isset($_SESSION["admin"])) {
                                 categories.id = items.cat_id
                             WHERE
                                 categories.allow_comment = 1
+                            AND
+                                comments.comment_status = 0
                             ORDER BY
                                 comments.added_date
                             DESC
@@ -176,7 +174,7 @@ if (isset($_SESSION["admin"])) {
                 <?php if ($rows_count) : ?>
                     <div class="last-members">
                         <p class="heading">
-                            <a href="members.php?do=Pending"><span>Pending Members (<?php echo getCount("pending_users") ?>)</span></a>
+                            <a href="members.php?do=Pending"><span>Pending Members (<?php echo getCount("users", "reg_status = 0") ?>)</span></a>
                             <a class="add-new" href="members.php?do=Add" title="Add new Member"></a>
                         </p>
 
@@ -203,7 +201,7 @@ if (isset($_SESSION["admin"])) {
                 <?php if ($comments_count) : ?>
                     <div class="pending-comments">
                         <p class="heading">
-                            <a href="comments.php?do=Pending"><span>Pending Comments (<?php echo getCount("pending_comments") ?>)</span></a>
+                            <a href="comments.php?do=Pending"><span>Pending Comments (<?php echo getCount("comments", "comment_status = 0") ?>)</span></a>
                         </p>
 
                         <ul class="body">
@@ -255,7 +253,7 @@ if (isset($_SESSION["admin"])) {
                 <?php if ($items_count) : ?>
                     <div class="last-items">
                         <p class="heading">
-                            <a href="items.php?do=Pending"><span>Pending Items (<?php echo getCount("pending_items") ?>)</a>
+                            <a href="items.php?do=Pending"><span>Pending Items (<?php echo getCount("items", "acceptable = 0") ?>)</a>
                             <a class="add-new" href="items.php?do=Add" title="Add new Item"></a>
                         </p>
                         <ul class="body">
@@ -265,13 +263,13 @@ if (isset($_SESSION["admin"])) {
                                 echo "<li title='" . $title . "'>";
                                 echo "<a href='items.php?do=Edit&id=" . $item["item_id"] . "'>";
                                 $stmt = $conn->prepare("SELECT 
-                                                        img
-                                                    FROM
-                                                        items_images
-                                                    WHERE 
-                                                        item_id = ?
-                                                    LIMIT
-                                                        1          
+                                                            img
+                                                        FROM
+                                                            items_images
+                                                        WHERE 
+                                                            item_id = ?
+                                                        LIMIT
+                                                            1          
                             ");
                                 $stmt->execute(array($item["item_id"]));
                                 $image = $stmt->fetch();

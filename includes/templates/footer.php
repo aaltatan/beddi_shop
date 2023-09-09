@@ -22,7 +22,7 @@
                 $stmt = $conn->prepare("SELECT 
                                             id,
                                             cat_name,
-                                            (SELECT COUNT(*) FROM items WHERE id = items.cat_id) as items_count 
+                                            (SELECT COUNT(*) FROM items WHERE id = items.cat_id AND items.acceptable = 1 AND items.available = 1) as items_count 
                                         FROM 
                                             categories 
                                         WHERE 

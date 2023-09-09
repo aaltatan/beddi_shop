@@ -49,6 +49,8 @@ if ($count) {
                                             comments.item_id = ?
                                         AND
                                             comments.comment_status = 1
+                                        AND
+                                            users.reg_status = 1
                                         ORDER BY
                                             comments.added_date
                                         DESC

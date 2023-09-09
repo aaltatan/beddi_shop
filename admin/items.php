@@ -524,16 +524,37 @@ if (isset($_SESSION["admin"])) {
                         <button type="submit" class="btn btn-primary" id="edit-items-submit" tabindex="11">Edit Item</button>
                     </form>
                     <div class="btn-group">
-                        <a class="btn btn-success" href="items.php?do=Cover&id=<?php echo $id ?>" tabindex="12">Main Site Cover</a>
                         <?php
-                        $stmt = $conn->prepare("SELECT is_special FROM items WHERE item_id = ? LIMIT 1");
+                        $stmt = $conn->prepare("SELECT 
+                                                    items.is_special,
+                                                    items.acceptable,
+                                                    items.available,
+                                                    categories.visibility
+                                                FROM 
+                                                    items 
+                                                LEFT JOIN
+                                                    Categories
+                                                ON
+                                                    categories.id = items.cat_id
+                                                WHERE 
+                                                    items.item_id = ? 
+                                                LIMIT 
+                                                    1
+                                                ");
                         $stmt->execute(array($id));
-                        $is_special = $stmt->fetch()["is_special"];
-                        if ($is_special) :
+                        $status = $stmt->fetch();
+                        if (
+                            $status["acceptable"]
+                            &&  $status["available"]
+                            &&  $status["visibility"]
+                        ) :
                         ?>
-                            <a class="btn btn-danger" href="items.php?do=Unspecial&id=<?php echo $id ?>" tabindex="13">Remove Special</a>
-                        <?php else : ?>
-                            <a class="btn btn-success" href="items.php?do=Special&id=<?php echo $id ?>" tabindex="13">Add to Special</a>
+                            <a class="btn btn-success" href="items.php?do=Cover&id=<?php echo $id ?>" tabindex="12">Main Site Cover</a>
+                            <?php if ($status["is_special"]) : ?>
+                                <a class="btn btn-danger" href="items.php?do=Unspecial&id=<?php echo $id ?>" tabindex="13">Remove Special</a>
+                            <?php else : ?>
+                                <a class="btn btn-success" href="items.php?do=Special&id=<?php echo $id ?>" tabindex="13">Add to Special</a>
+                            <?php endif ?>
                         <?php endif ?>
                     </div>
                 </div>

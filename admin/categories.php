@@ -59,7 +59,17 @@ if (isset($_SESSION["admin"])) {
                                 echo "<td>" . ($row["visibility"] ? "Enabled" : "Disabled") . "</td>";
                                 echo "<td>" . ($row["allow_comment"] ? "Enabled" : "Disabled") . "</td>";
                                 echo "<td>" . ($row["allow_ads"] ? "Enabled" : "Disabled") . "</td>";
-                                $stmt = $conn->prepare("SELECT * FROM categories_likes WHERE id = ?");
+                                $stmt = $conn->prepare("SELECT 
+                                                            items.cat_id
+                                                        FROM
+                                                            items_likes
+                                                        LEFT JOIN
+                                                            items
+                                                        ON
+                                                            items.item_id = items_likes.item_id
+                                                        WHERE
+                                                            items.cat_id = ?
+                                                        ");
                                 $stmt->execute(array($row["id"]));
                                 $cnt = $stmt->rowCount();
                                 echo "<td>" . $cnt . "</td>";
