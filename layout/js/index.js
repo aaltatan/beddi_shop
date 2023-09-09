@@ -45,18 +45,22 @@ likeBtns.forEach((btn) => {
   });
 });
 
-specialGoRight.addEventListener("click", () => {
-  specialContainer.scrollBy({
-    left: "500",
-    behavior: "smooth",
+if (specialGoRight) {
+  specialGoRight.addEventListener("click", () => {
+    specialContainer.scrollBy({
+      left: "500",
+      behavior: "smooth",
+    });
   });
-});
-specialGoLeft.addEventListener("click", () => {
-  specialContainer.scrollBy({
-    left: "-500",
-    behavior: "smooth",
+}
+if (specialGoLeft) {
+  specialGoLeft.addEventListener("click", () => {
+    specialContainer.scrollBy({
+      left: "-500",
+      behavior: "smooth",
+    });
   });
-});
+}
 
 observedElements.forEach((observedElement) => {
   elementsObserver.observe(observedElement);
@@ -64,22 +68,25 @@ observedElements.forEach((observedElement) => {
 
 checker(current, images, lis);
 
-nextBtn.addEventListener("click", () => {
-  current++;
-  if (current > imagesCount) current = 1;
-  if (current < 1) current = imagesCount;
-  checker(current, images, lis);
-});
-prevBtn.addEventListener("click", () => {
-  current--;
-  if (current > imagesCount) current = 1;
-  if (current < 1) current = imagesCount;
-  checker(current, images, lis);
-});
-
-setInterval(() => {
-  nextBtn.click();
-}, 5000);
+if (nextBtn) {
+  nextBtn.addEventListener("click", () => {
+    current++;
+    if (current > imagesCount) current = 1;
+    if (current < 1) current = imagesCount;
+    checker(current, images, lis);
+  });
+  setInterval(() => {
+    nextBtn.click();
+  }, 5000);
+}
+if (prevBtn) {
+  prevBtn.addEventListener("click", () => {
+    current--;
+    if (current > imagesCount) current = 1;
+    if (current < 1) current = imagesCount;
+    checker(current, images, lis);
+  });
+}
 
 function checker(current, images, lis) {
   images.forEach((img, idx) => {

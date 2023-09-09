@@ -1,7 +1,0 @@
------------------------------------------------------
----1--- Items can Added without category or user
----2--- add (multiple add to main dashboard.php)
----3--- add likes control to admin dashboard
----4--- add comment settimeout
----5--- active on header opened page main site
------------------------------------------------------

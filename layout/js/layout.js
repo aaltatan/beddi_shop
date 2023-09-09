@@ -30,24 +30,27 @@ specialContainerHeaderLi.forEach((li, idx) => {
   li.ariaCurrent = false;
   if (idx === specialCounter) li.ariaCurrent = true;
 });
-nextOfferBtn.addEventListener("click", () => {
-  if (specialCounter === specialContainerHeaderLiCount - 1) {
-    specialCounter = 0;
-    specialContainerHeaderLi.forEach((li, idx) => {
-      li.ariaCurrent = false;
-      if (idx === specialCounter) li.ariaCurrent = true;
-    });
-  } else {
-    specialCounter++;
-    specialContainerHeaderLi.forEach((li, idx) => {
-      li.ariaCurrent = false;
-      if (idx === specialCounter) li.ariaCurrent = true;
-    });
-  }
-});
-setInterval(() => {
-  nextOfferBtn.click();
-}, 3000);
+
+if (nextOfferBtn) {
+  nextOfferBtn.addEventListener("click", () => {
+    if (specialCounter === specialContainerHeaderLiCount - 1) {
+      specialCounter = 0;
+      specialContainerHeaderLi.forEach((li, idx) => {
+        li.ariaCurrent = false;
+        if (idx === specialCounter) li.ariaCurrent = true;
+      });
+    } else {
+      specialCounter++;
+      specialContainerHeaderLi.forEach((li, idx) => {
+        li.ariaCurrent = false;
+        if (idx === specialCounter) li.ariaCurrent = true;
+      });
+    }
+  });
+  setInterval(() => {
+    nextOfferBtn.click();
+  }, 3000);
+}
 
 searchBtn.addEventListener("click", () => {
   document.querySelector(".search-container").classList.toggle("opened");

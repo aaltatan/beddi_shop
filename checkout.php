@@ -115,38 +115,40 @@ switch ($do) {
 
             <div class="order-summary-container">
 
-                <div class="items">
+                <div class="container">
+                    <div class="items">
 
-                    <?php
-                    foreach ($cart_items as $item) :
-                    ?>
-                        <div class="item">
-                            <div class="image">
-                                <img src="<?php echo substr($item["img"], 1) ?>" alt="dasda">
-                                <span><?php echo $item["quantity"] ?></span>
+                        <?php
+                        foreach ($cart_items as $item) :
+                        ?>
+                            <div class="item">
+                                <div class="image">
+                                    <img src="<?php echo substr($item["img"], 1) ?>" alt="dasda">
+                                    <span><?php echo $item["quantity"] ?></span>
+                                </div>
+                                <span><?php echo $item["item_name"] ?></span>
+                                <span><?php echo number_format($item["price"]) ?></span>
                             </div>
-                            <span><?php echo $item["item_name"] ?></span>
-                            <span><?php echo number_format($item["price"]) ?></span>
+                        <?php endforeach ?>
+
+                    </div>
+
+                    <div class="total">
+                        <div>
+                            <span>Subtotal:</span>
+                            <span><?php echo number_format($subtotal) ?></span>
                         </div>
-                    <?php endforeach ?>
-
-                </div>
-
-                <div class="total">
-                    <div>
-                        <span>Subtotal:</span>
-                        <span><?php echo number_format($subtotal) ?></span>
+                        <div>
+                            <span>Shipping (20%):</span>
+                            <span><?php echo number_format(round($subtotal * 0.2, 0)) ?></span>
+                        </div>
                     </div>
-                    <div>
-                        <span>Shipping (20%):</span>
-                        <span><?php echo number_format(round($subtotal * 0.2, 0)) ?></span>
-                    </div>
-                </div>
 
-                <div class="total">
-                    <div>
-                        <span>Total:</span>
-                        <span><?php echo number_format(round($subtotal * 1.2, 0)) ?></span>
+                    <div class="total">
+                        <div>
+                            <span>Total:</span>
+                            <span><?php echo number_format(round($subtotal * 1.2, 0)) ?></span>
+                        </div>
                     </div>
                 </div>
 

@@ -2,19 +2,28 @@
 
 .checkout-container {
   display: grid;
-  grid-template-columns: 1fr 40%;
+  grid-template-columns: 1fr 1fr;
   column-gap: 1em;
   > * {
-    padding: 1em;
+    padding: 1em 2em;
   }
   > form {
-    padding-left: 4em;
+    max-width: 600px;
+    margin-left: auto;
   }
-  > .order-summary-container {
-    padding-right: 4em;
+  > .order-summary-container .container {
+    max-width: 400px;
+    margin-right: auto;
   }
   @include br(lg) {
     grid-template-columns: 1fr;
+    > form {
+      margin-inline: auto;
+    }
+    > .order-summary-container .container {
+      max-width: 600px;
+      margin-inline: auto;
+    }
     > .order-summary-container {
       display: none;
       order: -1;
@@ -27,7 +36,7 @@
       order: -2;
     }
     > * {
-      padding: 1em !important;
+      padding: 0.5em !important;
     }
   }
 }

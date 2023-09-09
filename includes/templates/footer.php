@@ -1,4 +1,3 @@
-<!-- <script src="./layout/fontawesome/all.min.js"></script> -->
 </main>
 <footer>
 
@@ -20,14 +19,26 @@
             <h2>Categories</h2>
             <div class="links">
                 <?php
-                $stmt = $conn->prepare("SELECT id,cat_name FROM categories WHERE visibility = 1 LIMIT 5");
+                $stmt = $conn->prepare("SELECT 
+                                            id,
+                                            cat_name,
+                                            (SELECT COUNT(*) FROM items WHERE id = items.cat_id) as items_count 
+                                        FROM 
+                                            categories 
+                                        WHERE 
+                                            visibility = 1
+                                        HAVING
+                                            items_count != 0
+                                        LIMIT
+                                            5
+                                        ");
                 $stmt->execute();
                 $cats = $stmt->fetchAll();
                 foreach ($cats as $cat) :
                 ?>
                     <a href="categories.php?id=<?php echo $cat["id"] . "&catname=" . $cat["cat_name"] ?>"><?php echo $cat["cat_name"] ?></a>
                 <?php endforeach ?>
-                <a href="categories.php">See More</a>
+                <a href="index.php#categories">See More</a>
             </div>
         </div>
 
@@ -61,7 +72,7 @@
                 ?>
                     <a href="items.php?id=<?php echo $item["item_id"] . '&itemname=' . strtolower(str_replace(" ", "_", $item["item_name"])) ?>"><?php echo $item["item_name"] ?></a>
                 <?php endforeach ?>
-                <a href="items.php">See More</a>
+                <a href="index.php#specials">See More</a>
             </div>
         </div>
 
@@ -81,17 +92,17 @@
             <div class="images">
                 <?php
                 $stmt = $conn->prepare("SELECT 
-                                                items_images.img
-                                            FROM 
-                                                items_images
-                                            LEFT JOIN
-                                                items
-                                            ON
-                                                items.item_id = items_images.item_id
-                                            WHERE
-                                                items.is_cover = 1
-                                            LIMIT 6
-                                            ");
+                                            items_images.img
+                                        FROM 
+                                            items_images
+                                        LEFT JOIN
+                                            items
+                                        ON
+                                            items.item_id = items_images.item_id
+                                        WHERE
+                                            items.is_cover = 1
+                                        LIMIT 6
+                                        ");
                 $stmt->execute();
                 $images = $stmt->fetchAll();
                 foreach ($images as $image) :

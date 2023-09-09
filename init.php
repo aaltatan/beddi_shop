@@ -23,7 +23,17 @@ $func = "./admin/includes/functions/";
 
 include $func . "functions.php";
 
-$stmt = $conn->prepare("SELECT id,cat_name FROM categories WHERE visibility = 1");
+$stmt = $conn->prepare("SELECT 
+                            id,
+                            cat_name,
+                            (SELECT COUNT(*) FROM items WHERE id = items.cat_id) as items_count 
+                        FROM 
+                            categories 
+                        WHERE 
+                            visibility = 1
+                        HAVING
+                            items_count != 0
+                        ");
 $stmt->execute();
 $categories = $stmt->fetchAll();
 
