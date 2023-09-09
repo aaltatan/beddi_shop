@@ -67,6 +67,8 @@ $stmt = $conn->prepare("SELECT
                             visibility = 1
                         HAVING
                             items_count != 0
+                        LIMIT
+                            5
                     ");
 $stmt->execute();
 $cat_item = $stmt->fetchAll();
