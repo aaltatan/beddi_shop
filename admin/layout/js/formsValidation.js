@@ -20,9 +20,9 @@ export class Validate {
   validateInput(inputName) {
     const input = document.getElementsByName(inputName)[0];
     let re, msg;
-    console.log(inputName);
     switch (inputName) {
       case "username":
+      case "namecard":
         re = /^[a-z]+[a-z0-9\.]{4,20}$/;
         msg =
           inputName +
@@ -32,12 +32,14 @@ export class Validate {
         break;
       case "title":
       case "description":
+      case "address":
         re = /^.{4,50}$/;
         msg = inputName + " must be between 4 and 50 characters";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
       case "country": //!
+      case "city": //!
       case "name": //!
         re = /^[A-Z][a-z]{3,19}$/;
         msg =
@@ -56,6 +58,8 @@ export class Validate {
         break;
       case "order":
       case "offerprice":
+      case "cardnumber":
+      case "code":
       case "price":
         re = /^\d+$/;
         msg = inputName + " must be positive number";
@@ -71,6 +75,12 @@ export class Validate {
       case "password":
         re = /^.{8,}$/;
         msg = inputName + " must be at least 8 characters";
+        !re.test(input.value) && this.createMsg(msg);
+        input.focus();
+        break;
+      case "expiration":
+        re = /^\d{4}-[0-1]\d-[0-3]\d$/;
+        msg = inputName + " is not valid";
         !re.test(input.value) && this.createMsg(msg);
         input.focus();
         break;
