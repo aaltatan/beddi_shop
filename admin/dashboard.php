@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 $page_title = "Dashboard";
 if (isset($_SESSION["admin"])) {
@@ -418,3 +419,4 @@ if (isset($_SESSION["admin"])) {
     header("Location: index.php");
     exit();
 }
+ob_end_flush();

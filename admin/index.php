@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 $page_title = "Log in";
 if (isset($_SESSION["admin"])) {
@@ -65,3 +66,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         form.appendChild(msgSpan)
     }
 </script>
+
+<?php ob_end_flush() ?>
