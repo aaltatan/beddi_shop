@@ -7,9 +7,15 @@ abdullah_232943
 C1
 ```
 
+Online URL : <http://beddi.infinityfreeapp.com>  
+Admin URL : <http://beddi.infinityfreeapp.com/admin/>  
+Github Repo : <https://github.com/aaltatan/beddi_shop>
+
 - [`Folder Structure`](#folder-structure)
 - [`Database Structure`](#database-structure)
 - [`Application Logic`](#application-logic)
+- [`CSS Style (SASS)`](#css-style)
+- [`JavaScript`](#javascript)
 
 ## FOLDER STRUCTURE:
 
@@ -374,17 +380,138 @@ ob_end_flush();
 
 it includes eight scripts:
 
-1. [`init.php`]("#init-page")
-2. [`index.php`]("#index-page")
-3. [`categories.php`]("#categories-page")
-4. [`items.php`]("#items-page")
-5. [`checkout.php`]("#checkout-page")
-6. [`login.php`]("#login-page")
-7. [`logout.php`]("#logout-page")
-8. [`register.php`]("#register-page")
+1. [`init.php`](#init-page)
+2. [`index.php`](#index-page)
+3. [`categories.php`](#categories-page)
+4. [`items.php`](#items-page)
+5. [`checkout.php`](#checkout-page)
+6. [`login.php`](#login-page)
+7. [`logout.php`](#logout-page)
+8. [`register.php`](#register-page)
 
 and also includes three API Urls:
 
-1. [`cart.php`]("#cart-api")
-2. [`comments.php`]("#comments-api")
-3. [`likes.php`]("#likes-api")
+1. [`cart.php`](#cart-api)
+2. [`comments.php`](#comments-api)
+3. [`likes.php`](#likes-api)
+
+#### Init Page
+
+it is a script similar to init.php in admin folder, it includes connect.php in admin and some regular expressions to validate register and login forms and header.php which contains my head tag and main navbar, and also contains some queries to get items and categories data to add it in navbar.
+
+#### Index Page
+
+it contains five main sections like Hero landing page,special items,categories,offers and all items section
+
+#### Categories Page
+
+it's identical to the index page with filter to the category itself.
+
+#### Items Page
+
+it contains information about the item from database like price,offer (if exists),country made,owner,added date,comments area (which i will explain how it works later) and suggestions for another items in the same category of the item itself.
+
+#### Checkout Page
+
+it contains a shipping information form to place the order and a summary of user's shopping cart (which i will explain how it works later)
+
+#### Login Page
+
+it contains a login form to user can login and set a session (users can browse the whole website without logging in , but they can't add to cart without it)
+
+#### Logout Page
+
+it contains a script to unset the user session and log him out and redirect him to login page.
+
+```
+<?php
+
+session_start();
+
+unset($_SESSION["user"]);
+unset($_SESSION["user_session_id"]);
+
+header("Location: login.php");
+
+exit();
+
+```
+
+#### Register Page
+
+in case the user has not create an account yet, it contains a register form to user can register and set a session after accepting the register request by admin (users can browse the whole website without register in , but they can't add to cart without it)
+
+#### Cart API
+
+it contains a script to make a basic crud operation on cart table like add,delete,edit quantity and read the data, the thing in this script , it does not return a HTML page but it echoes JSON format form the array that query create and i access it by fetching from JavaScript, and JavaScript manipulates the shopping-cart COMPONENT instead of reloading the whole page.
+
+#### Comments API
+
+it's the same for Cart API but it manipulates the comment between add a comment or delete one.
+
+#### Likes API
+
+it is the same for Comment and Cart API
+
+## CSS Style
+
+i used two different SASS projects for styling, one for admin dashboard and the second for main site.  
+they have similar base in Colors and Variables like \_root.scss and \_breakpoints.scss and similar components to keep the whole project identity the same as it can be.  
+the two have their own different styles in specific pages like index in main site and dashboard in admin.
+i used some utility mixins like br() which presents the media query in a short form.  
+the two projects compiled two different CSS files one for main site and the second for admin dashboard.  
+the whole project is fully responsive on this scales:
+
+```
+  xs: "300px" -> Extra small Screen
+  sm: "540px" -> Small Screen
+  md: "720px" -> Medium Screen
+  lg: "960px" -> Large Screen
+  xl: "1200px" -> Extra Large Screen
+  xxl: "1400px" -> Extra Extra Large Screen
+```
+
+i would the rest of the code explain it self.
+
+## JavaScript
+
+i separate the JS files into two sections, one for admin and the second for main site like:
+
+1. Admin
+
+- formsValidation.js:
+
+  it contains an object for formValidation by passing the form id, error messages container id and submit button to it and instant from it some methods to help with that approach like onOpen(),createMsg(),validateInput() and submitForm() methods, and export the whole class to reuse it in each form i need like add users ,add categories and add items forms.
+
+- itemsImages.js:
+
+  to show a simple gallery when i click on the image in items table
+
+- layout.js
+
+  to add the functionality to the main aside (dashboard) and navbar form clicking on burger icon to show the aside in small screens and add a keyboard shortcut to access different section in dashboard and to enable search in the whole dashboard.
+
+2. Main Site
+
+- checkout.js:
+
+  to add the functionality of clicking on show summary button
+
+- index.js:
+
+  to add the functionality to image slider in hero landing page and two async functions to fetch likes API in special container.
+
+- items.js:
+
+  async functions to fetch comments to add or delete and likes on item
+
+- layout.js:
+
+  to add functionality on header on main site from clicking on burger to open navbar, and sliding the offers in top of the header, adding functionality to search button and its container , add the functionality to change the mode (dark/light) of the whole site by saving user selection in local storage adn finally to add the slide animation to the whole page using IntersectionObserver Object.
+
+- shoppingCart.js
+
+async functions to manipulate the shopping cart component.
+
+**there is no report will be enough to explain the whole project, i would the code explain it self.**
+**A lot of thanks**
